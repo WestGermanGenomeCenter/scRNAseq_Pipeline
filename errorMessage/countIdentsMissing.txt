@@ -1,0 +1,2 @@
+Your criteria for cell countings are missing.
+The criteria should at least contain "orig.ident" and your condition.

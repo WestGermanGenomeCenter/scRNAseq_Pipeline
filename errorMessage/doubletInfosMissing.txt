@@ -1,0 +1,6 @@
+You are either missing the expectedPercentDoublets or the dbElbowPlot values in your configfile.
+
+If you are missing the former, please enter how how many doublets you are expecting from the sample,
+i.e. if you are expecting 1%, enter 0.01 as value.
+
+If you are missing the latter, please checkout the Plots 'samplename'.ElbowPlot.pdf and enter an appropriate value.

@@ -1,0 +1,15 @@
+*.Rproj.user
+*.RData
+*.Rhistory
+*.rds
+*.csv
+*.pdf
+*.tsv.gz
+*.gz
+*.png
+*.jpg
+*.errors
+*.ouput
+
+.snakemake/
+.idea/

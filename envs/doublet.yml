@@ -1,0 +1,12 @@
+name: doublet-env
+channels:
+  - nodefaults
+  - http://conda.repo.test.hhu.de/conda-forge
+
+dependencies:
+  - r-base >=3.6.1
+  - r-matrix >=1.2_17
+  - r-fields >=9.6
+  - r-KernSmooth >=2.23_15
+  - r-rocr >=1.0_7
+  - r-seurat >= 3.2.1

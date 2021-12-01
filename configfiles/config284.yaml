@@ -1,0 +1,63 @@
+maxRAM: 32212254720 #30GB RAM
+
+workDirectory: workDirectory/
+
+rawData: data/284_filtered_feature_bc_matrix/filtered_feature_bc_matrix/
+
+projectName: "284"
+
+projectDirectoryPath: /scratch_gs/myhuy100/projects_experimental/284_true/
+
+pattern: "^mt-"
+
+multimodal: true
+
+multiSampled: false
+
+HTO: true
+
+numberOfCells: 2625
+
+sampleInputs:
+  - name: 284-1
+    mtCutoff: 10
+    expectedPercentDoublets: 0.001
+    dbElbowPlot: 1
+    otherMetaData: Ablation
+  - name: 284-2
+    mtCutoff: 10
+    expectedPercentDoublets: 0.001
+    dbElbowPlot: 1
+    otherMetaData: Ablation
+  - name: 284-3
+    mtCutoff: 10
+    expectedPercentDoublets: 0.001
+    dbElbowPlot: 1
+    otherMetaData: Ablation
+  - name: 284-4
+    mtCutoff: 10
+    expectedPercentDoublets: 0.001
+    dbElbowPlot: 1
+    otherMetaData: Ablation
+  - name: 284-5
+    mtCutoff: 10
+    expectedPercentDoublets: 0.001
+    dbElbowPlot: 1
+    otherMetaData: Ablation
+  - name: 284-6
+    mtCutoff: 10
+    expectedPercentDoublets: 0.001
+    dbElbowPlot: 1
+    otherMetaData: Ablation  
+
+otherMetaName: condition
+
+integrationPCs: 30
+
+findNeighborsPCs: 15
+
+choosableResolutions: [0.5, 0.8, 0.7]
+
+chosenResolution: 0.8
+
+countIdents: [condition, orig.ident]

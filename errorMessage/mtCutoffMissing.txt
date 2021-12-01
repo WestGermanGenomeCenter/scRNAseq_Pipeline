@@ -1,0 +1,4 @@
+The mtCutoff is missing for at least one of the samples in your configfile.
+
+Please take a look at the plots ending with '.mt.before.rds' in the plots/ directory.
+For every sample, choose a appropriate cutoff and enter it in your configfile.

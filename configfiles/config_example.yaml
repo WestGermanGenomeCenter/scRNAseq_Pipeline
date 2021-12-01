@@ -1,0 +1,65 @@
+#the following variables are usually filled during the run of the pipeline
+# - chosenResolution
+# - integrationPCs
+# - findNeigborsPCs
+# - mtCutoff
+# - dbElbowPlot
+
+maxRAM: 32212254720 #30GB RAM for IntegrationDimReduction, let X be the RAM you want in GB. Set maxRAM=X*1024^3
+
+workDirectory: workDirectory/ #can stay this way for now
+
+projectDirectoryPath: /scratch_gs/myhuy100/projects_experimental/projectDirName #the (absolute) path where the output folder is going to be
+
+rawData: #directory containing the cellranger outputs which serves as this pipelines input
+
+pattern: "^mt-" #the mt-pattern for mitochondiral filtering
+
+multimodal: false #whether input contains protein data or not
+
+multiSampled: true #Does the file contain multiple samples, true for yes and false for no
+
+HTO: false #whether this should be HTO demultiplex 
+
+numberOfCells: 460000 #number of all cells in the input
+
+projectName: 354_cellranger_aggr #the name of the project
+
+otherMetaName: Donor #condition name, e.g. timepoint
+
+countIdents: [Donor, orig.ident]  #the count criterias, e.g. [timepoint, orig.ident] 
+                                  #where orig.ident means the original sample and timepoint is the metadata you added
+                                  #should always have the form: [condition, orig.ident]
+
+choosableResolutions: [0.5, 0.8] #list of resolutions for clustering, choose one after checking plots and fill out "chosenResolution"
+
+chosenResolution: 0.5 #resolution for the clustering chosen from list, after checking plots ending with ".clusteredDimPlot.pdf"
+
+integrationPCs: 19 #PCs/dimensions for running UMAP, check plot ending with ".integratedElbowPlot.pdf"
+
+findNeighborsPCs: 19 #dimensions of reduction to use as input for SNN-Graph construction, check plot ending with ".umappedElbowPlot.pdf"
+
+
+#when more than two samples, copy and paste the second point, unitl you can fill out the information for every sample
+sampleInputs:
+  - name: 354-2 #name of the sample in cellranger, usually pattern: project_number-1, project_number-2, ..., project_number-n
+    otherMetaData: HC1 #name of condition value, for timepoint example, here day1, next sample day1, sample after that day5, ...
+    expectedPercentDoublets: 0.05 #expected percent of doublets, is dependent on the number of cells in a sample
+    mtCutoff: 100 #percentage cutoff chosen during pipeline run -> e.g., 10, remove all cells with more than 10% mitochondrial counts,
+              #check plots ending with ".mt.before.pdf"
+    dbElbowPlot: 15 #PCs/dimensions chosen from plots for doublet removal, check plots ending with ".ElbowPlot.pdf"
+  - name: 354-4
+    otherMetaData: HC1
+    expectedPercentDoublets: 0.09
+    mtCutoff: 100
+    dbElbowPlot: 15
+  - name: 354-5
+    otherMetaData: PD2
+    expectedPercentDoublets: 0.09
+    mtCutoff: 100
+    dbElbowPlot: 15
+  - name: 354-6
+    otherMetaData: PD2
+    expectedPercentDoublets: 0.09
+    mtCutoff: 100
+    dbElbowPlot: 15

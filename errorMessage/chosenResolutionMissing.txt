@@ -1,0 +1,4 @@
+The chosenResolution value in your configfile is missing.
+
+If you have not chosen a resolution yet, please take a look at the plots ending with .res_*.clusteredDimPlot.pdf
+where * is a resolution from choosableResolutions and enter an appropriate resolution from choosableResolutions.

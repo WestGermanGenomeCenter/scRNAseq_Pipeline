@@ -1,0 +1,13 @@
+{
+    "__default__":
+    {
+        "account": "scRNAseqSeurat",
+        "queue": "default",
+        "nodes": 1,
+        "time": "0:01:59",
+        "mem": "2GB",
+        "ppn":  "1",
+        "error": "clusterLogs/{rule}.{wildcards}.{jobid}.errors",
+        "output": "clusterLogs/{rule}.{wildcards}.{jobid}.output"
+    }
+}

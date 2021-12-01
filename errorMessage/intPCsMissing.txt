@@ -1,0 +1,1 @@
+Please checkout the plot ending with .integratedElbowPlot.pdf to choose an appropriate PC value for runUMAP.

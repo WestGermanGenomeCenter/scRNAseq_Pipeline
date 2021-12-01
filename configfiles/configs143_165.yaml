@@ -1,0 +1,63 @@
+maxRAM: 32212254720 #30GB RAM
+
+workDirectory: workDirectory/
+
+rawData: data/143_filtered_feature_bc_matrix/filtered_feature_bc_matrix/
+
+projectName: "143"
+
+projectDirectoryPath: /scratch_gs/myhuy100/projects_experimental/143_cellranger_2/
+
+pattern: "^mt-"
+
+multimodal: true
+
+multiSampled: false
+
+HTO: false
+
+numberOfCells: 7757
+
+sampleInputs:
+  - name: 143-1
+    mtCutoff: 25
+    expectedPercentDoublets: 0.075
+    dbElbowPlot: 17
+    otherMetaData: Ablation
+  - name: 143-2
+    mtCutoff: 25
+    expectedPercentDoublets: 0.11
+    dbElbowPlot: 17
+    otherMetaData: sham
+  - name: 143-3
+    mtCutoff: 25
+    expectedPercentDoublets: 0.11
+    dbElbowPlot: 17
+    otherMetaData: Ablation
+  - name: 143-4
+    mtCutoff: 25
+    expectedPercentDoublets: 0.075
+    dbElbowPlot: 17
+    otherMetaData: Ablation
+  - name: 143-5
+    mtCutoff: 25
+    expectedPercentDoublets: 0.05
+    dbElbowPlot: 17
+    otherMetaData: sham
+  - name: 143-6
+    mtCutoff: 25
+    expectedPercentDoublets: 0.075
+    dbElbowPlot: 17
+    otherMetaData: sham
+
+otherMetaName: condition
+
+integrationPCs: 30
+
+findNeighborsPCs: 27
+
+choosableResolutions: [0.5, 0.8, 0.7]
+
+chosenResolution: 0.5
+
+countIdents: [condition, orig.ident]

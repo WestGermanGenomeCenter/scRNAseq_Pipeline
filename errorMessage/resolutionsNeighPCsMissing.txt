@@ -1,0 +1,5 @@
+There are either (1) no resolutions or (2) the PCs for runUMAP is missing.
+
+(1) There are no resolutions to check out. Please enter a List of resolutions in your configfile.
+
+(2) Please take a look at the plot ending with .umappedElbowPlot.pdf and choos the PCs you would like to run UMAP with.
