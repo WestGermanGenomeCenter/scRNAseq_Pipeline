@@ -13,3 +13,9 @@
 
 .snakemake/
 .idea/
+data/
+workDirectory/
+projects/
+clusterLogs/
+cluster/plots/
+dependencies/
