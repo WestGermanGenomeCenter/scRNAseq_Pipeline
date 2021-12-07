@@ -14,8 +14,8 @@ GE <- GE$`Gene Expression`
 joint.bcs <- intersect(colnames(GE), colnames(HTO))
 GE <- GE[, joint.bcs]
 HTO <- as.matrix(HTO[, joint.bcs])
-rows <- rownames(HTO)
-rows
+#rows <- rownames(HTO)
+#rows
 
 GE <- CreateSeuratObject(counts=GE)
 GE <- SCTransform(GE, verbose=FALSE)
@@ -26,6 +26,7 @@ GE <- HTODemux(GE, assay=assayname, positive.quantile=0.99)
 
 table(GE$HTO_classification.global)
 Idents(GE) <- "HTO_maxID"
+rows <- levels(Idents(GE))
 FeatureScatter(GE, feature1=paste("hto", rows[[1]], sep="_"), feature2=paste("hto", rows[[2]], sep="_"))
 
 Idents(GE) <- "HTO_classification.global"
