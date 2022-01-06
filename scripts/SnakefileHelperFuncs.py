@@ -68,3 +68,10 @@ def checkMinimalInputs(config):
     if i["name"] == None:
       return False
   return True
+
+
+def createMultiSampleInput(path, folder, samples, ending):
+  ioputs = []
+  for i in samples:
+    ioputs.append(path + folder + i + ending)
+  return ioputs

@@ -14,6 +14,7 @@ hf.createDirectoriesIfNotExists(projectDirectoryPath)
 sampleInputs = hf.transform_sampleInputs(config["sampleInputs"])
 doubletEnv = "envs/doublet-spec.yml" # "envs/doublet.yml"
 shinyEnv = "envs/shiny-spec.yml" # "envs/shiny.yml"
+countEnv = "envs/counting-spec.yml"
 num_cells = config["numberOfCells"]
 sampleType = "ns"
 if config["multiSampled"] and config["multimodal"]:
@@ -27,7 +28,7 @@ assayName = "ADT"
 if(config["HTO"]):
   assayName = "HTO"
   sampleType = "HTO"
-print(sampleType)
+
 
 def get_inputs(wildcards):
   inputList = []
@@ -40,7 +41,7 @@ def get_inputs(wildcards):
         doublets = False
       if not i["otherMetaData"]:
         conditions = False
-    if os.path.isdir(hf.findHash(doubletEnv) + "/lib/R/library/DoubletFinder") and os.path.isdir(hf.findHash(shinyEnv) + "/lib/R/library/ShinyCell"):
+    if os.path.isdir(hf.findHash(doubletEnv) + "/lib/R/library/DoubletFinder") and os.path.isdir(hf.findHash(shinyEnv) + "/lib/R/library/ShinyCell") and os.path.isdir(hf.findHash(countEnv) + "/lib/R/library/seurathelpeR"):
       outputStart = projectDirectoryPath + "outputs/" + config["projectName"]
       if config["HTO"]:
         inputList.append(outputStart + ".demux.rds")
@@ -87,8 +88,12 @@ def get_inputs(wildcards):
       else:
         inputList.append(projectDirectoryPath + "workDirectory/mtCutoffMissing.txt")
     else:
+      inputList.append("workDirectory/createDoubletEnv.txt")
+      inputList.append("workDirectory/createShinyEnv.txt")
+      inputList.append("workDirectory/createCountEnv.txt")
       inputList.append(hf.findHash(doubletEnv) + "/lib/R/library/DoubletFinder")
       inputList.append(hf.findHash(shinyEnv) + "/lib/R/library/ShinyCell")
+      inputList.append(hf.findHash(countEnv) + "/lib/R/library/seurathelpeR")
   else:
     print("""Please fill in the minimal amount of inputs needed in the config.yaml:
     'workDirectory', 'rawData', 'projectName', 'projectDirectoryPath', 'multiSampled', 'numberOfCells', 'maxRAM', 'name' for all samples in 'sampleInputs'
@@ -111,7 +116,22 @@ rule createDoubletEnv:
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="createDoubletEnv"),
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="createDoubletEnv")
   output:
-    temp(expand("{projectDirPath}workDirectory/createDoubletEnv.txt", projectDirPath=projectDirectoryPath))
+    temp("workDirectory/createDoubletEnv.txt")
+  shell:
+    "touch {output}"
+
+rule createCountEnv:
+  input:
+    countEnv
+  conda:
+    countEnv
+  params:
+    mem="2GB",
+    time="0:01:59",
+    error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="createCountEnv"),
+    output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="createCountEnv")
+  output:
+    temp("workDirectory/createCountEnv.txt")
   shell:
     "touch {output}"
 
@@ -126,27 +146,30 @@ rule createShinyEnv:
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="createShinyEnv"),
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="createShinyEnv")
   output:
-    temp(expand("{projectDirPath}workDirectory/createShinyEnv.txt", projectDirPath=projectDirectoryPath))
+    temp("workDirectory/createShinyEnv.txt")
   shell:
     "touch {output}"
 
 rule installMissingPackages:
   input:
     expand("{projectDirPath}workDirectory/createShinyEnv.txt", projectDirPath=projectDirectoryPath),
-    expand("{projectDirPath}workDirectory/createDoubletEnv.txt", projectDirPath=projectDirectoryPath)
+    expand("{projectDirPath}workDirectory/createDoubletEnv.txt", projectDirPath=projectDirectoryPath),
+    expand("{projectDirPath}workDirectory/createCountEnv.txt", projectDirPath=projectDirectoryPath)
   params:
     absPath = os.path.realpath("."),
     doublet = hf.findHash(doubletEnv),
     shiny = hf.findHash(shinyEnv),
+    countEnv = hf.findHash(countEnv),
     mem="2GB",
-    time="0:06:00",
+    time="0:30:00",
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="installMissingPackages"),
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="installMissingPackages")
   conda:
     "envs/devtools.yml"
   output:
     directory(hf.findHash(doubletEnv) + "/lib/R/library/DoubletFinder"),
-    directory(hf.findHash(shinyEnv) + "/lib/R/library/ShinyCell")
+    directory(hf.findHash(shinyEnv) + "/lib/R/library/ShinyCell"),
+    directory(hf.findHash(countEnv) + "/lib/R/library/seurathelpeR")
   script:
     "scripts/installGithubPacks.R"
 
@@ -167,6 +190,7 @@ rule metaData:
     "envs/env.yml"
   output:
     expand(["{projectDirPath}outputs/{project}.meta.rds", "{projectDirPath}outputs/{project}.rawData.rds"], project=config["projectName"], projectDirPath=projectDirectoryPath) if config["multimodal"] else expand("{projectDirPath}outputs/{project}.meta.rds", project=config["projectName"], projectDirPath=projectDirectoryPath)
+    #hf.createMultiSampleInput(projectDirectoryPath, "outputs/", sampleInputs["name"], ".meta.rds")
   script:
     "scripts/MetaData.R"
 
@@ -449,7 +473,7 @@ rule cellCounting:
 #  benchmark:
 #    repeat("benchmarks/benchmark284_215_multimod/92_ncCount.txt", 3)
   conda:
-    "envs/env.yml"
+    countEnv
   output:
     expand("{projectDirPath}plots/{project}.{condition}.barplot.pdf", project=config["projectName"], projectDirPath=projectDirectoryPath, condition=config["otherMetaName"])
   script:

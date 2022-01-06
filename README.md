@@ -1,8 +1,8 @@
 # WGGC Single Cell
 
 ## IMPORTANT!!!
-The pipeline and this README.md is designed to work on the HPC of the HHU, Germany.  
-An updated version of the README.md with more general instructions is coming soon. 
+The pipeline and this README.md is designed to work on the HPC of the HHU, Germany.
+An updated version of the README.md with more general instructions is coming soon.
 
 ## Setup directory tree:
 ### the wggc-single-cell folder containing the pipeline
@@ -56,6 +56,12 @@ Check config354.yaml for an example that includes the comment descriptions.
 - Download the following two packages as .zip and move them into the dependencies/ folder:
   - https://github.com/chris-mcginnis-ucsf/DoubletFinder
   - https://github.com/SGDDNB/ShinyCell 
+  - https://github.com/genomics-kl/seurathelpeR
+  - https://bioconductor.org/packages/release/bioc/html/GenomeInfoDb.html
+  - https://bioconductor.org/packages/release/data/annotation/html/GenomeInfoDbData.html
+  - https://bioconductor.org/packages/release/bioc/html/GenomicRanges.html
+  - https://bioconductor.org/packages/release/bioc/html/SummarizedExperiment.html
+  - https://bioconductor.org/packages/release/bioc/html/SingleCellExperiment.html
 - It is possible that you have to change "account" in cluster/cluster.json to a HPC-project name of yours
 - Log into the HPC via terminal
 - create a screen via "screen -S screen_name" command, this way you won't lose any progress even if you lose internet connection. You can reconnect to your screen via "screen -r screen_name".

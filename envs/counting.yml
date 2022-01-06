@@ -1,0 +1,16 @@
+name: counting-env
+channels:
+  - nodefaults
+  - http://conda.repo.test.hhu.de/bioconda
+  - http://conda.repo.test.hhu.de/conda-forge
+
+dependencies:
+  - r-base=4.1.1
+  - r-seurat=4.0.5
+  - r-magrittr=2.0.1
+  - r-rlang=0.4.12
+  - r-tibble=3.1.6
+  - r-stringr=1.4.0
+  - r-cowplot=1.1.1
+  - r-ggplot2=3.3.5
+  - r-dplyr=1.0.7
