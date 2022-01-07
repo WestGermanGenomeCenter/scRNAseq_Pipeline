@@ -7,14 +7,18 @@ import scripts.SnakefileHelperFuncs as hf
 
 
 #global variables
+doubletEnv = "envs/doublet-spec.yml"# "envs/doublet.yml"
+shinyEnv = "envs/shiny-spec.yml" #"envs/shiny.yml"
+countEnv = "envs/counting-spec.yml" #"envs/counting.yml"
+if(not config["HHU_HPC"]):
+  doubletEnv = "envs/doublet.yml"
+  shinyEnv = "envs/shiny.yml"
+  countEnv = "envs/counting.yml"
 projectDirectoryPath = config["projectDirectoryPath"]
 if projectDirectoryPath[-1] != "/":
     projectDirectoryPath += "/"
 hf.createDirectoriesIfNotExists(projectDirectoryPath)
 sampleInputs = hf.transform_sampleInputs(config["sampleInputs"])
-doubletEnv = "envs/doublet-spec.yml" # "envs/doublet.yml"
-shinyEnv = "envs/shiny-spec.yml" # "envs/shiny.yml"
-countEnv = "envs/counting-spec.yml"
 num_cells = config["numberOfCells"]
 sampleType = "ns"
 if config["multiSampled"] and config["multimodal"]:
@@ -160,6 +164,7 @@ rule installMissingPackages:
     doublet = hf.findHash(doubletEnv),
     shiny = hf.findHash(shinyEnv),
     countEnv = hf.findHash(countEnv),
+    hhuHPC = config["HHU_HPC"],
     mem="2GB",
     time="0:30:00",
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="installMissingPackages"),

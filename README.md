@@ -2,12 +2,12 @@
 
 ## IMPORTANT!!!
 The pipeline and this README.md is designed to work on the HPC of the HHU, Germany.
-An updated version of the README.md with more general instructions is coming soon.
+General instructions for simply running with snakemake exist, but are very short and not completely tested yet.
 
 ## Setup directory tree:
-### the wggc-single-cell folder containing the pipeline
+### the scRNAseq_Pipeline folder containing the pipeline
 |  
-|- path/to/wggc-single-cell  
+|- path/to/scRNAseq_Pipeline  
 &nbsp;&nbsp;&nbsp;&nbsp;|- cluster  
 &nbsp;&nbsp;&nbsp;&nbsp;|- configfiles  
 &nbsp;&nbsp;&nbsp;&nbsp;|- data  
@@ -48,6 +48,17 @@ Check "config_example.yaml" in the configfiles/ directory.
 It is an empty version of the config.yaml and explains how the config.yaml is to be filled out.
 Check config354.yaml for an example that includes the comment descriptions.
 
+## Setup conda environment via Snakemake (only if not working on HHU HPC):
+In order to run the pipeline you need to install "Anaconda" or "Miniconda" and create a Snakemake environment on it (Pipeline currently works best with Snakemake/5.10.0).
+Download the following two packages as .zip from Github and move them to "scRNAseq_Pipeline/dependencies/":
+  - https://github.com/chris-mcginnis-ucsf/DoubletFinder
+  - https://github.com/SGDDNB/ShinyCell 
+  - https://github.com/genomics-kl/seurathelpeR
+Then you need to switch into the "scRNAseq_Pipeline" directory via your terminal.  
+Next you need to use the command "snakemake -p --cores 1 --use-conda" so that Snakemake can create the environments with the two downloaded packages itself.  
+After the environments are installed you can use "snakemake -p --cores X --use-conda" to run the pipeline properly where X is the number of cores you would like to use.
+On how to use the the pipeline see the last points of the HPC version.
+
 ## Use on the Hilbert HPC cluster of the HHU
 - First download/clone the repository and put it on you HPC folder (a /scratch_gs/your_hpc_username/folder_name/ folder is recommended a single run can need over 50GB ram of space for the outputs).
 - Create a config.yaml (see section above) [It can also be named any other name as long as it is a config.yaml and contains all parameters]
@@ -57,11 +68,12 @@ Check config354.yaml for an example that includes the comment descriptions.
   - https://github.com/chris-mcginnis-ucsf/DoubletFinder
   - https://github.com/SGDDNB/ShinyCell 
   - https://github.com/genomics-kl/seurathelpeR
-  - https://bioconductor.org/packages/release/bioc/html/GenomeInfoDb.html
-  - https://bioconductor.org/packages/release/data/annotation/html/GenomeInfoDbData.html
-  - https://bioconductor.org/packages/release/bioc/html/GenomicRanges.html
-  - https://bioconductor.org/packages/release/bioc/html/SummarizedExperiment.html
-  - https://bioconductor.org/packages/release/bioc/html/SingleCellExperiment.html
+  - https://bioconductor.org/packages/release/bioc/html/GenomeInfoDb.html (ver.1.30.0 as tar.gz)
+  - https://bioconductor.org/packages/release/data/annotation/html/GenomeInfoDbData.html (ver.1.2.7 as tar.gz)
+  - https://bioconductor.org/packages/release/bioc/html/GenomicRanges.html (ver.1.46.1 as tar.gz)
+  - https://bioconductor.org/packages/release/bioc/html/SummarizedExperiment.html (ver.1.24.0 as tar.gz)
+  - https://bioconductor.org/packages/release/bioc/html/SingleCellExperiment.html (ver.1.16.0 as tar.gz)
+- the versions are important for compatibility with the environment for the HPC
 - It is possible that you have to change "account" in cluster/cluster.json to a HPC-project name of yours
 - Log into the HPC via terminal
 - create a screen via "screen -S screen_name" command, this way you won't lose any progress even if you lose internet connection. You can reconnect to your screen via "screen -r screen_name".
@@ -75,17 +87,8 @@ Check config354.yaml for an example that includes the comment descriptions.
 - You can run the pipeline with two different dataset inputs at the same time. Just create two screens with different names and run on the respective screens "bash clusterExecution.sh path/to/config1.yaml" and "path2/two/config2.yaml".
 - **Important**: The pipeline approximates the resources needed to request walltime and RAM from the HPC meaning there are times it won't ask for enough resources. I am working on a way to fix this and for the user to add additional Time and RAM onto the approximated, but for now you can simply increase the numberOfCells in the config.yaml to get more Time and RAM in case the pipeline stops because there was not enough. If there is a line with "PBS: job killed: walltime" at the end of an .errors file, then not enough walltime was requested. If near the end of the .errors file is a line with "/bin/bash: line 1:  ____ Killed" of something similar with "killed" then not enough RAM was requested.
 
-## Setup conda environment via Snakemake (only if not working on HPC):
-In order to run the pipeline you need to install "Anaconda" or "Miniconda" and create a Snakemake environment on it (Pipeline currently works best with Snakemake/5.10.0).
-Download the following two packages as .zip from Github and move them to "wggc-single-cell/dependencies/":
-  - https://github.com/chris-mcginnis-ucsf/DoubletFinder
-  - https://github.com/SGDDNB/ShinyCell 
-Then you need to switch into the "wggc-single-cell" directory via your terminal.  
-Next you need to use the command "snakemake -p --cores 1 --use-conda" so that Snakemake can create the environments with the two downloaded packages itself.  
-After the environments are installed you can use "snakemake -p --cores X --use-conda" to run the pipeline properly where X is the number of cores you would like to use.
-On how to use the the pipeline see the last points of the HPC version.
-
 ## To-do list:
 - rename all variables
-- Multi-Modal WNN
 - Optimize Pipeline (e.g. process each sample separately/parallel instead of in a list)
+- logs into project folder
+- test plotting, sometime plots are not saved on the HPC

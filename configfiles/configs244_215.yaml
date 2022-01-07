@@ -1,3 +1,5 @@
+HHU_HPC: true #if this is used on the HHU HPC Hilbert 
+
 maxRAM: 32212254720 #30GB RAM
 
 workDirectory: workDirectory/

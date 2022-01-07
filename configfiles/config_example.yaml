@@ -5,6 +5,8 @@
 # - mtCutoff
 # - dbElbowPlot
 
+HHU_HPC: true #if this is used on the HHU HPC Hilbert 
+
 maxRAM: 32212254720 #30GB RAM for IntegrationDimReduction, let X be the RAM you want in GB. Set maxRAM=X*1024^3
 
 workDirectory: workDirectory/ #can stay this way for now
