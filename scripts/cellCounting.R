@@ -51,7 +51,7 @@ if(snakemake@params[[4]]) {
 } else {
   ccount <- count_cells(seurat_object=GE, group_by_var=res_ident)
   ccount[["freq"]] <- ccount[["perc"]]/100
-  plot <- ggplot(ccount, aes_string(x=res_ident, y=freq, fill=condition)) + geom_bar(position=position_dodge(), stat="identity") + geom_errorbar(position=position_dodge(), aes_string(x=res_ident, ymin=sdminus, ymax=sdplus))
+  plot <- ggplot(ccount, aes_string(x=res_ident, y=freq)) + geom_bar(position=position_dodge(), stat="identity")
   plot_in_terminal(plotname=paste(projectDirPath, "plots/", project, ".", condition, ".barplot.pdf", sep=""),
                    to_plot=plot)
 }
