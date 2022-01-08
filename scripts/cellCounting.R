@@ -49,6 +49,7 @@ if(snakemake@params[[4]]) {
                      to_plot=plot)
   }
 } else {
+  res_ident <- "seurat_clusters"
   ccount <- count_cells(seurat_object=GE, group_by_var=res_ident)
   ccount[["freq"]] <- ccount[["perc"]]/100
   plot <- ggplot(ccount, aes_string(x=res_ident, y=freq)) + geom_bar(position=position_dodge(), stat="identity")
