@@ -32,6 +32,7 @@ assayName = "ADT"
 if(config["HTO"]):
   assayName = "HTO"
   sampleType = "HTO"
+testClustersName = "plots/" + config["project"] + ".res_"
 
 
 def get_inputs(wildcards):
@@ -395,8 +396,8 @@ rule testDiffClusterResolutions:
   conda:
     "envs/env.yml"
   output:
-    expand("{projectDirPath}plots/finished.txt", project=config["projectName"], projectDirPath=projectDirectoryPath)
-    #hf.createMultiSampleInput(projectDirectoryPath, "plots/", sampleInputs["choosableResolutions"], ".meta.rds")
+    #expand("{projectDirPath}plots/finished.txt", project=config["projectName"], projectDirPath=projectDirectoryPath)
+    hf.createMultiSampleInput(projectDirectoryPath, testClustersName, sampleInputs["choosableResolutions"], ".clusteredDimPlot.pdf")
   script:
     "scripts/testDiffClusterRes.R"
 

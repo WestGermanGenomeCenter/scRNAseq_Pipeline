@@ -17,6 +17,6 @@ for(i in 1:length(resolutions)) {
                   to_plot=DimPlot(GE.215.integrated))
 }
 
-connection <- file(paste(projectDirPath, "plots/finished.txt", sep=""))
-writeLines(c("finished"), connection)
-close(connection)
+#connection <- file(paste(projectDirPath, "plots/finished.txt", sep=""))
+#writeLines(c("finished"), connection)
+#close(connection)
