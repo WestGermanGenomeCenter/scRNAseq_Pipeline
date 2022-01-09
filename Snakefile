@@ -32,7 +32,7 @@ assayName = "ADT"
 if(config["HTO"]):
   assayName = "HTO"
   sampleType = "HTO"
-testClustersName = "plots/" + config["project"] + ".res_"
+testClustersName = "plots/" + config["projectName"] + ".res_"
 
 
 def get_inputs(wildcards):
@@ -80,7 +80,7 @@ def get_inputs(wildcards):
                   else:
                     inputList.append(projectDirectoryPath + "workDirectory/countIdentsMissing.txt")
                 else:
-                  inputList.append(projectDirectoryPath + "plots/" + "finished.txt")
+                  inputList + hf.createMultiSampleInput(projectDirectoryPath, testClustersName, config["choosableResolutions"], ".clusteredDimPlot.pdf")
                   inputList.append(projectDirectoryPath + "workDirectory/chosenResolutionMissing.txt")
               else:
                 inputList.append(projectDirectoryPath + "workDirectory/resolutionsNeighPCsMissing.txt")
@@ -397,7 +397,7 @@ rule testDiffClusterResolutions:
     "envs/env.yml"
   output:
     #expand("{projectDirPath}plots/finished.txt", project=config["projectName"], projectDirPath=projectDirectoryPath)
-    hf.createMultiSampleInput(projectDirectoryPath, testClustersName, sampleInputs["choosableResolutions"], ".clusteredDimPlot.pdf")
+    hf.createMultiSampleInput(projectDirectoryPath, testClustersName, config["choosableResolutions"], ".clusteredDimPlot.pdf")
   script:
     "scripts/testDiffClusterRes.R"
 
@@ -629,7 +629,7 @@ rule missingResolutionsNeighPC:
 
 rule missingChosenResolution:
   input:
-    expand("{projectDirPath}plots/finished.txt", project=config["projectName"], projectDirPath=projectDirectoryPath),
+    hf.createMultiSampleInput(projectDirectoryPath, testClustersName, config["choosableResolutions"], ".clusteredDimPlot.pdf"),
     "errorMessage/chosenResolutionMissing.txt"
   params:
     mem="50MB",
