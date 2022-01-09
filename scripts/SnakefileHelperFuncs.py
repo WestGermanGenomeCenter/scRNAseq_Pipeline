@@ -73,5 +73,5 @@ def checkMinimalInputs(config):
 def createMultiSampleInput(path, folder, samples, ending):
   ioputs = []
   for i in samples:
-    ioputs.append(path + folder + i + ending)
+    ioputs.append(path + folder + str(i) + ending)
   return ioputs

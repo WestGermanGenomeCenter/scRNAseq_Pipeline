@@ -22,6 +22,7 @@ General instructions for simply running with snakemake exist, but are very short
 |- path2/two/pipeline_output_of_project  
 &nbsp;&nbsp;&nbsp;&nbsp;|- clusterLogs  
 &nbsp;&nbsp;&nbsp;&nbsp;|- csv  
+&nbsp;&nbsp;&nbsp;&nbsp;|- logs  
 &nbsp;&nbsp;&nbsp;&nbsp;|- plot  
 &nbsp;&nbsp;&nbsp;&nbsp;|- outputs  
 &nbsp;&nbsp;&nbsp;&nbsp;|- shinyApp  
@@ -29,14 +30,16 @@ General instructions for simply running with snakemake exist, but are very short
 
 Note: Some of the folders may not exists if you download the repository. The pipeline should automatically create them.  
 - cluster: contains files needed for using the Pipeline on the HPC-Cluster
-- clusterLogs: directory containing logs created by using the pipeline in cluster mode
 - configfiles: config.yamls of the files used for testing and the config_example.yaml
 - data: contains the folders with your CellRanger outputs
 - dependencies: folder in which the downloaded ShinyCell-master.zip and DoubletFinder-master.zip are to be stored
 - envs: containing the envs.yaml needed to use snakemake with conda-env via "--use-conda" option
 - errorMessage: containing the error messages
 - scripts: contains the R and python scripts the pipeline is made of
+
+- clusterLogs: directory containing logs created by using the pipeline in cluster mode
 - csv: contains the pipelines .csv outputs
+- logs: contains logs from snakemake
 - plots: contains the plot outputs of the pipeline
 - outputs: .rds files that the pipeline creates
 - shinyApp: contains a program making it possible to interact with the data over a graphical interface

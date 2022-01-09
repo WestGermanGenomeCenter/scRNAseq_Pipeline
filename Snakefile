@@ -100,7 +100,7 @@ def get_inputs(wildcards):
       inputList.append(hf.findHash(countEnv) + "/lib/R/library/seurathelpeR")
   else:
     print("""Please fill in the minimal amount of inputs needed in the config.yaml:
-    'workDirectory', 'rawData', 'projectName', 'projectDirectoryPath', 'multiSampled', 'numberOfCells', 'maxRAM', 'name' for all samples in 'sampleInputs'
+    'workDirectory', 'rawData', 'projectName', 'projectDirectoryPath', 'multiSampled', 'numberOfCells', 'maxRAM', 'HHU_HPC', 'name' for all samples in 'sampleInputs'
     If you don't know how to fill them in, please check out the 'config_example.yaml'.""")
   return inputList
 
@@ -156,9 +156,9 @@ rule createShinyEnv:
 
 rule installMissingPackages:
   input:
-    expand("{projectDirPath}workDirectory/createShinyEnv.txt", projectDirPath=projectDirectoryPath),
-    expand("{projectDirPath}workDirectory/createDoubletEnv.txt", projectDirPath=projectDirectoryPath),
-    expand("{projectDirPath}workDirectory/createCountEnv.txt", projectDirPath=projectDirectoryPath)
+    expand("workDirectory/createShinyEnv.txt", projectDirPath=projectDirectoryPath),
+    expand("workDirectory/createDoubletEnv.txt", projectDirPath=projectDirectoryPath),
+    expand("workDirectory/createCountEnv.txt", projectDirPath=projectDirectoryPath)
   params:
     absPath = os.path.realpath("."),
     doublet = hf.findHash(doubletEnv),
@@ -396,7 +396,7 @@ rule testDiffClusterResolutions:
     "envs/env.yml"
   output:
     expand("{projectDirPath}plots/finished.txt", project=config["projectName"], projectDirPath=projectDirectoryPath)
-
+    #hf.createMultiSampleInput(projectDirectoryPath, "plots/", sampleInputs["choosableResolutions"], ".meta.rds")
   script:
     "scripts/testDiffClusterRes.R"
 
