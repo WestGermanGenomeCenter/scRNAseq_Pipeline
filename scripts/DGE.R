@@ -21,7 +21,7 @@ for(i in 0:len) {
     cluster.markers <- FindMarkers(cluster, only.pos=F, min.pct=0.25, logfc.threshold=0.25, ident.1=metaIdents[[1]], ident.2=metaIdents[[2]])
     #plot_in_terminal(plotname=paste("../projects/", projectDirName, "plots/", i, ".cluster.dge.pdf", sep=""),
     #               to_plot=DoHeatmap(cluster, features=cluster.markers))
-    write.csv(cluster.markers, file=paste(projectDirPath, "csv/", project, ".cluster", i, ".markers.csv", sep=""))
+    write.csv(cluster.markers, file=paste(projectDirPath, "csv/", project, ".compareGE_inCluster", i, ".markers.csv", sep=""))
   } else {
     txtContent <- paste(txtContent, paste("Cluster", i, "was skipped since it was made up of only", levels(cluster)[[1]], sep=" "), sep="\n")
   }
