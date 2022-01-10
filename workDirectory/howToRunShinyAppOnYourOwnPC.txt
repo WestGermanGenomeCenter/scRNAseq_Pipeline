@@ -1,0 +1,5 @@
+To use the ShinyApp you will need to have R and R Studio installed on your PC.
+Open the "ui.R" or the "server.R" file in RStudio.
+Once opened there should be a "Run App"Button with a green play sign in the bar over the code on the right side.
+Press it to use the ShinyApp.
+Enjoy.

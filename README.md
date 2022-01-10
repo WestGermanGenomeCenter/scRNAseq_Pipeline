@@ -94,4 +94,3 @@ On how to use the the pipeline see the last points of the HPC version.
 - rename all variables
 - Optimize Pipeline (e.g. process each sample separately/parallel instead of in a list)
 - logs into project folder
-- test plotting, sometime plots are not saved on the HPC

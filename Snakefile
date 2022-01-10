@@ -1,6 +1,7 @@
 #configfile: "configfiles/config284_215.yaml"
 
 import os
+import shutil
 import hashlib
 import cluster.approximateResources as res
 import scripts.SnakefileHelperFuncs as hf
@@ -75,6 +76,7 @@ def get_inputs(wildcards):
                     inputList.append(projectDirectoryPath + "plots/finishedFeatures.txt")
                   inputList.append(projectDirectoryPath + "shinyApp/" + "server.R")
                   inputList.append(projectDirectoryPath + "shinyApp/" + "ui.R")
+                  inputList.append(projectDirectoryPath + "shinyApp/howToRunShinyAppOnYourOwnPC.txt")
                   if config["countIdents"]:
                     inputList.append(projectDirectoryPath + "plots/" + config["projectName"] + "." + config["otherMetaName"] + ".barplot.pdf")
                   else:
@@ -548,6 +550,16 @@ rule multimodalFeaturePlotting:
   script:
     "scripts/multimodalFeaturePlotting.R"
 
+  rule copyShinyAppInstructions:
+    params:
+      mem="50MB",
+      time="0:01:00",
+      error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="copyInstructions"),
+      output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="copyInstructions")
+    output:
+      "shinyApp/howToRunShinyAppOnYourOwnPC.txt"
+    run:
+      shutil.copyfile("workDirectory/howToRunShinyAppOnYourOwnPC.txt", projectDirectoryPath + "shinyApp/howToRunShinyAppOnYourOwnPC.txt")
 
 ####################################  missing paramter rules  ###############################################
 
