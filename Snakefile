@@ -220,6 +220,7 @@ rule demultiplexing:
 #    repeat("benchmarks/benchmark284_215_multimod/97_demux_umap.txt", 3)
   output:
     expand("{projectDirPath}outputs/{project}.demux.rds", project=config["projectName"], projectDirPath=projectDirectoryPath)
+    #hf.createMultiSampleInput(projectDirectoryPath, "outputs/", sampleInputs["name"], ".demux.rds")
   script:
     "scripts/demultiplexing.R"
 
@@ -306,6 +307,7 @@ rule doubletRemoval:
 rule addTPsMerge:
   input:
     expand("{projectDirPath}outputs/{project}.SCTranDB.rds", project=config["projectName"], projectDirPath=projectDirectoryPath) if config["HTO"] else expand("{projectDirPath}outputs/{project}.doubR.rds", project=config["projectName"], projectDirPath=projectDirectoryPath)
+    #hf.createMultiSampleInput(projectDirectoryPath, "outputs/", sampleInputs["name"], ".doubR.rds")
   params:
     projectDirPath = projectDirectoryPath,
     meta = sampleInputs["otherMetaData"],
@@ -320,6 +322,7 @@ rule addTPsMerge:
     "envs/env.yml"
   output:
     expand("{projectDirPath}outputs/{project}.preprocessedO.rds", project=config["projectName"], projectDirPath=projectDirectoryPath)
+    #hf.createMultiSampleInput(projectDirectoryPath, "outputs/", sampleInputs["name"], ".preprocessed.rds")
   script:
     "scripts/addMetaAndMerge.R"
   
@@ -344,6 +347,7 @@ rule SCTransformNormalization:
 rule IntegrationDimReduction:
   input:
     expand("{projectDirPath}outputs/{project}.normalized.rds", project=config["projectName"], projectDirPath=projectDirectoryPath)
+    #hf.createMultiSampleInput(projectDirectoryPath, "outputs/", sampleInputs["name"], ".normalized.rds")
   params:
     projectDirPath = projectDirectoryPath,
     project = config["projectName"],
@@ -550,16 +554,16 @@ rule multimodalFeaturePlotting:
   script:
     "scripts/multimodalFeaturePlotting.R"
 
-  rule copyShinyAppInstructions:
-    params:
-      mem="50MB",
-      time="0:01:00",
-      error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="copyInstructions"),
-      output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="copyInstructions")
-    output:
-      "shinyApp/howToRunShinyAppOnYourOwnPC.txt"
-    run:
-      shutil.copyfile("workDirectory/howToRunShinyAppOnYourOwnPC.txt", projectDirectoryPath + "shinyApp/howToRunShinyAppOnYourOwnPC.txt")
+rule copyShinyAppInstructions:
+  params:
+    mem="50MB",
+    time="0:01:00",
+    error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="copyInstructions"),
+    output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="copyInstructions")
+  output:
+    expand("{projectDirPath}shinyApp/howToRunShinyAppOnYourOwnPC.txt", projectDirPath=projectDirectoryPath)
+  run:
+    shutil.copyfile("workDirectory/howToRunShinyAppOnYourOwnPC.txt", projectDirectoryPath + "shinyApp/howToRunShinyAppOnYourOwnPC.txt")
 
 ####################################  missing paramter rules  ###############################################
 
