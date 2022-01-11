@@ -1,4 +1,5 @@
 library("Seurat")
+source("scripts/helperFunctions.R")
 setwd(paste(snakemake@params[[1]], "workDirectory/", sep=""))
 
 GE <- readRDS(snakemake@input[[1]])

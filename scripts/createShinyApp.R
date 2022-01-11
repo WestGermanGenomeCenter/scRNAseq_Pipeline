@@ -1,5 +1,6 @@
 library(Seurat)
 library(ShinyCell)
+source("scripts/helperFunctions.R")
 
 project <- snakemake@params[[2]]
 projectDirPath <- snakemake@params[[1]]

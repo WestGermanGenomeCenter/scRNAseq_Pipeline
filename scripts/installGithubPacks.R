@@ -1,5 +1,6 @@
 library(devtools)
 library(withr)
+source("scripts/helperFunctions.R")
 absPath <- paste(snakemake@params[[1]], "/workDirectory", sep="")
 doubletPath <- paste("../", snakemake@params[[2]], "/lib/R/library", sep="")
 shinyPath <- paste("../", snakemake@params[[3]], "/lib/R/library", sep="")

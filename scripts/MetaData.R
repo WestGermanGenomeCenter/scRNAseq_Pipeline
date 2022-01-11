@@ -1,4 +1,5 @@
 library(Seurat)
+source("scripts/helperFunctions.R")
 
 raw.data <- Read10X(paste(snakemake@input[[1]], sep=""))
 setwd(paste(snakemake@params[[1]], "workDirectory/", sep=""))
