@@ -1,21 +1,21 @@
 library(Seurat)
 setwd(paste(snakemake@params[[1]], "workDirectory", sep=""))
 
-GE_Data <- readRDS(snakemake@input[[1]])
+GE.data <- readRDS(snakemake@input[[1]])
 #GE215 <- readRDS(paste("../", snakemake@input[[2]], sep=""))
-meta <- snakemake@params[[2]]
-colname <- snakemake@params[[3]]
+condition <- snakemake@params[[2]]
+condition.name <- snakemake@params[[3]]
 
-for(i in 1:length(GE_Data)) {
-  GE_Data[[i]] <- AddMetaData(GE_Data[[i]], metadata=meta[[i]], col.name=colname)
+for(i in 1:length(GE.data)) {
+  GE.data[[i]] <- AddMetaData(GE.data[[i]], metadata=condition[[i]], col.name=condition.name)
 }
 
-print(head(GE_Data[[1]]@meta.data))
+print(head(GE.data[[1]]@meta.data))
 #print(GE215)
-if(length(GE_Data) > 1) {
-  GE215 <- merge(GE_Data[[1]], y = GE_Data[2:length(GE_Data)])
+if(length(GE.data) > 1) {
+  GE215 <- merge(GE.data[[1]], y = GE.data[2:length(GE.data)])
 } else {
-  GE215 <- GE_Data[[1]]
+  GE215 <- GE.data[[1]]
 }
 DefaultAssay(GE215) <- "RNA"
 print(GE215)
