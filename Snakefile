@@ -122,6 +122,8 @@ rule createDoubletEnv:
     time="0:01:59",
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="createDoubletEnv"),
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="createDoubletEnv")
+  log:
+    expand("{projectDirPath}logs/{rule}.log", projectDirPath=projectDirectoryPath, rule="createDoubletEnv")
   output:
     temp("workDirectory/createDoubletEnv.txt")
   shell:
@@ -137,6 +139,8 @@ rule createCountEnv:
     time="0:01:59",
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="createCountEnv"),
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="createCountEnv")
+  log:
+    expand("{projectDirPath}logs/{rule}.log", projectDirPath=projectDirectoryPath, rule="createCountEnv")
   output:
     temp("workDirectory/createCountEnv.txt")
   shell:
@@ -152,6 +156,8 @@ rule createShinyEnv:
     time="0:01:59",
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="createShinyEnv"),
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="createShinyEnv")
+  log:
+    expand("{projectDirPath}logs/{rule}.log", projectDirPath=projectDirectoryPath, rule="createShinyEnv")
   output:
     temp("workDirectory/createShinyEnv.txt")
   shell:
@@ -174,6 +180,8 @@ rule installMissingPackages:
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="installMissingPackages")
   conda:
     "envs/devtools.yml"
+  log:
+    expand("{projectDirPath}logs/{rule}.log", projectDirPath=projectDirectoryPath, rule="installMissingPackages")
   output:
     directory(hf.findHash(doubletEnv) + "/lib/R/library/DoubletFinder"),
     directory(hf.findHash(shinyEnv) + "/lib/R/library/ShinyCell"),
@@ -194,6 +202,8 @@ rule metaData:
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="metaData")
   conda:
     "envs/env.yml"
+  log:
+    expand("{projectDirPath}logs/{rule}.log", projectDirPath=projectDirectoryPath, rule="metaData")
   output:
     expand(["{projectDirPath}outputs/{project}.meta.rds", "{projectDirPath}outputs/{project}.rawData.rds"], project=config["projectName"], projectDirPath=projectDirectoryPath) if config["multimodal"] else expand("{projectDirPath}outputs/{project}.meta.rds", project=config["projectName"], projectDirPath=projectDirectoryPath)
     #hf.createMultiSampleInput(projectDirectoryPath, "outputs/", sampleInputs["name"], ".meta.rds")
@@ -216,6 +226,8 @@ rule demultiplexing:
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="demultiplexing")
   conda:
     "envs/env.yml"
+  log:
+    expand("{projectDirPath}logs/{rule}.log", projectDirPath=projectDirectoryPath, rule="demultiplexing")
   output:
     expand("{projectDirPath}outputs/{project}.demux.rds", project=config["projectName"], projectDirPath=projectDirectoryPath)
     #hf.createMultiSampleInput(projectDirectoryPath, "outputs/", sampleInputs["name"], ".demux.rds")
@@ -237,6 +249,8 @@ rule mt_p1:
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="mt_p1")
   conda:
     "envs/env.yml"
+  log:
+    expand("{projectDirPath}logs/{rule}.log", projectDirPath=projectDirectoryPath, rule="mt_p1")
   output:
     expand("{projectDirPath}outputs/{project}.mt_p1.rds", project=config["projectName"], projectDirPath=projectDirectoryPath)
   script:
@@ -257,6 +271,8 @@ rule mt_p2:
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="mt_p2")
   conda:
     "envs/env.yml"
+  log:
+    expand("{projectDirPath}logs/{rule}.log", projectDirPath=projectDirectoryPath, rule="mt_p2")
   output:
     expand("{projectDirPath}outputs/{project}.mt_p2.rds", project=config["projectName"], projectDirPath=projectDirectoryPath)
   script:
@@ -276,6 +292,8 @@ rule doubletRemovalElbowPlot:
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="doubletRemovalElbowPlot")
   conda:
     "envs/env.yml"
+  log:
+    expand("{projectDirPath}logs/{rule}.log", projectDirPath=projectDirectoryPath, rule="doubletRemovalElbowPlot")
   output:
     expand("{projectDirPath}outputs/{project}.SCTranDB.rds", project=config["projectName"], projectDirPath=projectDirectoryPath)
   script:
@@ -297,6 +315,8 @@ rule doubletRemoval:
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="doubletRemoval")
   conda:
     doubletEnv
+  log:
+    expand("{projectDirPath}logs/{rule}.log", projectDirPath=projectDirectoryPath, rule="doubletRemoval")
   output:
     expand("{projectDirPath}outputs/{project}.doubR.rds", project=config["projectName"], projectDirPath=projectDirectoryPath)
   script:
@@ -318,6 +338,8 @@ rule addTPsMerge:
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="addTPsMerge")
   conda:
     "envs/env.yml"
+  log:
+    expand("{projectDirPath}logs/{rule}.log", projectDirPath=projectDirectoryPath, rule="addTPsMerge")
   output:
     expand("{projectDirPath}outputs/{project}.preprocessedO.rds", project=config["projectName"], projectDirPath=projectDirectoryPath)
     #hf.createMultiSampleInput(projectDirectoryPath, "outputs/", sampleInputs["name"], ".preprocessed.rds")
@@ -337,6 +359,8 @@ rule SCTransformNormalization:
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="SCTransformNormalization")
   conda:
     "envs/env.yml"
+  log:
+    expand("{projectDirPath}logs/{rule}.log", projectDirPath=projectDirectoryPath, rule="SCTransformNormalization")
   output:
     expand("{projectDirPath}outputs/{project}.normalized.rds", project=config["projectName"], projectDirPath=projectDirectoryPath)
   script:
@@ -358,6 +382,8 @@ rule IntegrationDimReduction:
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="IntegrationDimReduction")
   conda:
     "envs/env.yml"
+  log:
+    expand("{projectDirPath}logs/{rule}.log", projectDirPath=projectDirectoryPath, rule="IntegrationDimReduction")
   output:
     expand("{projectDirPath}outputs/{project}.IntDimRed.rds", project=config["projectName"], projectDirPath=projectDirectoryPath)
   script:
@@ -378,6 +404,8 @@ rule RunUMAP:
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="RunUMAP")
   conda:
     "envs/env.yml"
+  log:
+    expand("{projectDirPath}logs/{rule}.log", projectDirPath=projectDirectoryPath, rule="RunUMAP")
   output:
     expand("{projectDirPath}outputs/{project}.umapped.rds", project=config["projectName"], projectDirPath=projectDirectoryPath)
   script:
@@ -399,6 +427,8 @@ rule testDiffClusterResolutions:
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="testDiffClusterResolutions")
   conda:
     "envs/env.yml"
+  log:
+    expand("{projectDirPath}logs/{rule}.log", projectDirPath=projectDirectoryPath, rule="testDiffClusterResolutions")
   output:
     #expand("{projectDirPath}plots/finished.txt", project=config["projectName"], projectDirPath=projectDirectoryPath)
     hf.createMultiSampleInput(projectDirectoryPath, testClustersName, config["choosableResolutions"], ".clusteredDimPlot.pdf")
@@ -422,6 +452,8 @@ rule useChosenClusterResolutions:
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="useChosenClusterResolutions")
   conda:
     "envs/env.yml"
+  log:
+    expand("{projectDirPath}logs/{rule}.log", projectDirPath=projectDirectoryPath, rule="useChosenClusterResolutions")
   output:
     expand("{projectDirPath}outputs/{project}.clustered.rds", project=config["projectName"], projectDirPath=projectDirectoryPath)
   script:
@@ -442,6 +474,8 @@ rule multimodalAnalysis:
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="multimodalAnalysis")
   conda:
     "envs/env.yml"
+  log:
+    expand("{projectDirPath}logs/{rule}.log", projectDirPath=projectDirectoryPath, rule="multimodalAnalysis")
   output:
     expand("{projectDirPath}outputs/{project}.multimodal.rds", project=config["projectName"], projectDirPath=projectDirectoryPath)
   script:
@@ -462,6 +496,8 @@ rule markerDiscovery:
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="markerDiscovery")
   conda:
     "envs/marker.yml"
+  log:
+    expand("{projectDirPath}logs/{rule}.log", projectDirPath=projectDirectoryPath, rule="markerDiscovery")
   output:
     expand("{projectDirPath}outputs/{project}.markerDisc.rds", project=config["projectName"], projectDirPath=projectDirectoryPath)
   script:
@@ -484,6 +520,8 @@ rule cellCounting:
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="cellCounting")
   conda:
     countEnv
+  log:
+    expand("{projectDirPath}logs/{rule}.log", projectDirPath=projectDirectoryPath, rule="cellCounting")
   output:
     expand("{projectDirPath}plots/{project}.{condition}.barplot.pdf", project=config["projectName"], projectDirPath=projectDirectoryPath, condition=config["otherMetaName"])
   script:
@@ -506,6 +544,8 @@ rule DGE:
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="DGE")
   conda:
     "envs/marker.yml"
+  log:
+    expand("{projectDirPath}logs/{rule}.log", projectDirPath=projectDirectoryPath, rule="DGE")
   output:
     expand("{projectDirPath}csv/finishedDGE.txt", projectDirPath=projectDirectoryPath)
   script:
@@ -526,6 +566,8 @@ rule createShinyApp:
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="createShinyApp")
   conda:
     shinyEnv
+  log:
+    expand("{projectDirPath}logs/{rule}.log", projectDirPath=projectDirectoryPath, rule="createShinyApp")
   output:
     expand("{projectDirPath}shinyApp/server.R", project=config["projectName"], projectDirPath=projectDirectoryPath),
     expand("{projectDirPath}shinyApp/ui.R", project=config["projectName"], projectDirPath=projectDirectoryPath)
@@ -547,6 +589,8 @@ rule multimodalFeaturePlotting:
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="multimodalFeaturePlotting")
   conda:
     "envs/env.yml"
+  log:
+    expand("{projectDirPath}logs/{rule}.log", projectDirPath=projectDirectoryPath, rule="multimodalFeaturePlotting")
   output:
     expand("{projectDirPath}plots/finishedFeatures.txt", project=config["projectName"], projectDirPath=projectDirectoryPath)
   script:
@@ -560,6 +604,8 @@ rule copyShinyAppInstructions:
     time="0:01:00",
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="copyInstructions"),
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="copyInstructions")
+  log:
+    expand("{projectDirPath}logs/{rule}.log", projectDirPath=projectDirectoryPath, rule="copyInstructions")
   output:
     expand("{projectDirPath}shinyApp/howToRunShinyAppOnYourOwnPC.txt", projectDirPath=projectDirectoryPath)
   run:
@@ -577,6 +623,8 @@ rule missingMTCutoff:
     time="0:01:00",
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="missingMTCutoff"),
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="missingMTCutoff")
+  log:
+    expand("{projectDirPath}logs/{rule}.log", projectDirPath=projectDirectoryPath, rule="missingMTCutoff")
   output:
     temp(expand("{projectDirPath}workDirectory/mtCutoffMissing.txt", projectDirPath=projectDirectoryPath))
   run:
@@ -592,6 +640,8 @@ rule missingDoubletInfos:
     time="0:01:00",
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="missingDoubletInfos"),
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="missingDoubletInfos")
+  log:
+    expand("{projectDirPath}logs/{rule}.log", projectDirPath=projectDirectoryPath, rule="missingDoubletInfos")
   output:
     temp(expand("{projectDirPath}workDirectory/doubletInfosMissing.txt", projectDirPath=projectDirectoryPath))
   run:
@@ -607,6 +657,8 @@ rule missingConditions:
     time="0:01:00",
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="missingConditions"),
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="missingConditions")
+  log:
+    expand("{projectDirPath}logs/{rule}.log", projectDirPath=projectDirectoryPath, rule="missingConditions")
   output:
     temp(expand("{projectDirPath}workDirectory/conditionInfosMissing.txt", projectDirPath=projectDirectoryPath))
   run:
@@ -622,6 +674,8 @@ rule missingIntPCs:
     time="0:01:00",
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="missingIntPCs"),
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="missingIntPCs")
+  log:
+    expand("{projectDirPath}logs/{rule}.log", projectDirPath=projectDirectoryPath, rule="missingIntPCs")
   output:
     temp(expand("{projectDirPath}workDirectory/intPCsMissing.txt", projectDirPath=projectDirectoryPath))
   run:
@@ -637,6 +691,8 @@ rule missingResolutionsNeighPC:
     time="0:01:00",
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="missingResolutionsNeighPC"),
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="missingResolutionsNeighPC")
+  log:
+    expand("{projectDirPath}logs/{rule}.log", projectDirPath=projectDirectoryPath, rule="missingResolutionsNeighPC")
   output:
     temp(expand("{projectDirPath}workDirectory/resolutionsNeighPCsMissing.txt", projectDirPath=projectDirectoryPath))
   run:
@@ -652,6 +708,8 @@ rule missingChosenResolution:
     time="0:01:00",
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="missingChosenResolution"),
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="missingChosenResolution")
+  log:
+    expand("{projectDirPath}logs/{rule}.log", projectDirPath=projectDirectoryPath, rule="missingChosenResolution")
   output:
     temp(expand("{projectDirPath}workDirectory/chosenResolutionMissing.txt", projectDirPath=projectDirectoryPath))
   run:
@@ -667,6 +725,8 @@ rule missingCountIdents:
     time="0:01:00",
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="missingCountIdents"),
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="missingCountIdents")
+  log:
+    expand("{projectDirPath}logs/{rule}.log", projectDirPath=projectDirectoryPath, rule="missingCountIdents")
   output:
     temp(expand("{projectDirPath}workDirectory/countIdentsMissing.txt", projectDirPath=projectDirectoryPath))
   run:

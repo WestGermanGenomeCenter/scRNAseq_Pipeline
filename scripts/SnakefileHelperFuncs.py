@@ -33,7 +33,7 @@ def findHash(env_yml):
 
 
 def createDirectoriesIfNotExists(projectDirectoryPath):
-  folders = ["clusterLogs/", "csv/", "outputs/", "plots/", "shinyApp/", "workDirectory"]
+  folders = ["clusterLogs/", "csv/", "logs/", "outputs/", "plots/", "shinyApp/", "workDirectory"]
   os.makedirs(projectDirectoryPath, exist_ok=True) #create directory if not exists
   for i in range(len(folders)):
       os.makedirs(projectDirectoryPath + folders[i], exist_ok=True) #create folder if not exists

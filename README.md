@@ -91,6 +91,5 @@ On how to use the the pipeline see the last points of the HPC version.
 - **Important**: The pipeline approximates the resources needed to request walltime and RAM from the HPC meaning there are times it won't ask for enough resources. I am working on a way to fix this and for the user to add additional Time and RAM onto the approximated, but for now you can simply increase the numberOfCells in the config.yaml to get more Time and RAM in case the pipeline stops because there was not enough. If there is a line with "PBS: job killed: walltime" at the end of an .errors file, then not enough walltime was requested. If near the end of the .errors file is a line with "/bin/bash: line 1:  ____ Killed" of something similar with "killed" then not enough RAM was requested.
 
 ## To-do list:
-- rename all variables
 - Optimize Pipeline (e.g. process each sample separately/parallel instead of in a list)
 - logs into project folder
