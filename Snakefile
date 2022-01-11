@@ -192,8 +192,6 @@ rule metaData:
     mem=res.approxRAM("meta", sampleType, num_cells, 2),
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="metaData"),
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="metaData")
-#  benchmark:
-#    repeat("benchmarks/benchmark284_215_multimod/1_meta.txt", 3)
   conda:
     "envs/env.yml"
   output:
@@ -201,6 +199,8 @@ rule metaData:
     #hf.createMultiSampleInput(projectDirectoryPath, "outputs/", sampleInputs["name"], ".meta.rds")
   script:
     "scripts/MetaData.R"
+#  benchmark:
+#    repeat("benchmarks/benchmark284_215_multimod/1_meta.txt", 3)
 
 rule demultiplexing:
   input:
@@ -216,13 +216,13 @@ rule demultiplexing:
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="demultiplexing")
   conda:
     "envs/env.yml"
-#  benchmark:
-#    repeat("benchmarks/benchmark284_215_multimod/97_demux_umap.txt", 3)
   output:
     expand("{projectDirPath}outputs/{project}.demux.rds", project=config["projectName"], projectDirPath=projectDirectoryPath)
     #hf.createMultiSampleInput(projectDirectoryPath, "outputs/", sampleInputs["name"], ".demux.rds")
   script:
     "scripts/demultiplexing.R"
+#  benchmark:
+#    repeat("benchmarks/benchmark284_215_multimod/97_demux_umap.txt", 3)
 
 rule mt_p1:
   input:
@@ -235,14 +235,14 @@ rule mt_p1:
     mem=res.approxRAM("mt1", sampleType, num_cells),
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="mt_p1"),
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="mt_p1")
-#  benchmark:
-#    repeat("benchmarks/benchmark284_215_multimod/2_mt1.txt", 3)
   conda:
     "envs/env.yml"
   output:
     expand("{projectDirPath}outputs/{project}.mt_p1.rds", project=config["projectName"], projectDirPath=projectDirectoryPath)
   script:
     "scripts/mt_p1.R"
+#  benchmark:
+#    repeat("benchmarks/benchmark284_215_multimod/2_mt1.txt", 3)
 
 rule mt_p2:
   input: 
@@ -255,14 +255,14 @@ rule mt_p2:
     mem=res.approxRAM("mt2", sampleType, num_cells),
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="mt_p2"),
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="mt_p2")
-#  benchmark:
-#    repeat("benchmarks/benchmark284_215_multimod/3_mt2.txt", 3)
   conda:
     "envs/env.yml"
   output:
     expand("{projectDirPath}outputs/{project}.mt_p2.rds", project=config["projectName"], projectDirPath=projectDirectoryPath)
   script:
     "scripts/mt_p2.R"
+#  benchmark:
+#    repeat("benchmarks/benchmark284_215_multimod/3_mt2.txt", 3)
 
 rule doubletRemovalElbowPlot:
   input:
@@ -274,14 +274,14 @@ rule doubletRemovalElbowPlot:
     mem=res.approxRAM("dbElb", sampleType, num_cells),
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="doubletRemovalElbowPlot"),
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="doubletRemovalElbowPlot")
-#  benchmark:
-#    repeat("benchmarks/benchmark284_215_multimod/4_dbElbow.txt", 3)
   conda:
     "envs/env.yml"
   output:
     expand("{projectDirPath}outputs/{project}.SCTranDB.rds", project=config["projectName"], projectDirPath=projectDirectoryPath)
   script:
     "scripts/DBElbowPlotter.R"
+#  benchmark:
+#    repeat("benchmarks/benchmark284_215_multimod/4_dbElbow.txt", 3)
 
 rule doubletRemoval:
   input:
@@ -295,14 +295,14 @@ rule doubletRemoval:
     mem=res.approxRAM("dbRem", sampleType, num_cells),
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="doubletRemoval"),
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="doubletRemoval")
-#  benchmark:
-#    repeat("benchmarks/benchmark284_215_multimod/5_dbRem.txt", 3)
   conda:
     doubletEnv
   output:
     expand("{projectDirPath}outputs/{project}.doubR.rds", project=config["projectName"], projectDirPath=projectDirectoryPath)
   script:
     "scripts/DoubletRemoval.R"
+#  benchmark:
+#    repeat("benchmarks/benchmark284_215_multimod/5_dbRem.txt", 3)
 
 rule addTPsMerge:
   input:
@@ -316,8 +316,6 @@ rule addTPsMerge:
     mem=res.approxRAM("merge", sampleType, num_cells),
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="addTPsMerge"),
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="addTPsMerge")
-#  benchmark:
-#    repeat("benchmarks/benchmark284_215_multimod/6_merge.txt", 3)
   conda:
     "envs/env.yml"
   output:
@@ -325,6 +323,8 @@ rule addTPsMerge:
     #hf.createMultiSampleInput(projectDirectoryPath, "outputs/", sampleInputs["name"], ".preprocessed.rds")
   script:
     "scripts/addMetaAndMerge.R"
+#  benchmark:
+#    repeat("benchmarks/benchmark284_215_multimod/6_merge.txt", 3)
   
 rule SCTransformNormalization:
   input:
@@ -335,14 +335,14 @@ rule SCTransformNormalization:
     mem=res.approxRAM("sct", sampleType, num_cells),
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="SCTransformNormalization"),
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="SCTransformNormalization")
-#  benchmark:
-#    repeat("benchmarks/benchmark284_215_multimod/7_sctran.txt", 3)
   conda:
     "envs/env.yml"
   output:
     expand("{projectDirPath}outputs/{project}.normalized.rds", project=config["projectName"], projectDirPath=projectDirectoryPath)
   script:
     "scripts/SCTraNormalisation.R"
+#  benchmark:
+#    repeat("benchmarks/benchmark284_215_multimod/7_sctran.txt", 3)
 
 rule IntegrationDimReduction:
   input:
@@ -356,14 +356,14 @@ rule IntegrationDimReduction:
     mem=res.approxRAM("integration", sampleType, num_cells),
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="IntegrationDimReduction"),
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="IntegrationDimReduction")
-#  benchmark:
-#    repeat("benchmarks/benchmark284_215_multimod/8_integration.txt", 3)
   conda:
     "envs/env.yml"
   output:
     expand("{projectDirPath}outputs/{project}.IntDimRed.rds", project=config["projectName"], projectDirPath=projectDirectoryPath)
   script:
     "scripts/IntegrationDimReduction.R"
+#  benchmark:
+#    repeat("benchmarks/benchmark284_215_multimod/8_integration.txt", 3)
 
 rule RunUMAP:
   input:
@@ -376,14 +376,14 @@ rule RunUMAP:
     mem=res.approxRAM("UMAP", sampleType, num_cells),
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="RunUMAP"),
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="RunUMAP")
-#  benchmark:
-#    repeat("benchmarks/benchmark284_215_multimod/9_UMAP.txt", 3)
   conda:
     "envs/env.yml"
   output:
     expand("{projectDirPath}outputs/{project}.umapped.rds", project=config["projectName"], projectDirPath=projectDirectoryPath)
   script:
     "scripts/RunUMAP.R"
+#  benchmark:
+#    repeat("benchmarks/benchmark284_215_multimod/9_UMAP.txt", 3)
 
 rule testDiffClusterResolutions:
   input:
@@ -397,8 +397,6 @@ rule testDiffClusterResolutions:
     mem=res.approxRAM("tCluster", sampleType, num_cells),
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="testDiffClusterResolutions"),
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="testDiffClusterResolutions")
-#  benchmark:
-#    repeat("benchmarks/benchmark284_215_multimod/9_3_testcluster.txt", 3)
   conda:
     "envs/env.yml"
   output:
@@ -406,6 +404,8 @@ rule testDiffClusterResolutions:
     hf.createMultiSampleInput(projectDirectoryPath, testClustersName, config["choosableResolutions"], ".clusteredDimPlot.pdf")
   script:
     "scripts/testDiffClusterRes.R"
+#  benchmark:
+#    repeat("benchmarks/benchmark284_215_multimod/9_3_testcluster.txt", 3)
 
 rule useChosenClusterResolutions:
   input:
@@ -420,14 +420,14 @@ rule useChosenClusterResolutions:
     mem=res.approxRAM("cCluster", sampleType, num_cells),
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="useChosenClusterResolutions"),
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="useChosenClusterResolutions")
-#  benchmark:
-#    repeat("benchmarks/benchmark284_215_multimod/90_chosenCluster.txt", 3)
   conda:
     "envs/env.yml"
   output:
     expand("{projectDirPath}outputs/{project}.clustered.rds", project=config["projectName"], projectDirPath=projectDirectoryPath)
   script:
     "scripts/useChosenClusterRes.R"
+#  benchmark:
+#    repeat("benchmarks/benchmark284_215_multimod/90_chosenCluster.txt", 3)
 
 rule multimodalAnalysis:
   input:
@@ -440,14 +440,14 @@ rule multimodalAnalysis:
     mem=res.approxRAM("mmodalAssay", sampleType, num_cells),
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="multimodalAnalysis"),
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="multimodalAnalysis")
-#  benchmark:
-#    repeat("benchmarks/benchmark284_215_multimod/81_addAssay.txt", 3)
   conda:
     "envs/env.yml"
   output:
     expand("{projectDirPath}outputs/{project}.multimodal.rds", project=config["projectName"], projectDirPath=projectDirectoryPath)
   script:
     "scripts/addAssayData.R"
+#  benchmark:
+#    repeat("benchmarks/benchmark284_215_multimod/81_addAssay.txt", 3)
 
 rule markerDiscovery:
   input:
@@ -460,14 +460,14 @@ rule markerDiscovery:
     mem=res.approxRAM("marker", sampleType, num_cells),
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="markerDiscovery"),
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="markerDiscovery")
-#  benchmark:
-#    repeat("benchmarks/benchmark284_215_multimod/91_marker.txt", 3)
   conda:
     "envs/marker.yml"
   output:
     expand("{projectDirPath}outputs/{project}.markerDisc.rds", project=config["projectName"], projectDirPath=projectDirectoryPath)
   script:
     "scripts/markerDiscovery.R"
+#  benchmark:
+#    repeat("benchmarks/benchmark284_215_multimod/91_marker.txt", 3)
 
 rule cellCounting:
   input:
@@ -482,14 +482,14 @@ rule cellCounting:
     mem=res.approxRAM("count", sampleType, num_cells),
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="cellCounting"),
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="cellCounting")
-#  benchmark:
-#    repeat("benchmarks/benchmark284_215_multimod/92_ncCount.txt", 3)
   conda:
     countEnv
   output:
     expand("{projectDirPath}plots/{project}.{condition}.barplot.pdf", project=config["projectName"], projectDirPath=projectDirectoryPath, condition=config["otherMetaName"])
   script:
     "scripts/cellCounting.R"
+#  benchmark:
+#    repeat("benchmarks/benchmark284_215_multimod/92_ncCount.txt", 3)
 
 rule DGE:
   input:
@@ -504,14 +504,14 @@ rule DGE:
     mem=res.approxRAM("DGE", sampleType, num_cells),
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="DGE"),
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="DGE")
-#  benchmark:
-#    repeat("benchmarks/benchmark284_215_multimod/94_dge.txt", 3)
   conda:
     "envs/marker.yml"
   output:
     expand("{projectDirPath}csv/finishedDGE.txt", projectDirPath=projectDirectoryPath)
   script:
     "scripts/DGE.R"
+#  benchmark:
+#    repeat("benchmarks/benchmark284_215_multimod/94_dge.txt", 3)
 
 rule createShinyApp:
   input:
@@ -524,8 +524,6 @@ rule createShinyApp:
     mem=res.approxRAM("shiny", sampleType, num_cells),
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="createShinyApp"),
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="createShinyApp")
-#  benchmark:
-#    repeat("benchmarks/benchmark284_215_multimod/95_shiny.txt", 3)
   conda:
     shinyEnv
   output:
@@ -533,6 +531,8 @@ rule createShinyApp:
     expand("{projectDirPath}shinyApp/ui.R", project=config["projectName"], projectDirPath=projectDirectoryPath)
   script:
     "scripts/createShinyApp.R"
+#  benchmark:
+#    repeat("benchmarks/benchmark284_215_multimod/95_shiny.txt", 3)
 
 rule multimodalFeaturePlotting:
   input:
@@ -547,12 +547,12 @@ rule multimodalFeaturePlotting:
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="multimodalFeaturePlotting")
   conda:
     "envs/env.yml"
-#  benchmark:
-#    repeat("benchmarks/benchmark284_215_multimod/96_multimodalplot.txt", 3)
   output:
     expand("{projectDirPath}plots/finishedFeatures.txt", project=config["projectName"], projectDirPath=projectDirectoryPath)
   script:
     "scripts/multimodalFeaturePlotting.R"
+#  benchmark:
+#    repeat("benchmarks/benchmark284_215_multimod/96_multimodalplot.txt", 3)
 
 rule copyShinyAppInstructions:
   params:
