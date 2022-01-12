@@ -88,8 +88,11 @@ On how to use the the pipeline see the last points of the HPC version.
 - After the pipeline is completely done running, use the exit command twice to first exit the snakemake-node and then your screen.
   (Use screen -list on the login-node to see the screens you have if you want to check if you forgot a screen).
 - You can run the pipeline with two different dataset inputs at the same time. Just create two screens with different names and run on the respective screens "bash clusterExecution.sh path/to/config1.yaml" and "path2/two/config2.yaml".
-- **Important**: The pipeline approximates the resources needed to request walltime and RAM from the HPC meaning there are times it won't ask for enough resources. I am working on a way to fix this and for the user to add additional Time and RAM onto the approximated, but for now you can simply increase the numberOfCells in the config.yaml to get more Time and RAM in case the pipeline stops because there was not enough. If there is a line with "PBS: job killed: walltime" at the end of an .errors file, then not enough walltime was requested. If near the end of the .errors file is a line with "/bin/bash: line 1:  ____ Killed" of something similar with "killed" then not enough RAM was requested.
+- **Important**: The pipeline approximates the resources needed to request walltime and RAM from the HPC meaning there are times it won't ask for enough resources. I am working on a way to fix this and for the user to add additional Time and RAM onto the approximated, but for now you can simply increase the numberOfCells in the config.yaml to get more Time and RAM in case the pipeline stops because there was not enough. If there is a line with "PBS: job killed: walltime" at the end of an .errors file, then not enough walltime was requested. If near the end of the .errors file is a line with "/bin/bash: line 1:  ____ Killed" of something similar with "killed" then not enough RAM was requested. If this happens snakemake might lock the project folder. In this case use the resumePipeline.sh instead of the clusterExecution.sh to continue running the pipeline. You should be able to switch back to clusterExecution.sh after using resumePipeline.sh once unless the same error here happens again. resumePipeline.sh is used the same way as clusterExecution.sh.
 
 ## To-do list:
 - Optimize Pipeline (e.g. process each sample separately/parallel instead of in a list)
-- logs into project folder
+- Fix a possible DGE error
+- Find possible replacement for old packages
+- Use conda spec envs instead of the normal envs for server
+- add additionalTime and additional RAM possibility
