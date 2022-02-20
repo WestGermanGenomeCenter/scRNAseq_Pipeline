@@ -1,0 +1,8 @@
+name: usual-env
+channels:
+  - nodefaults
+  - http://conda.repo.test.hhu.de/conda-forge
+
+dependencies:
+  - r-base >=3.6.1
+  - r-seurat >= 3.2.1

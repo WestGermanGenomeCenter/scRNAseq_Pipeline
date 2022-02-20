@@ -1,0 +1,10 @@
+name: marker-env
+channels:
+  - nodefaults
+  - http://conda.repo.test.hhu.de/conda-forge
+  - http://conda.repo.test.hhu.de/bioconda
+
+dependencies:
+  - r-base >=3.6.1
+  - r-seurat >= 3.2.1
+  - bioconductor-limma >=3.9.0

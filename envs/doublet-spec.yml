@@ -1,4 +1,4 @@
-name: doublet-env-spec
+name: doublet-env
 channels:
   - nodefaults
   - http://conda.repo.test.hhu.de/conda-forge

@@ -1,4 +1,4 @@
-name: shiny-env-spec
+name: shiny-env
 channels:
   - nodefaults
   - http://conda.repo.test.hhu.de/conda-forge
