@@ -9,7 +9,7 @@ for filename in files:
     while("dependencies:" not in textlines[index]):
         index += 1
     for i in range(index, len(textlines)):
-        j = rfind("=")
+        j = textlines[i].rfind("=")
         textlines = textlines[0:j]
     with open(filename, "w") as f:
         f.write("\n".join(textlines))
