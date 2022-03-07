@@ -14,3 +14,12 @@ dependencies:
   - r-cowplot=1.1.1
   - r-ggplot2=3.3.5
   - r-dplyr=1.0.7
+  - bioconductor-biobase=2.54.0
+  - bioconductor-biocgenerics=0.40.0
+  - bioconductor-delayedarray=0.20.0
+  - bioconductor-iranges=2.28.0
+  - bioconductor-matrixgenerics=1.6.0
+  - bioconductor-s4vectors=0.32.0
+  - bioconductor-xvector=0.34.0
+  - bioconductor-zlibbioc=1.40.0
+  - r-rcurl=1.98_1.5

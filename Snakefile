@@ -5,16 +5,16 @@ import shutil
 import hashlib
 import cluster.approximateResources as res
 import scripts.SnakefileHelperFuncs as hf
+#import scripts.pipelineOptions as pOpt
 
 
 #global variables
-doubletEnv = "envs/doublet-spec.yml"# "envs/doublet.yml"
-shinyEnv = "envs/shiny-spec.yml" #"envs/shiny.yml"
-countEnv = "envs/counting-spec.yml" #"envs/counting.yml"
-if(not config["HHU_HPC"]):
-  doubletEnv = "envs/doublet.yml"
-  shinyEnv = "envs/shiny.yml"
-  countEnv = "envs/counting.yml"
+countEnv = "envs/counting-spec.yml"
+devtoolsEnv = "envs/devtools-spec.yml"
+doubletEnv = "envs/doublet-spec.yml"
+usualEnv = "envs/env-spec.yml"
+markerEnv = "envs/marker-spec.yml"
+shinyEnv = "envs/shiny-spec.yml"
 projectDirectoryPath = config["projectDirectoryPath"]
 if projectDirectoryPath[-1] != "/":
     projectDirectoryPath += "/"
@@ -179,7 +179,7 @@ rule installMissingPackages:
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="installMissingPackages"),
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="installMissingPackages")
   conda:
-    "envs/devtools.yml"
+    devtoolsEnv
   log:
     expand("{projectDirPath}logs/{rule}.log", projectDirPath=projectDirectoryPath, rule="installMissingPackages")
   output:
@@ -201,7 +201,7 @@ rule metaData:
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="metaData"),
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="metaData")
   conda:
-    "envs/env.yml"
+    usualEnv
   log:
     expand("{projectDirPath}logs/{rule}.log", projectDirPath=projectDirectoryPath, rule="metaData")
   output:
@@ -225,7 +225,7 @@ rule demultiplexing:
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="demultiplexing"),
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="demultiplexing")
   conda:
-    "envs/env.yml"
+    usualEnv
   log:
     expand("{projectDirPath}logs/{rule}.log", projectDirPath=projectDirectoryPath, rule="demultiplexing")
   output:
@@ -248,7 +248,7 @@ rule mt_p1:
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="mt_p1"),
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="mt_p1")
   conda:
-    "envs/env.yml"
+    usualEnv
   log:
     expand("{projectDirPath}logs/{rule}.log", projectDirPath=projectDirectoryPath, rule="mt_p1")
   output:
@@ -270,7 +270,7 @@ rule mt_p2:
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="mt_p2"),
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="mt_p2")
   conda:
-    "envs/env.yml"
+    usualEnv
   log:
     expand("{projectDirPath}logs/{rule}.log", projectDirPath=projectDirectoryPath, rule="mt_p2")
   output:
@@ -291,7 +291,7 @@ rule doubletRemovalElbowPlot:
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="doubletRemovalElbowPlot"),
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="doubletRemovalElbowPlot")
   conda:
-    "envs/env.yml"
+    usualEnv
   log:
     expand("{projectDirPath}logs/{rule}.log", projectDirPath=projectDirectoryPath, rule="doubletRemovalElbowPlot")
   output:
@@ -337,7 +337,7 @@ rule addTPsMerge:
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="addTPsMerge"),
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="addTPsMerge")
   conda:
-    "envs/env.yml"
+    usualEnv
   log:
     expand("{projectDirPath}logs/{rule}.log", projectDirPath=projectDirectoryPath, rule="addTPsMerge")
   output:
@@ -358,7 +358,7 @@ rule SCTransformNormalization:
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="SCTransformNormalization"),
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="SCTransformNormalization")
   conda:
-    "envs/env.yml"
+    usualEnv
   log:
     expand("{projectDirPath}logs/{rule}.log", projectDirPath=projectDirectoryPath, rule="SCTransformNormalization")
   output:
@@ -381,7 +381,7 @@ rule IntegrationDimReduction:
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="IntegrationDimReduction"),
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="IntegrationDimReduction")
   conda:
-    "envs/env.yml"
+    usualEnv
   log:
     expand("{projectDirPath}logs/{rule}.log", projectDirPath=projectDirectoryPath, rule="IntegrationDimReduction")
   output:
@@ -403,7 +403,7 @@ rule RunUMAP:
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="RunUMAP"),
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="RunUMAP")
   conda:
-    "envs/env.yml"
+    usualEnv
   log:
     expand("{projectDirPath}logs/{rule}.log", projectDirPath=projectDirectoryPath, rule="RunUMAP")
   output:
@@ -426,7 +426,7 @@ rule testDiffClusterResolutions:
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="testDiffClusterResolutions"),
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="testDiffClusterResolutions")
   conda:
-    "envs/env.yml"
+    usualEnv
   log:
     expand("{projectDirPath}logs/{rule}.log", projectDirPath=projectDirectoryPath, rule="testDiffClusterResolutions")
   output:
@@ -451,7 +451,7 @@ rule useChosenClusterResolutions:
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="useChosenClusterResolutions"),
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="useChosenClusterResolutions")
   conda:
-    "envs/env.yml"
+    usualEnv
   log:
     expand("{projectDirPath}logs/{rule}.log", projectDirPath=projectDirectoryPath, rule="useChosenClusterResolutions")
   output:
@@ -473,7 +473,7 @@ rule multimodalAnalysis:
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="multimodalAnalysis"),
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="multimodalAnalysis")
   conda:
-    "envs/env.yml"
+    usualEnv
   log:
     expand("{projectDirPath}logs/{rule}.log", projectDirPath=projectDirectoryPath, rule="multimodalAnalysis")
   output:
@@ -495,7 +495,7 @@ rule markerDiscovery:
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="markerDiscovery"),
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="markerDiscovery")
   conda:
-    "envs/marker.yml"
+    markerEnv
   log:
     expand("{projectDirPath}logs/{rule}.log", projectDirPath=projectDirectoryPath, rule="markerDiscovery")
   output:
@@ -543,7 +543,7 @@ rule DGE:
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="DGE"),
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="DGE")
   conda:
-    "envs/marker.yml"
+    markerEnv
   log:
     expand("{projectDirPath}logs/{rule}.log", projectDirPath=projectDirectoryPath, rule="DGE")
   output:
@@ -588,7 +588,7 @@ rule multimodalFeaturePlotting:
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="multimodalFeaturePlotting"),
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="multimodalFeaturePlotting")
   conda:
-    "envs/env.yml"
+    usualEnv
   log:
     expand("{projectDirPath}logs/{rule}.log", projectDirPath=projectDirectoryPath, rule="multimodalFeaturePlotting")
   output:
