@@ -2,24 +2,26 @@ library(Seurat)
 source("scripts/helperFunctions.R")
 setwd(paste(snakemake@params[[1]], "workDirectory", sep=""))
 
-GE.data <- readRDS(snakemake@input[[1]])
-#GE215 <- readRDS(paste("../", snakemake@input[[2]], sep=""))
+GE.data <- snakemake@input
+#GE <- readRDS(paste("../", snakemake@input[[2]], sep=""))
 condition <- snakemake@params[[2]]
+print(condition)
 condition.name <- snakemake@params[[3]]
 
 for(i in 1:length(GE.data)) {
+  GE.data[[i]] <- readRDS(GE.data[[i]])
   GE.data[[i]] <- AddMetaData(GE.data[[i]], metadata=condition[[i]], col.name=condition.name)
 }
 
 print(head(GE.data[[1]]@meta.data))
-#print(GE215)
+#print(GE)
 if(length(GE.data) > 1) {
-  GE215 <- merge(GE.data[[1]], y = GE.data[2:length(GE.data)])
+  GE <- merge(GE.data[[1]], y = GE.data[2:length(GE.data)])
 } else {
-  GE215 <- GE.data[[1]]
+  GE <- GE.data[[1]]
 }
-DefaultAssay(GE215) <- "RNA"
-print(GE215)
-print(head(GE215@meta.data))
+DefaultAssay(GE) <- "RNA"
+print(GE)
+print(head(GE@meta.data))
 
-saveRDS(GE215, file=snakemake@output[[1]])
+saveRDS(GE, file=snakemake@output[[1]])

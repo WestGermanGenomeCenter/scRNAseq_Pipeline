@@ -19,7 +19,8 @@ projectDirectoryPath = config["projectDirectoryPath"]
 if projectDirectoryPath[-1] != "/":
     projectDirectoryPath += "/"
 hf.createDirectoriesIfNotExists(projectDirectoryPath)
-sampleInputs = hf.transform_sampleInputs(config["sampleInputs"])
+sampleInputs, otherMetaData = hf.transform_sampleInputs(config["sampleInputs"])
+sampleNames = list(sampleInputs.keys())
 num_cells = config["numberOfCells"]
 sampleType = "ns"
 if config["multiSampled"] and config["multimodal"]:
@@ -50,16 +51,16 @@ def get_inputs(wildcards):
     if os.path.isdir(hf.findHash(doubletEnv) + "/lib/R/library/DoubletFinder") and os.path.isdir(hf.findHash(shinyEnv) + "/lib/R/library/ShinyCell") and os.path.isdir(hf.findHash(countEnv) + "/lib/R/library/seurathelpeR"):
       outputStart = projectDirectoryPath + "outputs/" + config["projectName"]
       if config["HTO"]:
-        inputList.append(outputStart + ".demux.rds")
+        inputList = hf.createMultiSampleInput(projectDirectoryPath, "outputs/", sampleNames, ".demux.rds")
       else:
-        inputList.append(outputStart + ".meta.rds")
-      inputList.append(outputStart + ".mt_p1.rds")
+        inputList = hf.createMultiSampleInput(projectDirectoryPath, "outputs/", sampleNames, ".meta.rds")
+      inputList = inputList + hf.createMultiSampleInput(projectDirectoryPath, "outputs/", sampleNames, ".mt_p1.rds")
       if cutoff:
-        inputList.append(outputStart + ".mt_p2.rds")
-        inputList.append(outputStart + ".SCTranDB.rds")
+        inputList = inputList + hf.createMultiSampleInput(projectDirectoryPath, "outputs/", sampleNames, ".mt_p2.rds")
+        inputList = inputList + hf.createMultiSampleInput(projectDirectoryPath, "outputs/", sampleNames, ".SCTranDB.rds")
         if doublets:
           if not config["HTO"]:
-            inputList.append(outputStart + ".doubR.rds")
+            inputList = inputList + hf.createMultiSampleInput(projectDirectoryPath, "outputs/", sampleNames, ".doubR.rds")
           if conditions and config["otherMetaName"]:
             inputList.append(outputStart + ".preprocessedO.rds")
             inputList.append(outputStart + ".normalized.rds")
@@ -194,7 +195,7 @@ rule metaData:
     expand("{rawData}", rawData=config["rawData"])
   params:
     projectDirPath=projectDirectoryPath,
-    names = sampleInputs["name"],
+    names = sampleNames,
     project = config["projectName"],
     time=res.approxWalltime("meta", sampleType, num_cells, additionalTime),
     mem=res.approxRAM("meta", sampleType, num_cells, 2),
@@ -205,8 +206,8 @@ rule metaData:
   log:
     expand("{projectDirPath}logs/{rule}.log", projectDirPath=projectDirectoryPath, rule="metaData")
   output:
-    expand(["{projectDirPath}outputs/{project}.meta.rds", "{projectDirPath}outputs/{project}.rawData.rds"], project=config["projectName"], projectDirPath=projectDirectoryPath) if config["multimodal"] else expand("{projectDirPath}outputs/{project}.meta.rds", project=config["projectName"], projectDirPath=projectDirectoryPath)
-    #hf.createMultiSampleInput(projectDirectoryPath, "outputs/", sampleInputs["name"], ".meta.rds")
+    #expand(["{projectDirPath}outputs/{project}.meta.rds", "{projectDirPath}outputs/{project}.rawData.rds"], project=config["projectName"], projectDirPath=projectDirectoryPath) if config["multimodal"] else expand("{projectDirPath}outputs/{project}.meta.rds", project=config["projectName"], projectDirPath=projectDirectoryPath)
+    hf.createMultiSampleInput(projectDirectoryPath, "outputs/", sampleNames, ".meta.rds", project=config["projectName"]) if config["multimodal"] else hf.createMultiSampleInput(projectDirectoryPath, "outputs/", sampleNames, ".meta.rds")
   script:
     "scripts/MetaData.R"
 #  benchmark:
@@ -219,7 +220,7 @@ rule demultiplexing:
     projectDirPath = projectDirectoryPath,
     project = config["projectName"],
     assayname = assayName,
-    names = sampleInputs["name"],
+    names = sampleNames,
     time=res.approxWalltime("demultiplex", sampleType, num_cells, additionalTime),
     mem=res.approxRAM("demultiplex", sampleType, num_cells),
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="demultiplexing"),
@@ -229,8 +230,8 @@ rule demultiplexing:
   log:
     expand("{projectDirPath}logs/{rule}.log", projectDirPath=projectDirectoryPath, rule="demultiplexing")
   output:
-    expand("{projectDirPath}outputs/{project}.demux.rds", project=config["projectName"], projectDirPath=projectDirectoryPath)
-    #hf.createMultiSampleInput(projectDirectoryPath, "outputs/", sampleInputs["name"], ".demux.rds")
+    #expand("{projectDirPath}outputs/{project}.demux.rds", project=config["projectName"], projectDirPath=projectDirectoryPath)
+    hf.createMultiSampleInput(projectDirectoryPath, "outputs/", sampleNames, ".demux.rds")
   script:
     "scripts/demultiplexing.R"
 #  benchmark:
@@ -238,21 +239,22 @@ rule demultiplexing:
 
 rule mt_p1:
   input:
-    expand("{projectDirPath}outputs/{project}.meta.rds", project=config["projectName"], projectDirPath=projectDirectoryPath) if not config["HTO"] else expand("{projectDirPath}outputs/{project}.demux.rds", project=config["projectName"], projectDirPath=projectDirectoryPath)
+    #expand("{projectDirPath}outputs/{project}.meta.rds", project=config["projectName"], projectDirPath=projectDirectoryPath) if not config["HTO"] else expand("{projectDirPath}outputs/{project}.demux.rds", project=config["projectName"], projectDirPath=projectDirectoryPath)
+    expand("{projectDirPath}outputs/{{names}}.meta.rds", projectDirPath=projectDirectoryPath) if not config["HTO"] else expand("{projectDirPath}outputs/{{names}}.demux.rds", projectDirPath=projectDirectoryPath)
   params:
     projectDirPath = projectDirectoryPath,
-    names = sampleInputs["name"],
+    names ="{names}",
     pattern = config["pattern"],
     time=res.approxWalltime("mt1", sampleType, num_cells, additionalTime),
     mem=res.approxRAM("mt1", sampleType, num_cells),
-    error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="mt_p1"),
-    output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="mt_p1")
+    error=expand("{projectDirPath}clusterLogs/{rule}.{{names}}.errors", projectDirPath=projectDirectoryPath, rule="mt_p1"),
+    output=expand("{projectDirPath}clusterLogs/{rule}.{{names}}.output", projectDirPath=projectDirectoryPath, rule="mt_p1")
   conda:
     usualEnv
   log:
-    expand("{projectDirPath}logs/{rule}.log", projectDirPath=projectDirectoryPath, rule="mt_p1")
+    expand("{projectDirPath}logs/{rule}.{{names}}.log", projectDirPath=projectDirectoryPath, rule="mt_p1")
   output:
-    expand("{projectDirPath}outputs/{project}.mt_p1.rds", project=config["projectName"], projectDirPath=projectDirectoryPath)
+    expand("{projectDirPath}outputs/{{names}}.mt_p1.rds", projectDirPath=projectDirectoryPath)
   script:
     "scripts/mt_p1.R"
 #  benchmark:
@@ -260,21 +262,22 @@ rule mt_p1:
 
 rule mt_p2:
   input: 
-    expand("{projectDirPath}outputs/{project}.mt_p1.rds", project=config["projectName"], projectDirPath=projectDirectoryPath)
+    expand("{projectDirPath}outputs/{{names}}.mt_p1.rds", project=config["projectName"], projectDirPath=projectDirectoryPath)
   params:
     projectDirPath = projectDirectoryPath,
-    samples = sampleInputs["mtCutoff"],
-    names = sampleInputs["name"],
+    names ="{names}",
+    samples = lambda wcs: sampleInputs[wcs.names]['mtCutoff'],
     time=res.approxWalltime("mt2", sampleType, num_cells, additionalTime),
     mem=res.approxRAM("mt2", sampleType, num_cells),
-    error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="mt_p2"),
-    output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="mt_p2")
+    error=expand("{projectDirPath}clusterLogs/{rule}.{{names}}.errors", projectDirPath=projectDirectoryPath, rule="mt_p2"),
+    output=expand("{projectDirPath}clusterLogs/{rule}.{{names}}.output", projectDirPath=projectDirectoryPath, rule="mt_p2")
   conda:
     usualEnv
   log:
-    expand("{projectDirPath}logs/{rule}.log", projectDirPath=projectDirectoryPath, rule="mt_p2")
+    expand("{projectDirPath}logs/{rule}.{{names}}.log", projectDirPath=projectDirectoryPath, rule="mt_p2")
   output:
-    expand("{projectDirPath}outputs/{project}.mt_p2.rds", project=config["projectName"], projectDirPath=projectDirectoryPath)
+    #expand("{projectDirPath}outputs/{project}.mt_p2.rds", project=config["projectName"], projectDirPath=projectDirectoryPath)
+    expand("{projectDirPath}outputs/{{names}}.mt_p2.rds", projectDirPath=projectDirectoryPath)
   script:
     "scripts/mt_p2.R"
 #  benchmark:
@@ -282,20 +285,20 @@ rule mt_p2:
 
 rule doubletRemovalElbowPlot:
   input:
-    expand("{projectDirPath}outputs/{project}.mt_p2.rds", project=config["projectName"], projectDirPath=projectDirectoryPath)
+    expand("{projectDirPath}outputs/{{names}}.mt_p2.rds", projectDirPath=projectDirectoryPath)
   params:
     projectDirPath = projectDirectoryPath,
-    names = sampleInputs["name"],
+    names = "{names}",
     time=res.approxWalltime("dbElb", sampleType, num_cells, additionalTime),
     mem=res.approxRAM("dbElb", sampleType, num_cells),
-    error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="doubletRemovalElbowPlot"),
-    output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="doubletRemovalElbowPlot")
+    error=expand("{projectDirPath}clusterLogs/{rule}.{{names}}.errors", projectDirPath=projectDirectoryPath, rule="doubletRemovalElbowPlot"),
+    output=expand("{projectDirPath}clusterLogs/{rule}.{{names}}.output", projectDirPath=projectDirectoryPath, rule="doubletRemovalElbowPlot")
   conda:
     usualEnv
   log:
-    expand("{projectDirPath}logs/{rule}.log", projectDirPath=projectDirectoryPath, rule="doubletRemovalElbowPlot")
+    expand("{projectDirPath}logs/{rule}.{{names}}.log", projectDirPath=projectDirectoryPath, rule="doubletRemovalElbowPlot")
   output:
-    expand("{projectDirPath}outputs/{project}.SCTranDB.rds", project=config["projectName"], projectDirPath=projectDirectoryPath)
+    expand("{projectDirPath}outputs/{{names}}.SCTranDB.rds", projectDirPath=projectDirectoryPath)
   script:
     "scripts/DBElbowPlotter.R"
 #  benchmark:
@@ -303,22 +306,22 @@ rule doubletRemovalElbowPlot:
 
 rule doubletRemoval:
   input:
-    expand("{projectDirPath}outputs/{project}.SCTranDB.rds", project=config["projectName"], projectDirPath=projectDirectoryPath)
+    expand("{projectDirPath}outputs/{{names}}.SCTranDB.rds", projectDirPath=projectDirectoryPath)
   params:
     projectDirPath = projectDirectoryPath,
-    names = sampleInputs["name"],
-    roundingValues = sampleInputs["expectedPercentDoublets"],
-    dim_PCs = sampleInputs["dbElbowPlot"],
+    names = "{names}",
+    roundingValues = lambda wcs: sampleInputs[wcs.names]['expectedPercentDoublets'],
+    dim_PCs = lambda wcs: sampleInputs[wcs.names]['dbElbowPlot'],
     time=res.approxWalltime("dbRem", sampleType, num_cells, additionalTime),
     mem=res.approxRAM("dbRem", sampleType, num_cells),
-    error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="doubletRemoval"),
-    output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="doubletRemoval")
+    error=expand("{projectDirPath}clusterLogs/{rule}.{{names}}.errors", projectDirPath=projectDirectoryPath, rule="doubletRemoval"),
+    output=expand("{projectDirPath}clusterLogs/{rule}.{{names}}.output", projectDirPath=projectDirectoryPath, rule="doubletRemoval")
   conda:
     doubletEnv
   log:
-    expand("{projectDirPath}logs/{rule}.log", projectDirPath=projectDirectoryPath, rule="doubletRemoval")
+    expand("{projectDirPath}logs/{rule}.{{names}}.log", projectDirPath=projectDirectoryPath, rule="doubletRemoval")
   output:
-    expand("{projectDirPath}outputs/{project}.doubR.rds", project=config["projectName"], projectDirPath=projectDirectoryPath)
+    expand("{projectDirPath}outputs/{{names}}.doubR.rds", projectDirPath=projectDirectoryPath)
   script:
     "scripts/DoubletRemoval.R"
 #  benchmark:
@@ -326,11 +329,11 @@ rule doubletRemoval:
 
 rule addTPsMerge:
   input:
-    expand("{projectDirPath}outputs/{project}.SCTranDB.rds", project=config["projectName"], projectDirPath=projectDirectoryPath) if config["HTO"] else expand("{projectDirPath}outputs/{project}.doubR.rds", project=config["projectName"], projectDirPath=projectDirectoryPath)
-    #hf.createMultiSampleInput(projectDirectoryPath, "outputs/", sampleInputs["name"], ".doubR.rds")
+    #expand("{projectDirPath}outputs/{project}.SCTranDB.rds", project=config["projectName"], projectDirPath=projectDirectoryPath) if config["HTO"] else expand("{projectDirPath}outputs/{project}.doubR.rds", project=config["projectName"], projectDirPath=projectDirectoryPath)
+    hf.createMultiSampleInput(projectDirectoryPath, "outputs/", sampleNames, ".SCTranDB.rds") if config["HTO"] else hf.createMultiSampleInput(projectDirectoryPath, "outputs/", sampleNames, ".doubR.rds")
   params:
     projectDirPath = projectDirectoryPath,
-    meta = sampleInputs["otherMetaData"],
+    meta = otherMetaData,
     metaName = config["otherMetaName"],
     time=res.approxWalltime("merge", sampleType, num_cells, additionalTime),
     mem=res.approxRAM("merge", sampleType, num_cells),
@@ -536,7 +539,7 @@ rule DGE:
     projectDirPath = projectDirectoryPath,
     project = config["projectName"],
     metaCondition = config["otherMetaName"],
-    metaIdent = sampleInputs["otherMetaData"],
+    metaIdent = otherMetaData,
     resolution = config["chosenResolution"],
     time=res.approxWalltime("DGE", sampleType, num_cells, additionalTime),
     mem=res.approxRAM("DGE", sampleType, num_cells),

@@ -37,6 +37,7 @@ GE <- SplitObject(GE)
 
 for(i in 1:length(GE)) {
   GE[[i]] <- AddMetaData(GE[[i]], metadata = names[[i]], col.name = "sample")
+  saveRDS(GE[[i]], file=paste(snakemake@output[[i]]))
 }
 
-saveRDS(GE, snakemake@output[[1]])
+#saveRDS(GE, snakemake@output[[1]])

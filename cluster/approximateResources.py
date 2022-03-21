@@ -210,7 +210,10 @@ w_time = {
 
 def approxRAM(rule, typ, num_cells, additionalRAM=0):
     #print(math.ceil(memory[typ][rule]*num_cells))
-    return str(math.ceil(memory[typ][rule]*num_cells)+additionalRAM) + "GB"
+    approxMem = math.ceil(memory[typ][rule]*num_cells)+additionalRAM
+    if approxMem == 0:
+        approxMem = 1
+    return str(approxMem) + "GB"
 
 def approxWalltime(rule, typ, num_cells, additionalTime=0):
     #print(rule + " used: "+ time.strftime("%H:%M:%S", time.gmtime(math.ceil(w_time[typ][rule]*num_cells))), end=", ")

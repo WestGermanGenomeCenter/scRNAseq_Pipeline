@@ -1,5 +1,7 @@
 import os
 import hashlib
+from pickle import FALSE
+from collections import OrderedDict
 
 
 class MissingInputError(Exception):
@@ -40,13 +42,13 @@ def createDirectoriesIfNotExists(projectDirectoryPath):
 
 
 def transform_sampleInputs(sampleInputs):
-  samInputs = {}
-  for i in sampleInputs[0].keys():
-    samInputs[i] = []
+  samples = OrderedDict()
+  otherMetaData = []
   for i in sampleInputs:
-    for j in i.keys():
-      samInputs[j].append(i[j])
-  return samInputs
+    samples[i['name']] = i
+  for i in sampleInputs:
+    otherMetaData.append(i["otherMetaData"])
+  return samples, otherMetaData
 
   
 def checkMinimalInputs(config):
@@ -70,8 +72,10 @@ def checkMinimalInputs(config):
   return True
 
 
-def createMultiSampleInput(path, folder, samples, ending):
+def createMultiSampleInput(path, folder, samples, ending, project=None):
   ioputs = []
   for i in samples:
     ioputs.append(path + folder + str(i) + ending)
+  if project: #Project is only not none at the very beginning of an not HTO, multimodal project
+    ioputs.append(path + folder + project + "rawData.rds")
   return ioputs

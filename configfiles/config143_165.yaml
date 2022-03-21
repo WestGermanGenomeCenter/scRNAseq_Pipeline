@@ -26,31 +26,6 @@ sampleInputs:
     expectedPercentDoublets: 0.075
     dbElbowPlot: 17
     otherMetaData: Ablation
-  - name: 143-2
-    mtCutoff: 25
-    expectedPercentDoublets: 0.11
-    dbElbowPlot: 17
-    otherMetaData: sham
-  - name: 143-3
-    mtCutoff: 25
-    expectedPercentDoublets: 0.11
-    dbElbowPlot: 17
-    otherMetaData: Ablation
-  - name: 143-4
-    mtCutoff: 25
-    expectedPercentDoublets: 0.075
-    dbElbowPlot: 17
-    otherMetaData: Ablation
-  - name: 143-5
-    mtCutoff: 25
-    expectedPercentDoublets: 0.05
-    dbElbowPlot: 17
-    otherMetaData: sham
-  - name: 143-6
-    mtCutoff: 25
-    expectedPercentDoublets: 0.075
-    dbElbowPlot: 17
-    otherMetaData: sham
 
 otherMetaName: condition
 
