@@ -93,7 +93,5 @@ On how to use the the pipeline see the last points of the HPC version.
 
 ## To-do list:
 - Optimize Pipeline (e.g. process each sample separately/parallel instead of in a list)
-- Fix a possible DGE error
 - Find possible replacement for old packages
-- Use conda spec envs instead of the normal envs for server
 - add additionalTime and additional RAM possibility

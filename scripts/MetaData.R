@@ -10,7 +10,9 @@ project.name <- snakemake@params[[3]]
 # create Seurat object and add metadata
 if("Gene Expression" %in% names(raw.data)) {
   GE <- CreateSeuratObject(counts=raw.data$`Gene Expression`, project=project.name, min.cells=3, min.features=200, names.field=2, names.delim="-")
-  saveRDS(raw.data, file=snakemake@output[[2]]) #file=snakemake@output[[length(snakemake@output)]])
+  print(snakemake@output)
+  print(snakemake@output[[length(snakemake@output)]])
+  saveRDS(raw.data, file=snakemake@output[[length(snakemake@output)]]) #file=snakemake@output[[length(snakemake@output)]])
 } else {
   GE <- CreateSeuratObject(counts=raw.data, project=project.name, min.cells=3, min.features=200, names.field=2, names.delim="-")
 }

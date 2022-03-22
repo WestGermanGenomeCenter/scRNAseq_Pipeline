@@ -77,5 +77,5 @@ def createMultiSampleInput(path, folder, samples, ending, project=None):
   for i in samples:
     ioputs.append(path + folder + str(i) + ending)
   if project: #Project is only not none at the very beginning of an not HTO, multimodal project
-    ioputs.append(path + folder + project + "rawData.rds")
+    ioputs.append(path + folder + project + ".rawData.rds")
   return ioputs

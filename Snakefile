@@ -53,7 +53,10 @@ def get_inputs(wildcards):
       if config["HTO"]:
         inputList = hf.createMultiSampleInput(projectDirectoryPath, "outputs/", sampleNames, ".demux.rds")
       else:
-        inputList = hf.createMultiSampleInput(projectDirectoryPath, "outputs/", sampleNames, ".meta.rds")
+        if config["multimodal"]:
+          inputList = hf.createMultiSampleInput(projectDirectoryPath, "outputs/", sampleNames, ".meta.rds", config["projectName"])
+        else:
+          inputList = hf.createMultiSampleInput(projectDirectoryPath, "outputs/", sampleNames, ".meta.rds")
       inputList = inputList + hf.createMultiSampleInput(projectDirectoryPath, "outputs/", sampleNames, ".mt_p1.rds")
       if cutoff:
         inputList = inputList + hf.createMultiSampleInput(projectDirectoryPath, "outputs/", sampleNames, ".mt_p2.rds")
