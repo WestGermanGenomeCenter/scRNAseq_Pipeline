@@ -92,6 +92,6 @@ On how to use the the pipeline see the last points of the HPC version.
 - **Important**: Sometimes there is an issue with the .sh files when moving from a windows PC to the HPC. In this case use the command "sed -i 's/\r//g' filename.sh" to fix the 'command \r not found' error with bash.
 
 ## To-do list:
-- Optimize Pipeline (e.g. process each sample separately/parallel instead of in a list)
-- Find possible replacement for old packages
-- add additionalTime and additional RAM possibility
+- Check Solo
+- change addTSPandMerge
+- multiple conditions
