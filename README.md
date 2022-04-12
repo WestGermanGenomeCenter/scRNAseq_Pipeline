@@ -95,3 +95,5 @@ On how to use the the pipeline see the last points of the HPC version.
 - Check Solo
 - change addTSPandMerge
 - multiple conditions
+- change approximation for multisampled but not multimodeled
+- remove part of code from snakemake for customizability
