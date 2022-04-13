@@ -28,7 +28,6 @@ if(config["HTO"]):
   sampleType = "HTO"
 testClustersName = "plots/" + config["projectName"] + ".res_"
 
-
 def get_inputs(wildcards):
   inputList = []
   if(hf.checkMinimalInputs(config)):
@@ -58,38 +57,38 @@ def get_inputs(wildcards):
             inputList = inputList + hf.createMultiSampleInput(projectDirectoryPath, "outputs/", sampleNames, ".doubR.rds")
           if conditions and config["otherMetaName"]:
             inputList.append(outputStart + ".preprocessedO.rds")
-            inputList.append(outputStart + ".normalized.rds")
-            inputList.append(outputStart + ".IntDimRed.rds")
-            if config["integrationPCs"]:
-              inputList.append(outputStart + ".umapped.rds")
-              if config["findNeighborsPCs"] and config["choosableResolutions"]:
-                if config["chosenResolution"]:
-                  inputList.append(outputStart + ".clustered.rds")
-                  inputList.append(outputStart + ".markerDisc.rds")
-                  if config["multiSampled"]:
-                    inputList.append(projectDirectoryPath + "csv/finishedDGE.txt")
-                  if config["multimodal"] or config["HTO"]:
-                    inputList.append(projectDirectoryPath + "plots/finishedFeatures.txt")
-                  inputList.append(projectDirectoryPath + "shinyApp/" + "server.R")
-                  inputList.append(projectDirectoryPath + "shinyApp/" + "ui.R")
-                  inputList.append(projectDirectoryPath + "shinyApp/howToRunShinyAppOnYourOwnPC.txt")
-                  if config["countIdents"]:
-                    inputList.append(projectDirectoryPath + "plots/" + config["projectName"] + "." + config["otherMetaName"] + ".barplot.pdf")
-                  else:
-                    inputList.append(projectDirectoryPath + "workDirectory/countIdentsMissing.txt")
-                else:
-                  inputList + hf.createMultiSampleInput(projectDirectoryPath, testClustersName, config["choosableResolutions"], ".clusteredDimPlot.pdf")
-                  inputList.append(projectDirectoryPath + "workDirectory/chosenResolutionMissing.txt")
-              else:
-                inputList.append(projectDirectoryPath + "workDirectory/resolutionsNeighPCsMissing.txt")
-            else:
-              inputList.append(projectDirectoryPath + "workDirectory/intPCsMissing.txt")
-          else:
-            inputList.append(projectDirectoryPath + "workDirectory/conditionInfosMissing.txt")
-        else:
-          inputList.append(projectDirectoryPath + "workDirectory/doubletInfosMissing.txt")
-      else:
-        inputList.append(projectDirectoryPath + "workDirectory/mtCutoffMissing.txt")
+#            inputList.append(outputStart + ".normalized.rds")
+#            inputList.append(outputStart + ".IntDimRed.rds")
+#            if config["integrationPCs"]:
+#              inputList.append(outputStart + ".umapped.rds")
+#              if config["findNeighborsPCs"] and config["choosableResolutions"]:
+#                if config["chosenResolution"]:
+#                  inputList.append(outputStart + ".clustered.rds")
+#                  inputList.append(outputStart + ".markerDisc.rds")
+#                  if config["multiSampled"]:
+#                    inputList.append(projectDirectoryPath + "csv/finishedDGE.txt")
+#                  if config["multimodal"] or config["HTO"]:
+#                    inputList.append(projectDirectoryPath + "plots/finishedFeatures.txt")
+#                  inputList.append(projectDirectoryPath + "shinyApp/" + "server.R")
+#                  inputList.append(projectDirectoryPath + "shinyApp/" + "ui.R")
+#                  inputList.append(projectDirectoryPath + "shinyApp/howToRunShinyAppOnYourOwnPC.txt")
+#                  if config["countIdents"]:
+#                    inputList.append(projectDirectoryPath + "plots/" + config["projectName"] + "." + config["otherMetaName"] + ".barplot.pdf")
+#                  else:
+#                    inputList.append(projectDirectoryPath + "workDirectory/countIdentsMissing.txt")
+#                else:
+#                  inputList + hf.createMultiSampleInput(projectDirectoryPath, testClustersName, config["choosableResolutions"], ".clusteredDimPlot.pdf")
+#                  inputList.append(projectDirectoryPath + "workDirectory/chosenResolutionMissing.txt")
+#              else:
+#                inputList.append(projectDirectoryPath + "workDirectory/resolutionsNeighPCsMissing.txt")
+#            else:
+#              inputList.append(projectDirectoryPath + "workDirectory/intPCsMissing.txt")
+#          else:
+#            inputList.append(projectDirectoryPath + "workDirectory/conditionInfosMissing.txt")
+#        else:
+#          inputList.append(projectDirectoryPath + "workDirectory/doubletInfosMissing.txt")
+#      else:
+#        inputList.append(projectDirectoryPath + "workDirectory/mtCutoffMissing.txt")
     else:
       inputList.append("workDirectory/createDoubletEnv.txt")
       inputList.append("workDirectory/createShinyEnv.txt")
@@ -201,7 +200,6 @@ rule metaData:
   log:
     expand("{projectDirPath}logs/{rule}.log", projectDirPath=projectDirectoryPath, rule="metaData")
   output:
-    #expand(["{projectDirPath}outputs/{project}.meta.rds", "{projectDirPath}outputs/{project}.rawData.rds"], project=config["projectName"], projectDirPath=projectDirectoryPath) if config["multimodal"] else expand("{projectDirPath}outputs/{project}.meta.rds", project=config["projectName"], projectDirPath=projectDirectoryPath)
     hf.createMultiSampleInput(projectDirectoryPath, "outputs/", sampleNames, ".meta.rds", project=config["projectName"]) if config["multimodal"] else hf.createMultiSampleInput(projectDirectoryPath, "outputs/", sampleNames, ".meta.rds")
   script:
     "scripts/MetaData.R"
@@ -225,7 +223,6 @@ rule demultiplexing:
   log:
     expand("{projectDirPath}logs/{rule}.log", projectDirPath=projectDirectoryPath, rule="demultiplexing")
   output:
-    #expand("{projectDirPath}outputs/{project}.demux.rds", project=config["projectName"], projectDirPath=projectDirectoryPath)
     hf.createMultiSampleInput(projectDirectoryPath, "outputs/", sampleNames, ".demux.rds")
   script:
     "scripts/demultiplexing.R"
@@ -234,7 +231,6 @@ rule demultiplexing:
 
 rule mt_p1:
   input:
-    #expand("{projectDirPath}outputs/{project}.meta.rds", project=config["projectName"], projectDirPath=projectDirectoryPath) if not config["HTO"] else expand("{projectDirPath}outputs/{project}.demux.rds", project=config["projectName"], projectDirPath=projectDirectoryPath)
     expand("{projectDirPath}outputs/{{names}}.meta.rds", projectDirPath=projectDirectoryPath) if not config["HTO"] else expand("{projectDirPath}outputs/{{names}}.demux.rds", projectDirPath=projectDirectoryPath)
   params:
     projectDirPath = projectDirectoryPath,
@@ -271,7 +267,6 @@ rule mt_p2:
   log:
     expand("{projectDirPath}logs/{rule}.{{names}}.log", projectDirPath=projectDirectoryPath, rule="mt_p2")
   output:
-    #expand("{projectDirPath}outputs/{project}.mt_p2.rds", project=config["projectName"], projectDirPath=projectDirectoryPath)
     expand("{projectDirPath}outputs/{{names}}.mt_p2.rds", projectDirPath=projectDirectoryPath)
   script:
     "scripts/mt_p2.R"
@@ -324,7 +319,6 @@ rule doubletRemoval:
 
 rule addTPsMerge:
   input:
-    #expand("{projectDirPath}outputs/{project}.SCTranDB.rds", project=config["projectName"], projectDirPath=projectDirectoryPath) if config["HTO"] else expand("{projectDirPath}outputs/{project}.doubR.rds", project=config["projectName"], projectDirPath=projectDirectoryPath)
     hf.createMultiSampleInput(projectDirectoryPath, "outputs/", sampleNames, ".SCTranDB.rds") if config["HTO"] else hf.createMultiSampleInput(projectDirectoryPath, "outputs/", sampleNames, ".doubR.rds")
   params:
     projectDirPath = projectDirectoryPath,
@@ -340,7 +334,6 @@ rule addTPsMerge:
     expand("{projectDirPath}logs/{rule}.log", projectDirPath=projectDirectoryPath, rule="addTPsMerge")
   output:
     expand("{projectDirPath}outputs/{project}.preprocessedO.rds", project=config["projectName"], projectDirPath=projectDirectoryPath)
-    #hf.createMultiSampleInput(projectDirectoryPath, "outputs/", sampleInputs["name"], ".preprocessed.rds")
   script:
     "scripts/addMetaAndMerge.R"
 #  benchmark:
@@ -369,7 +362,6 @@ rule SCTransformNormalization:
 rule IntegrationDimReduction:
   input:
     expand("{projectDirPath}outputs/{project}.normalized.rds", project=config["projectName"], projectDirPath=projectDirectoryPath)
-    #hf.createMultiSampleInput(projectDirectoryPath, "outputs/", sampleInputs["name"], ".normalized.rds")
   params:
     projectDirPath = projectDirectoryPath,
     project = config["projectName"],
@@ -428,7 +420,6 @@ rule testDiffClusterResolutions:
   log:
     expand("{projectDirPath}logs/{rule}.log", projectDirPath=projectDirectoryPath, rule="testDiffClusterResolutions")
   output:
-    #expand("{projectDirPath}plots/finished.txt", project=config["projectName"], projectDirPath=projectDirectoryPath)
     hf.createMultiSampleInput(projectDirectoryPath, testClustersName, config["choosableResolutions"], ".clusteredDimPlot.pdf")
   script:
     "scripts/testDiffClusterRes.R"
@@ -484,7 +475,6 @@ rule multimodalAnalysis:
 rule markerDiscovery:
   input:
     expand("{projectDirPath}outputs/{project}.multimodal.rds", project=config["projectName"], projectDirPath=projectDirectoryPath) if config["multimodal"] and not config["HTO"] else expand("{projectDirPath}outputs/{project}.clustered.rds", project=config["projectName"], projectDirPath=projectDirectoryPath)
-    #expand(["projects/{projectDirName}outputs/{project}.clustered.rds", "projects/{projectDirName}outputs/{projects}.rawData.rds"], project=config["projectName"], projectDirName=config["projectDirName"]) if config["mutlimodal"] else "projects/{projectDirName}outputs/{project}.clustered.rds"
   params:
     projectDirPath = projectDirectoryPath,
     project = config["projectName"],

@@ -10,7 +10,9 @@ condition.name <- snakemake@params[[3]]
 
 for(i in 1:length(GE.data)) {
   GE.data[[i]] <- readRDS(GE.data[[i]])
-  GE.data[[i]] <- AddMetaData(GE.data[[i]], metadata=condition[[i]], col.name=condition.name)
+  for(j in 1:length()) {
+    GE.data[[i]] <- AddMetaData(GE.data[[i]], metadata=condition[[i]][[j]], col.name=condition.name[[j]])
+  }
 }
 
 print(head(GE.data[[1]]@meta.data))

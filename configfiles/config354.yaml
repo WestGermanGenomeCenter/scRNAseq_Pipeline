@@ -23,7 +23,7 @@ multiSampled: true #Does the file contain multiple samples, true for yes and fal
 
 HTO: false #whether this should be HTO demultiplex 
 
-numberOfCells: 460000 #number of all cells in the input
+numberOfCells: 46000 #number of all cells in the input
 
 projectName: 354_cellranger_aggr #the name of the project, if just a number please put it in ""
 
