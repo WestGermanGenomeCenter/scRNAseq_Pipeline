@@ -27,6 +27,8 @@ if(config["HTO"]):
   assayName = "HTO"
   sampleType = "HTO"
 testClustersName = "plots/" + config["projectName"] + ".res_"
+print(config["otherMetaName"])
+print(otherMetaData)
 
 def get_inputs(wildcards):
   inputList = []
@@ -57,13 +59,13 @@ def get_inputs(wildcards):
             inputList = inputList + hf.createMultiSampleInput(projectDirectoryPath, "outputs/", sampleNames, ".doubR.rds")
           if conditions and config["otherMetaName"]:
             inputList.append(outputStart + ".preprocessedO.rds")
-#            inputList.append(outputStart + ".normalized.rds")
-#            inputList.append(outputStart + ".IntDimRed.rds")
-#            if config["integrationPCs"]:
-#              inputList.append(outputStart + ".umapped.rds")
-#              if config["findNeighborsPCs"] and config["choosableResolutions"]:
-#                if config["chosenResolution"]:
-#                  inputList.append(outputStart + ".clustered.rds")
+            inputList.append(outputStart + ".normalized.rds")
+            inputList.append(outputStart + ".IntDimRed.rds")
+            if config["integrationPCs"]:
+              inputList.append(outputStart + ".umapped.rds")
+              if config["findNeighborsPCs"] and config["choosableResolutions"]:
+                if config["chosenResolution"]:
+                  inputList.append(outputStart + ".clustered.rds")
 #                  inputList.append(outputStart + ".markerDisc.rds")
 #                  if config["multiSampled"]:
 #                    inputList.append(projectDirectoryPath + "csv/finishedDGE.txt")
@@ -191,8 +193,8 @@ rule metaData:
     projectDirPath=projectDirectoryPath,
     names = sampleNames,
     project = config["projectName"],
-    time=res.approxWalltime("meta", sampleType, num_cells, pOpt.addTime["meta"]),
-    mem=res.approxRAM("meta", sampleType, num_cells, pOpt.addRAM["meta"]),
+    time=res.approxWalltime("meta", sampleType, num_cells, additionalTime=pOpt.addTime["meta"]),
+    mem=res.approxRAM("meta", sampleType, num_cells, additionalRAM=pOpt.addRAM["meta"]),
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="metaData"),
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="metaData")
   conda:
@@ -214,8 +216,8 @@ rule demultiplexing:
     project = config["projectName"],
     assayname = assayName,
     names = sampleNames,
-    time=res.approxWalltime("demultiplex", sampleType, num_cells, pOpt.addTime["demux"]),
-    mem=res.approxRAM("demultiplex", sampleType, num_cells, pOpt.addRAM["demux"]),
+    time=res.approxWalltime("demultiplex", sampleType, num_cells, additionalTime=pOpt.addTime["demux"]),
+    mem=res.approxRAM("demultiplex", sampleType, num_cells, additionalRAM=pOpt.addRAM["demux"]),
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="demultiplexing"),
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="demultiplexing")
   conda:
@@ -236,8 +238,8 @@ rule mt_p1:
     projectDirPath = projectDirectoryPath,
     names ="{names}",
     pattern = config["pattern"],
-    time=res.approxWalltime("mt1", sampleType, num_cells, pOpt.addTime["mt1"]),
-    mem=res.approxRAM("mt1", sampleType, num_cells, pOpt.addRAM["mt1"]),
+    time=res.approxWalltime("mt1", sampleType, num_cells, additionalTime=pOpt.addTime["mt1"]),
+    mem=res.approxRAM("mt1", sampleType, num_cells, additionalRAM=pOpt.addRAM["mt1"]),
     error=expand("{projectDirPath}clusterLogs/{rule}.{{names}}.errors", projectDirPath=projectDirectoryPath, rule="mt_p1"),
     output=expand("{projectDirPath}clusterLogs/{rule}.{{names}}.output", projectDirPath=projectDirectoryPath, rule="mt_p1")
   conda:
@@ -258,8 +260,8 @@ rule mt_p2:
     projectDirPath = projectDirectoryPath,
     names ="{names}",
     samples = lambda wcs: sampleInputs[wcs.names]['mtCutoff'],
-    time=res.approxWalltime("mt2", sampleType, num_cells, pOpt.addTime["mt2"]),
-    mem=res.approxRAM("mt2", sampleType, num_cells, pOpt.addRAM["mt2"]),
+    time=res.approxWalltime("mt2", sampleType, num_cells, additionalTime=pOpt.addTime["mt2"]),
+    mem=res.approxRAM("mt2", sampleType, num_cells, additionalRAM=pOpt.addRAM["mt2"]),
     error=expand("{projectDirPath}clusterLogs/{rule}.{{names}}.errors", projectDirPath=projectDirectoryPath, rule="mt_p2"),
     output=expand("{projectDirPath}clusterLogs/{rule}.{{names}}.output", projectDirPath=projectDirectoryPath, rule="mt_p2")
   conda:
@@ -279,8 +281,8 @@ rule doubletRemovalElbowPlot:
   params:
     projectDirPath = projectDirectoryPath,
     names = "{names}",
-    time=res.approxWalltime("dbElb", sampleType, num_cells, pOpt.addTime["drElbowPlot"]),
-    mem=res.approxRAM("dbElb", sampleType, num_cells, pOpt.addRAM["drElbowPlot"]),
+    time=res.approxWalltime("dbElb", sampleType, num_cells, additionalTime=pOpt.addTime["drElbowPlot"]),
+    mem=res.approxRAM("dbElb", sampleType, num_cells, additionalRAM=pOpt.addRAM["drElbowPlot"]),
     error=expand("{projectDirPath}clusterLogs/{rule}.{{names}}.errors", projectDirPath=projectDirectoryPath, rule="doubletRemovalElbowPlot"),
     output=expand("{projectDirPath}clusterLogs/{rule}.{{names}}.output", projectDirPath=projectDirectoryPath, rule="doubletRemovalElbowPlot")
   conda:
@@ -302,8 +304,8 @@ rule doubletRemoval:
     names = "{names}",
     roundingValues = lambda wcs: sampleInputs[wcs.names]['expectedPercentDoublets'],
     dim_PCs = lambda wcs: sampleInputs[wcs.names]['dbElbowPlot'],
-    time=res.approxWalltime("dbRem", sampleType, num_cells, pOpt.addTime["doubletRem"]),
-    mem=res.approxRAM("dbRem", sampleType, num_cells, pOpt.addRAM["doubletRem"]),
+    time=res.approxWalltime("dbRem", sampleType, num_cells, additionalTime=pOpt.addTime["doubletRem"]),
+    mem=res.approxRAM("dbRem", sampleType, num_cells, additionalRAM=pOpt.addRAM["doubletRem"]),
     error=expand("{projectDirPath}clusterLogs/{rule}.{{names}}.errors", projectDirPath=projectDirectoryPath, rule="doubletRemoval"),
     output=expand("{projectDirPath}clusterLogs/{rule}.{{names}}.output", projectDirPath=projectDirectoryPath, rule="doubletRemoval")
   conda:
@@ -324,8 +326,8 @@ rule addTPsMerge:
     projectDirPath = projectDirectoryPath,
     meta = otherMetaData,
     metaName = config["otherMetaName"],
-    time=res.approxWalltime("merge", sampleType, num_cells, pOpt.addTime["addTPs"]),
-    mem=res.approxRAM("merge", sampleType, num_cells, pOpt.addRAM["addTPs"]),
+    time=res.approxWalltime("merge", sampleType, num_cells, additionalTime=pOpt.addTime["addTPs"]),
+    mem=res.approxRAM("merge", sampleType, num_cells, additionalRAM=pOpt.addRAM["addTPs"]),
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="addTPsMerge"),
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="addTPsMerge")
   conda:
@@ -344,8 +346,8 @@ rule SCTransformNormalization:
     expand("{projectDirPath}outputs/{project}.preprocessedO.rds", project=config["projectName"], projectDirPath=projectDirectoryPath)
   params:
     projectDirPath = projectDirectoryPath,
-    time=res.approxWalltime("sct", sampleType, num_cells, pOpt.addTime["SCT"]),
-    mem=res.approxRAM("sct", sampleType, num_cells, pOpt.addRAM["SCT"]),
+    time=res.approxWalltime("sct", sampleType, num_cells, additionalTime=pOpt.addTime["SCT"]),
+    mem=res.approxRAM("sct", sampleType, num_cells, additionalRAM=pOpt.addRAM["SCT"]),
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="SCTransformNormalization"),
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="SCTransformNormalization")
   conda:
@@ -366,8 +368,8 @@ rule IntegrationDimReduction:
     projectDirPath = projectDirectoryPath,
     project = config["projectName"],
     maxRAM = config["maxRAM"],
-    time=res.approxWalltime("integration", sampleType, num_cells, pOpt.addTime["IntegrDimRed"]),
-    mem=res.approxRAM("integration", sampleType, num_cells, pOpt.addRAM["IntegrDimRed"]),
+    time=res.approxWalltime("integration", sampleType, num_cells, additionalTime=pOpt.addTime["IntegrDimRed"]),
+    mem=res.approxRAM("integration", sampleType, num_cells, additionalRAM=pOpt.addRAM["IntegrDimRed"]),
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="IntegrationDimReduction"),
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="IntegrationDimReduction")
   conda:
@@ -388,8 +390,8 @@ rule RunUMAP:
     projectDirPath = projectDirectoryPath,
     project = config["projectName"],
     integrationPCs = config["integrationPCs"],
-    time=res.approxWalltime("UMAP", sampleType, num_cells, pOpt.addTime["UMAP"]),
-    mem=res.approxRAM("UMAP", sampleType, num_cells, pOpt.addRAM["UMAP"]),
+    time=res.approxWalltime("UMAP", sampleType, num_cells, additionalTime=pOpt.addTime["UMAP"]),
+    mem=res.approxRAM("UMAP", sampleType, num_cells, additionalRAM=pOpt.addRAM["UMAP"]),
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="RunUMAP"),
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="RunUMAP")
   conda:
@@ -411,8 +413,8 @@ rule testDiffClusterResolutions:
     project = config["projectName"],
     findNeighborsPCs = config["findNeighborsPCs"],
     resolutions = config["choosableResolutions"],
-    time=res.approxWalltime("tCluster", sampleType, num_cells, pOpt.addTime["testClustRes"]),
-    mem=res.approxRAM("tCluster", sampleType, num_cells, pOpt.addRAM["testClustRes"]),
+    time=res.approxWalltime("tCluster", sampleType, num_cells, additionalTime=pOpt.addTime["testClustRes"]),
+    mem=res.approxRAM("tCluster", sampleType, num_cells, additionalRAM=pOpt.addRAM["testClustRes"]),
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="testDiffClusterResolutions"),
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="testDiffClusterResolutions")
   conda:
@@ -435,8 +437,8 @@ rule useChosenClusterResolutions:
     findNeighborsPCs = config["findNeighborsPCs"],
     resolution = config["chosenResolution"],
     condition = config["otherMetaName"],
-    time=res.approxWalltime("cCluster", sampleType, num_cells, pOpt.addTime["useClusterRes"]),
-    mem=res.approxRAM("cCluster", sampleType, num_cells, pOpt.addRAM["useClusterRes"]),
+    time=res.approxWalltime("cCluster", sampleType, num_cells, additionalTime=pOpt.addTime["useClusterRes"]),
+    mem=res.approxRAM("cCluster", sampleType, num_cells, additionalRAM=pOpt.addRAM["useClusterRes"]),
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="useChosenClusterResolutions"),
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="useChosenClusterResolutions")
   conda:
@@ -457,8 +459,8 @@ rule multimodalAnalysis:
     projectDirPath = projectDirectoryPath,
     project = config["projectName"],
     assayname = assayName,
-    time=res.approxWalltime("mmodalAssay", sampleType, num_cells, pOpt.addTime["multimodal"]),
-    mem=res.approxRAM("mmodalAssay", sampleType, num_cells, pOpt.addRAM["multimodal"]),
+    time=res.approxWalltime("mmodalAssay", sampleType, num_cells, additionalTime=pOpt.addTime["multimodal"]),
+    mem=res.approxRAM("mmodalAssay", sampleType, num_cells, additionalRAM=pOpt.addRAM["multimodal"]),
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="multimodalAnalysis"),
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="multimodalAnalysis")
   conda:
@@ -478,8 +480,8 @@ rule markerDiscovery:
   params:
     projectDirPath = projectDirectoryPath,
     project = config["projectName"],
-    time=res.approxWalltime("marker", sampleType, num_cells, pOpt.addTime["markerDisc"]),
-    mem=res.approxRAM("marker", sampleType, num_cells, pOpt.addRAM["markerDisc"]),
+    time=res.approxWalltime("marker", sampleType, num_cells, additionalTime=pOpt.addTime["markerDisc"]),
+    mem=res.approxRAM("marker", sampleType, num_cells, additionalRAM=pOpt.addRAM["markerDisc"]),
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="markerDiscovery"),
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="markerDiscovery")
   conda:
@@ -502,8 +504,8 @@ rule cellCounting:
     resolution = config["chosenResolution"],
     multiSampled = config["multiSampled"],
     project = config["projectName"],
-    time=res.approxWalltime("count", sampleType, num_cells, pOpt.addTime["cellCount"]),
-    mem=res.approxRAM("count", sampleType, num_cells, pOpt.addRAM["cellCount"]),
+    time=res.approxWalltime("count", sampleType, num_cells, additionalTime=pOpt.addTime["cellCount"]),
+    mem=res.approxRAM("count", sampleType, num_cells, additionalRAM=pOpt.addRAM["cellCount"]),
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="cellCounting"),
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="cellCounting")
   conda:
@@ -526,8 +528,8 @@ rule DGE:
     metaCondition = config["otherMetaName"],
     metaIdent = otherMetaData,
     resolution = config["chosenResolution"],
-    time=res.approxWalltime("DGE", sampleType, num_cells, pOpt.addTime["DGE"]),
-    mem=res.approxRAM("DGE", sampleType, num_cells, pOpt.addRAM["DGE"]),
+    time=res.approxWalltime("DGE", sampleType, num_cells, additionalTime=pOpt.addTime["DGE"]),
+    mem=res.approxRAM("DGE", sampleType, num_cells, additionalRAM=pOpt.addRAM["DGE"]),
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="DGE"),
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="DGE")
   conda:
@@ -548,8 +550,8 @@ rule createShinyApp:
     projectDirPath = projectDirectoryPath,
     project = config["projectName"],
     multiSampled = config["multiSampled"],
-    time=res.approxWalltime("shiny", sampleType, num_cells, pOpt.addTime["shinyApp"]),
-    mem=res.approxRAM("shiny", sampleType, num_cells, pOpt.addRAM["shinyApp"]),
+    time=res.approxWalltime("shiny", sampleType, num_cells, additionalTime=pOpt.addTime["shinyApp"]),
+    mem=res.approxRAM("shiny", sampleType, num_cells, additionalRAM=pOpt.addRAM["shinyApp"]),
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="createShinyApp"),
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="createShinyApp")
   conda:
@@ -571,8 +573,8 @@ rule multimodalFeaturePlotting:
     projectDirPath = projectDirectoryPath,
     project = config["projectName"],
     assayname = assayName,
-    time=res.approxWalltime("mmodalplot", sampleType, num_cells, pOpt.addTime["multimodalPlot"]),
-    mem=res.approxRAM("mmodalplot", sampleType, num_cells, pOpt.addRAM["multimodalPlot"]),
+    time=res.approxWalltime("mmodalplot", sampleType, num_cells, additionalTime=pOpt.addTime["multimodalPlot"]),
+    mem=res.approxRAM("mmodalplot", sampleType, num_cells, additionalRAM=pOpt.addRAM["multimodalPlot"]),
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="multimodalFeaturePlotting"),
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="multimodalFeaturePlotting")
   conda:

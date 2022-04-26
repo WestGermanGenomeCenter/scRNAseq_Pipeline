@@ -16,8 +16,8 @@ addTime = {
     "mt2": 0,           #mt_p2
     "drElbowPlot": 0,   #doubletRemovalElbowPlot
     "doubletRem": 0,    #doubletRemoval
-    "addTPs": 0,        #addTPsMerge
-    "SCT": 0,           #SCTransformNormalization
+    "addTPs": 600,        #addTPsMerge
+    "SCT": 300,           #SCTransformNormalization
     "IntegrDimRed": 0,  #IntegrationDimReduction
     "UMAP": 0,          #RunUMAP
     "testClustRes": 0,  #testDiffClusterResolutions
@@ -34,10 +34,10 @@ addRAM = {
     "demux": 0,         #demultiplexing
     "mt1": 0,           #mt_p1
     "mt2": 0,           #mt_p2
-    "drElbowPlot": 0,   #doubletRemovalElbowPlot
+    "drElbowPlot": 20,   #doubletRemovalElbowPlot
     "doubletRem": 0,    #doubletRemoval
-    "addTPs": 0,        #addTPsMerge
-    "SCT": 0,           #SCTransformNormalization
+    "addTPs": 10,        #addTPsMerge
+    "SCT": 10,           #SCTransformNormalization
     "IntegrDimRed": 0,  #IntegrationDimReduction
     "UMAP": 0,          #RunUMAP
     "testClustRes": 0,  #testDiffClusterResolutions

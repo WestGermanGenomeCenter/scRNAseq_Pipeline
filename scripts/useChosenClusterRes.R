@@ -13,7 +13,11 @@ GE.integrated <- FindNeighbors(GE.integrated, dims=1:dimens)
 GE.integrated <- FindClusters(GE.integrated, resolution=resolution)
 plot_in_terminal(plotname=paste(projectDirPath, "plots/", project.name, ".labeledDimPlot.pdf", sep=""),
                  to_plot=DimPlot(GE.integrated, label=T))
-plot_in_terminal(plotname=paste(projectDirPath, "plots/", project.name, ".timedDimPlot.pdf", sep=""),
-                 to_plot=DimPlot(GE.integrated,split.by=condition))
+print(condition)
+for(i in 1:length(condition)) {
+    print(condition[[i]])
+    plot_in_terminal(plotname=paste(projectDirPath, "plots/", project.name, ".", condition[[i]], "DimPlot.pdf", sep=""),
+                 to_plot=DimPlot(GE.integrated,split.by=condition[[i]]))
+}
 
 saveRDS(GE.integrated, file=snakemake@output[[1]])
