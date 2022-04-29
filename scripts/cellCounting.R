@@ -20,21 +20,23 @@ if(snakemake@params[[4]]) {
   
   #Errorbars
   GE <- SplitObject(GE, split.by=condition)
-  ecount <- c()
+  df <- data.frame(ecount=numeric(0), condition.name=character(0), cluster.num=numeric(0))
   for(i in 1:length(GE)) { #split by condition
     e <- count_cells(seurat_object=GE[[i]], group_by_var="orig.ident", subgroup_var=res_ident)
-    c <- c(1:length(unique(e[[res_ident]])))
+    condition.name <- GE[[i]]@meta.data[[condition]][[1]]
     for(j in 1:length(unique(e[[res_ident]]))) {
       filteredE <- e[e[, res_ident] == j-1, ]$perc
       if(length(filteredE) < length(unique(e$orig.ident))) { #if some samples are not contained in clusters add zeroes
         filteredE <- c(filteredE, numeric(length(unique(e$orig.ident))-length(filteredE)) )
       }
-      c[[j]] <- sd(filteredE/100)
+      ecount <- sd(filteredE/100)
+      df <- rbind(df, data.frame(res_ident=j-1, condition.name, ecount))
     }
-    ecount <- c(ecount, c)
   }
-  ccount[[sdplus]] <- ccount[[freq]] + ecount
-  ccount[[sdminus]] <- ccount[[freq]] - ecount
+  colnames(df) <- c(res_ident, condition, "ecount")
+  ccount <- merge(df, ccount, by=c(res_ident, condition))
+  ccount[[sdplus]] <- ccount[[freq]] + ccount[["ecount"]]
+  ccount[[sdminus]] <- ccount[[freq]] - ccount[["ecount"]]
   
   #conditions together
   plot <- ggplot(ccount, aes_string(x=res_ident, y=freq, fill=condition)) + geom_bar(position=position_dodge(), stat="identity") + geom_errorbar(position=position_dodge(), aes_string(x=res_ident, ymin=sdminus, ymax=sdplus))
