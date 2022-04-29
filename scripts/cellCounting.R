@@ -58,3 +58,4 @@ if(snakemake@params[[4]]) {
   plot_in_terminal(plotname=paste(projectDirPath, "plots/", project, ".", condition, ".barplot.pdf", sep=""),
                    to_plot=plot)
 }
+write.csv(ccount, file=paste(projectDirPath, "csv/", project, ".cellCountingTable.csv", sep=""))

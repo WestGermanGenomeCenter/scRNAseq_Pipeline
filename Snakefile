@@ -66,31 +66,32 @@ def get_inputs(wildcards):
               if config["findNeighborsPCs"] and config["choosableResolutions"]:
                 if config["chosenResolution"]:
                   inputList.append(outputStart + ".clustered.rds")
-#                  inputList.append(outputStart + ".markerDisc.rds")
-#                  if config["multiSampled"]:
-#                    inputList.append(projectDirectoryPath + "csv/finishedDGE.txt")
-#                  if config["multimodal"] or config["HTO"]:
-#                    inputList.append(projectDirectoryPath + "plots/finishedFeatures.txt")
-#                  inputList.append(projectDirectoryPath + "shinyApp/" + "server.R")
-#                  inputList.append(projectDirectoryPath + "shinyApp/" + "ui.R")
-#                  inputList.append(projectDirectoryPath + "shinyApp/howToRunShinyAppOnYourOwnPC.txt")
-#                  if config["countIdents"]:
-#                    inputList.append(projectDirectoryPath + "plots/" + config["projectName"] + "." + config["otherMetaName"] + ".barplot.pdf")
-#                  else:
-#                    inputList.append(projectDirectoryPath + "workDirectory/countIdentsMissing.txt")
-#                else:
-#                  inputList + hf.createMultiSampleInput(projectDirectoryPath, testClustersName, config["choosableResolutions"], ".clusteredDimPlot.pdf")
-#                  inputList.append(projectDirectoryPath + "workDirectory/chosenResolutionMissing.txt")
-#              else:
-#                inputList.append(projectDirectoryPath + "workDirectory/resolutionsNeighPCsMissing.txt")
-#            else:
-#              inputList.append(projectDirectoryPath + "workDirectory/intPCsMissing.txt")
-#          else:
-#            inputList.append(projectDirectoryPath + "workDirectory/conditionInfosMissing.txt")
-#        else:
-#          inputList.append(projectDirectoryPath + "workDirectory/doubletInfosMissing.txt")
-#      else:
-#        inputList.append(projectDirectoryPath + "workDirectory/mtCutoffMissing.txt")
+                  inputList.append(outputStart + ".markerDisc.rds")
+                  if config["multiSampled"]:
+                    inputList.append(projectDirectoryPath + "csv/finishedDGE.txt")
+                  if config["multimodal"] or config["HTO"]:
+                    inputList.append(projectDirectoryPath + "plots/finishedFeatures.txt")
+                  inputList.append(projectDirectoryPath + "shinyApp/" + "server.R")
+                  inputList.append(projectDirectoryPath + "shinyApp/" + "ui.R")
+                  inputList.append(projectDirectoryPath + "shinyApp/howToRunShinyAppOnYourOwnPC.txt")
+                  if config["countIdents"]:
+                    #inputList.append(projectDirectoryPath + "plots/" + config["projectName"] + "." + config["otherMetaName"] + ".barplot.pdf")
+                    inputList += hf.createMultiSampleInput(projectDirectoryPath, "plots/" + config["projectName"] + ".", config["otherMetaName"], ".pdf", project=None)
+                  else:
+                    inputList.append(projectDirectoryPath + "workDirectory/countIdentsMissing.txt")
+                else:
+                  inputList + hf.createMultiSampleInput(projectDirectoryPath, testClustersName, config["choosableResolutions"], ".clusteredDimPlot.pdf")
+                  inputList.append(projectDirectoryPath + "workDirectory/chosenResolutionMissing.txt")
+              else:
+                inputList.append(projectDirectoryPath + "workDirectory/resolutionsNeighPCsMissing.txt")
+            else:
+              inputList.append(projectDirectoryPath + "workDirectory/intPCsMissing.txt")
+          else:
+            inputList.append(projectDirectoryPath + "workDirectory/conditionInfosMissing.txt")
+        else:
+          inputList.append(projectDirectoryPath + "workDirectory/doubletInfosMissing.txt")
+      else:
+        inputList.append(projectDirectoryPath + "workDirectory/mtCutoffMissing.txt")
     else:
       inputList.append("workDirectory/createDoubletEnv.txt")
       inputList.append("workDirectory/createShinyEnv.txt")
@@ -500,7 +501,7 @@ rule cellCounting:
     expand("{projectDirPath}outputs/{project}.markerDisc.rds", project=config["projectName"], projectDirPath=projectDirectoryPath)
   params:
     projectDirPath = projectDirectoryPath,
-    countIdents = config["otherMetaName"],
+    countIdents = "{condition}",
     resolution = config["chosenResolution"],
     multiSampled = config["multiSampled"],
     project = config["projectName"],
@@ -513,7 +514,7 @@ rule cellCounting:
   log:
     expand("{projectDirPath}logs/{rule}.log", projectDirPath=projectDirectoryPath, rule="cellCounting")
   output:
-    expand("{projectDirPath}plots/{project}.{condition}.barplot.pdf", project=config["projectName"], projectDirPath=projectDirectoryPath, condition=config["otherMetaName"])
+    expand("{projectDirPath}plots/{project}.{{condition}}.barplot.pdf", project=config["projectName"], projectDirPath=projectDirectoryPath, condition=config["otherMetaName"])
   script:
     "scripts/cellCounting.R"
 #  benchmark:
