@@ -2,7 +2,7 @@
 from cgitb import text
 
 
-files = ["counting-spec.yml", "devtools-spec.yml", "doublet-spec.yml", "env-spec.yml", "marker-spec.yml", "shiny-spec.yml"]
+files = ["addmeta-spec.yml", "counting-spec.yml", "devtools-spec.yml", "doublet-spec.yml", "env-spec.yml", "marker-spec.yml", "shiny-spec.yml"]
 
 bioconductorSeuratHelper = "\
   - bioconductor-biobase=2.54.0\n\
