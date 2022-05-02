@@ -76,7 +76,7 @@ def get_inputs(wildcards):
                   inputList.append(projectDirectoryPath + "shinyApp/howToRunShinyAppOnYourOwnPC.txt")
                   if config["countIdents"]:
                     #inputList.append(projectDirectoryPath + "plots/" + config["projectName"] + "." + config["otherMetaName"] + ".barplot.pdf")
-                    inputList += hf.createMultiSampleInput(projectDirectoryPath, "plots/" + config["projectName"] + ".", config["otherMetaName"], ".pdf", project=None)
+                    inputList += hf.createMultiSampleInput(projectDirectoryPath, "plots/" + config["projectName"] + ".", config["otherMetaName"], ".barplot.pdf", project=None)
                   else:
                     inputList.append(projectDirectoryPath + "workDirectory/countIdentsMissing.txt")
                 else:
@@ -507,12 +507,12 @@ rule cellCounting:
     project = config["projectName"],
     time=res.approxWalltime("count", sampleType, num_cells, additionalTime=pOpt.addTime["cellCount"]),
     mem=res.approxRAM("count", sampleType, num_cells, additionalRAM=pOpt.addRAM["cellCount"]),
-    error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="cellCounting"),
-    output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="cellCounting")
+    error=expand("{projectDirPath}clusterLogs/{rule}.{{condition}}.errors", projectDirPath=projectDirectoryPath, rule="cellCounting"),
+    output=expand("{projectDirPath}clusterLogs/{rule}.{{condition}}.output", projectDirPath=projectDirectoryPath, rule="cellCounting")
   conda:
     pOpt.countEnv
   log:
-    expand("{projectDirPath}logs/{rule}.log", projectDirPath=projectDirectoryPath, rule="cellCounting")
+    expand("{projectDirPath}logs/{rule}.{{condition}}.log", projectDirPath=projectDirectoryPath, rule="cellCounting")
   output:
     expand("{projectDirPath}plots/{project}.{{condition}}.barplot.pdf", project=config["projectName"], projectDirPath=projectDirectoryPath, condition=config["otherMetaName"])
   script:
