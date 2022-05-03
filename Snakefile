@@ -27,8 +27,8 @@ if(config["HTO"]):
   assayName = "HTO"
   sampleType = "HTO"
 testClustersName = "plots/" + config["projectName"] + ".res_"
-print(config["otherMetaName"])
-print(otherMetaData)
+#print(config["otherMetaName"])
+#print(otherMetaData)
 
 def get_inputs(wildcards):
   inputList = []
