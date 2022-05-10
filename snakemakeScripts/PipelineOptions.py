@@ -9,6 +9,7 @@ markerEnv = "envs/marker-spec.yml"      # "envs/marker"
 shinyEnv = "envs/shiny-spec.yml"        # "envs/shiny"
 
 #add additional Time and RAM if approximation was not enough
+#Time in seconds
 addTime = {
     "meta": 0,          #metaData
     "demux": 0,         #demultiplexing
@@ -29,6 +30,7 @@ addTime = {
     "shinyApp": 0,      #createShinyApp
     "multimodalPlot": 0 #multimodalFeaturePlotting
 }
+#RAM in GB
 addRAM = {
     "meta": 0,          #metaData
     "demux": 0,         #demultiplexing

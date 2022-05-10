@@ -7,6 +7,7 @@ GE.data <- snakemake@input
 #GE <- readRDS(paste("../", snakemake@input[[2]], sep=""))
 condition <- snakemake@params[[2]]
 condition.names <- snakemake@params[[3]]
+#condition.combis <- snakemake@params[[4]]
 print(condition)
 print(condition.names)
 sampleNum <- 0
@@ -24,19 +25,41 @@ for(i in 1:length(GE.data)) {
 num.conditions <- length(condition.names)
 if(num.conditions > 1) {
   for(i in 2:num.conditions) {
-    perms <- permutations(num.conditions, i, condition.names)
+    perms <- permutations(num.conditions, i, unlist(condition.names))
     print(perms)
-    for(j in 1:nrow(perms)) {
-      split.list <- SplitObject(GE, split.by=perms[[j]][[1]])
-      for(k in 2:ncol(perms)) {
-        for(l in 1:length(split.list)) {
-          tmp.list[[l]] <- (split.list[l], split.by=perms[[j]][[k]])
+    for(j in 1:length(GE.data)) {
+      for(k in 1:nrow(perms)) {
+        new.meta <- paste(perms[k,], collapse=".")
+        print(new.meta)
+        col.meta <- c(mode="character", length=ncol(perms))
+        for(l in 1:ncol(perms)) {
+          col.meta[[l]] <- GE.data[[j]]@meta.data[[perms[k,l]]][[1]]
         }
-        split.list <- unlist(tmp.list, recursive=TRUE)
+        meta <- paste(col.meta, collapse=".")
+        print(meta)
+        GE.data[[j]] <- AddMetaData(GE.data[[j]], metadata=meta, col.name=new.meta)
       }
     }
   }
 }
+#if(num.conditions > 1) {
+#  print(condition.combis)
+#  for(j in 1:length(GE.data)) {
+#    for(k in 1:nrow(condition.combis)) {
+#      new.meta <- condition.combis[[k]]
+#      print(new.meta)
+#      meta <- str_split(new.meta, ".")
+#      for(l in 1:ncol(meta)) {
+#        meta[[l]] <- GE.data[[j]]@meta.data[[meta[[l]]]][[1]]
+#      }
+#      meta <- paste(meta, collapse=".")
+#      print(meta)
+#      GE.data[[j]] <- AddMetaData(GE.data[[j]], metadata=meta, col.name=new.meta)
+#    }
+#  }
+#}
+
+
 
 print(head(GE.data[[1]]@meta.data))
 #print(GE)

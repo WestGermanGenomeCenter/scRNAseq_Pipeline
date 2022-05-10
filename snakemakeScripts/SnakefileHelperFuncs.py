@@ -1,7 +1,9 @@
 import os
 import hashlib
+import itertools
 from pickle import FALSE
 from collections import OrderedDict
+
 
 
 class MissingInputError(Exception):
@@ -78,4 +80,26 @@ def createMultiSampleInput(path, folder, samples, ending, project=None):
     ioputs.append(path + folder + str(i) + ending)
   if project: #Project is only not none at the very beginning of an not HTO, multimodal project
     ioputs.append(path + folder + project + ".rawData.rds")
+  return ioputs
+
+def createCombinations(conditions, combiOnly=False):
+  output = []
+  for i in range(1, len(conditions)+1):
+    output += itertools.combinations(conditions, i)
+  for i in range(0, len(output)):
+    output[i] = '.'.join(output[i])
+  if(combiOnly == False):
+    output = [o for o in output if o not in conditions]
+  print(output)
+  return output
+
+def createMultiMetaCountInput(path, folder, conditions, ending):
+  ioputs = []
+  for i in range(1, len(conditions)+1):
+    ioputs += itertools.permutations(conditions, i)
+  for i in range(0, len(ioputs)):
+    ioputs[i] = '.'.join(ioputs[i])
+  for i in range(0, len(ioputs)):
+    ioputs[i] = path + folder + ioputs[i] + ending
+  print(ioputs)
   return ioputs
