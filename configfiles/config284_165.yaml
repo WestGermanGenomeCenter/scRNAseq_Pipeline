@@ -25,34 +25,34 @@ sampleInputs:
     mtCutoff: 25
     expectedPercentDoublets: 0.075
     dbElbowPlot: 17
-    otherMetaData: Ablation
+    otherMetaData: [Ablation]
   - name: 284-2
     mtCutoff: 25
     expectedPercentDoublets: 0.075
     dbElbowPlot: 17
-    otherMetaData: Ablation
+    otherMetaData: [Ablation]
   - name: 284-3
     mtCutoff: 25
     expectedPercentDoublets: 0.075
     dbElbowPlot: 17
-    otherMetaData: Ablation
+    otherMetaData: [Ablation]
   - name: 284-4
     mtCutoff: 25
     expectedPercentDoublets: 0.075
     dbElbowPlot: 17
-    otherMetaData: Ablation
+    otherMetaData: [Ablation]
   - name: 284-5
     mtCutoff: 25
     expectedPercentDoublets: 0.075
     dbElbowPlot: 17
-    otherMetaData: Ablation
+    otherMetaData: [Ablation]
   - name: 284-6
     mtCutoff: 25
     expectedPercentDoublets: 0.075
     dbElbowPlot: 17
-    otherMetaData: Ablation
+    otherMetaData: [Ablation]
 
-otherMetaName: condition
+otherMetaName: [condition]
 
 integrationPCs: 30
 

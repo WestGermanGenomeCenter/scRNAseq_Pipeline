@@ -25,9 +25,9 @@ sampleInputs:
     mtCutoff: 25
     expectedPercentDoublets: 0.075
     dbElbowPlot: 17
-    otherMetaData: Ablation
+    otherMetaData: [Ablation]
 
-otherMetaName: condition
+otherMetaName: [condition]
 
 integrationPCs: 30
 

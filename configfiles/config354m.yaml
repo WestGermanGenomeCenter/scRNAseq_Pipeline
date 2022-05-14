@@ -11,7 +11,7 @@ maxRAM: 68719476736 #30GB RAM for IntegrationDimReduction, let X be the RAM you 
 
 workDirectory: workDirectory/ #can stay this way for now
 
-projectDirectoryPath: /scratch_gs/myhuy100/projects_experimental/354_cellranger/ #the (absolute) path where the output folder is going to be
+projectDirectoryPath: /scratch_gs/myhuy100/projects_experimental/354_cellranger_test/ #the (absolute) path where the output folder is going to be
 
 rawData: data/354_filtered_feature_bc_matrix/filtered_feature_bc_matrix/ #directory containing the cellranger outputs which serves as this pipelines input
 

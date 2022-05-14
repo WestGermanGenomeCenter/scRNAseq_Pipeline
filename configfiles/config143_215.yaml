@@ -25,9 +25,9 @@ sampleInputs:
     mtCutoff: 10
     expectedPercentDoublets: 0.02
     dbElbowPlot: 17
-    otherMetaData: Tag3
+    otherMetaData: [Tag3]
 
-otherMetaName: timepoint
+otherMetaName: [timepoint]
 
 integrationPCs: 30
 

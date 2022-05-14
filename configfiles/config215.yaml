@@ -25,34 +25,34 @@ sampleInputs:
     mtCutoff: 10
     expectedPercentDoublets: 0.02
     dbElbowPlot: 17
-    otherMetaData: Tag3
+    otherMetaData: [Tag3]
   - name: 215-1
     mtCutoff: 10
     expectedPercentDoublets: 0.01
     dbElbowPlot: 17
-    otherMetaData: Tag3
+    otherMetaData: [Tag3]
   - name: 215-2
     mtCutoff: 10
     expectedPercentDoublets: 0.016
-    otherMetaData: Tag3
+    otherMetaData: [Tag3]
     dbElbowPlot: 17
   - name: 215-3
     mtCutoff: 10
     expectedPercentDoublets: 0.016
     dbElbowPlot: 17
-    otherMetaData: Tag7
+    otherMetaData: [Tag7]
   - name: 215-4
     mtCutoff: 10
     expectedPercentDoublets: 0.016
     dbElbowPlot: 17
-    otherMetaData: Tag7
+    otherMetaData: [Tag7]
   - name: 215-5
     mtCutoff: 10
     expectedPercentDoublets: 0.016
     dbElbowPlot: 17
-    otherMetaData: Tag7
+    otherMetaData: [Tag7]
 
-otherMetaName: timepoint
+otherMetaName: [timepoint]
 
 integrationPCs: 30
 
