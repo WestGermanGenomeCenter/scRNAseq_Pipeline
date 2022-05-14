@@ -82,23 +82,19 @@ def createMultiSampleInput(path, folder, samples, ending, project=None):
     ioputs.append(path + folder + project + ".rawData.rds")
   return ioputs
 
-def createCombinations(conditions, combiOnly=False):
+def createCombinations(conditions, combiOnly=True):
   output = []
   for i in range(1, len(conditions)+1):
     output += itertools.combinations(conditions, i)
   for i in range(0, len(output)):
-    output[i] = '.'.join(output[i])
-  if(combiOnly == False):
+    output[i] = '_'.join(output[i])
+  if(combiOnly):
     output = [o for o in output if o not in conditions]
-  print(output)
+  #print(output)
   return output
 
 def createMultiMetaCountInput(path, folder, conditions, ending):
-  ioputs = []
-  for i in range(1, len(conditions)+1):
-    ioputs += itertools.permutations(conditions, i)
-  for i in range(0, len(ioputs)):
-    ioputs[i] = '.'.join(ioputs[i])
+  ioputs = createCombinations(conditions, combiOnly=False)
   for i in range(0, len(ioputs)):
     ioputs[i] = path + folder + ioputs[i] + ending
   print(ioputs)

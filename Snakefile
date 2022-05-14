@@ -59,33 +59,33 @@ def get_inputs(wildcards):
             inputList = inputList + hf.createMultiSampleInput(projectDirectoryPath, "outputs/", sampleNames, ".doubR.rds")
           if conditions and config["otherMetaName"]:
             inputList.append(outputStart + ".preprocessedO.rds")
-#            inputList.append(outputStart + ".normalized.rds")
-#            inputList.append(outputStart + ".IntDimRed.rds")
-#            if config["integrationPCs"]:
-#              inputList.append(outputStart + ".umapped.rds")
-#              if config["findNeighborsPCs"] and config["choosableResolutions"]:
-#                if config["chosenResolution"]:
-#                  inputList.append(outputStart + ".clustered.rds")
-#                  inputList.append(outputStart + ".markerDisc.rds")
-#                  if config["multiSampled"]:
-#                    inputList.append(projectDirectoryPath + "csv/finishedDGE.txt")
-#                  if config["multimodal"] or config["HTO"]:
-#                    inputList.append(projectDirectoryPath + "plots/finishedFeatures.txt")
-#                  inputList.append(projectDirectoryPath + "shinyApp/" + "server.R")
-#                  inputList.append(projectDirectoryPath + "shinyApp/" + "ui.R")
-#                  inputList.append(projectDirectoryPath + "shinyApp/howToRunShinyAppOnYourOwnPC.txt")
-#                  if config["countIdents"]:
-#                    #here all permutations are made
-#                    inputList += hf.createMultiMetaCountInput(projectDirectoryPath, "plots/" + config["projectName"] + ".", config["otherMetaName"], ".barplot.pdf")
-#                  else:
-#                    inputList.append(projectDirectoryPath + "workDirectory/countIdentsMissing.txt")
-#                else:
-#                  inputList + hf.createMultiSampleInput(projectDirectoryPath, testClustersName, config["choosableResolutions"], ".clusteredDimPlot.pdf")
-#                  inputList.append(projectDirectoryPath + "workDirectory/chosenResolutionMissing.txt")
-#              else:
-#                inputList.append(projectDirectoryPath + "workDirectory/resolutionsNeighPCsMissing.txt")
-#            else:
-#              inputList.append(projectDirectoryPath + "workDirectory/intPCsMissing.txt")
+            inputList.append(outputStart + ".normalized.rds")
+            inputList.append(outputStart + ".IntDimRed.rds")
+            if config["integrationPCs"]:
+              inputList.append(outputStart + ".umapped.rds")
+              if config["findNeighborsPCs"] and config["choosableResolutions"]:
+                if config["chosenResolution"]:
+                  inputList.append(outputStart + ".clustered.rds")
+                  inputList.append(outputStart + ".markerDisc.rds")
+                  if config["multiSampled"]:
+                    inputList.append(projectDirectoryPath + "csv/finishedDGE.txt")
+                  if config["multimodal"] or config["HTO"]:
+                    inputList.append(projectDirectoryPath + "plots/finishedFeatures.txt")
+                  inputList.append(projectDirectoryPath + "shinyApp/" + "server.R")
+                  inputList.append(projectDirectoryPath + "shinyApp/" + "ui.R")
+                  inputList.append(projectDirectoryPath + "shinyApp/howToRunShinyAppOnYourOwnPC.txt")
+                  if config["countIdents"]:
+                    #here all permutations are made
+                    inputList += hf.createMultiMetaCountInput(projectDirectoryPath, "plots/" + config["projectName"] + ".", config["otherMetaName"], ".barplot.pdf")
+                  else:
+                    inputList.append(projectDirectoryPath + "workDirectory/countIdentsMissing.txt")
+                else:
+                  inputList + hf.createMultiSampleInput(projectDirectoryPath, testClustersName, config["choosableResolutions"], ".clusteredDimPlot.pdf")
+                  inputList.append(projectDirectoryPath + "workDirectory/chosenResolutionMissing.txt")
+              else:
+                inputList.append(projectDirectoryPath + "workDirectory/resolutionsNeighPCsMissing.txt")
+            else:
+              inputList.append(projectDirectoryPath + "workDirectory/intPCsMissing.txt")
           else:
             inputList.append(projectDirectoryPath + "workDirectory/conditionInfosMissing.txt")
         else:
