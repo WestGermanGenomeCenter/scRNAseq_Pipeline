@@ -61,5 +61,3 @@ findNeighborsPCs: 27
 choosableResolutions: [0.5, 0.8, 0.7]
 
 chosenResolution: 0.5
-
-countIdents: [condition, orig.ident]

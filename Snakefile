@@ -74,11 +74,7 @@ def get_inputs(wildcards):
                   inputList.append(projectDirectoryPath + "shinyApp/" + "server.R")
                   inputList.append(projectDirectoryPath + "shinyApp/" + "ui.R")
                   inputList.append(projectDirectoryPath + "shinyApp/howToRunShinyAppOnYourOwnPC.txt")
-                  if config["countIdents"]:
-                    #here all permutations are made
-                    inputList += hf.createMultiMetaCountInput(projectDirectoryPath, "plots/" + config["projectName"] + ".", config["otherMetaName"], ".barplot.pdf")
-                  else:
-                    inputList.append(projectDirectoryPath + "workDirectory/countIdentsMissing.txt")
+                  inputList += hf.createMultiMetaCountInput(projectDirectoryPath, "plots/" + config["projectName"] + ".", config["otherMetaName"], ".barplot.pdf")
                 else:
                   inputList + hf.createMultiSampleInput(projectDirectoryPath, testClustersName, config["choosableResolutions"], ".clusteredDimPlot.pdf")
                   inputList.append(projectDirectoryPath + "workDirectory/chosenResolutionMissing.txt")
@@ -502,7 +498,7 @@ rule cellCounting:
     expand("{projectDirPath}outputs/{project}.markerDisc.rds", project=config["projectName"], projectDirPath=projectDirectoryPath)
   params:
     projectDirPath = projectDirectoryPath,
-    countIdents = "{condition}",
+    countCondition = "{condition}",
     resolution = config["chosenResolution"],
     multiSampled = config["multiSampled"],
     project = config["projectName"],
@@ -706,21 +702,4 @@ rule missingChosenResolution:
     temp(expand("{projectDirPath}workDirectory/chosenResolutionMissing.txt", projectDirPath=projectDirectoryPath))
   run:
     hf.raiseInputMissingException("errorMessage/chosenResolutionMissing.txt")
-    shell("touch {output}")
-
-rule missingCountIdents:
-  input:
-    expand("{projectDirPath}outputs/{project}.markerDisc.rds", project=config["projectName"], projectDirPath=projectDirectoryPath),
-    "errorMessage/countIdentsMissing.txt"
-  params:
-    mem="50MB",
-    time="0:01:00",
-    error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="missingCountIdents"),
-    output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="missingCountIdents")
-  log:
-    expand("{projectDirPath}logs/{rule}.log", projectDirPath=projectDirectoryPath, rule="missingCountIdents")
-  output:
-    temp(expand("{projectDirPath}workDirectory/countIdentsMissing.txt", projectDirPath=projectDirectoryPath))
-  run:
-    hf.raiseInputMissingException("errorMessage/countIdentsMissing.txt")
     shell("touch {output}")
