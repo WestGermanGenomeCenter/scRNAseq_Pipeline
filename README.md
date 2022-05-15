@@ -4,6 +4,8 @@
 The pipeline and this README.md is designed to work on the HPC of the HHU, Germany.
 General instructions for simply running with snakemake exist, but are very short and not completely tested yet.
 
+Update 15.05.2022: There has been a small change in the config.yaml format. For more information, checkout configfiles/config_example.yaml.
+
 ## Setup directory tree:
 ### the scRNAseq_Pipeline folder containing the pipeline
 |  
