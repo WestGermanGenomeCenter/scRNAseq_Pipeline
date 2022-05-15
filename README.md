@@ -17,6 +17,7 @@ Update 15.05.2022: There has been a small change in the config.yaml format. For 
 &nbsp;&nbsp;&nbsp;&nbsp;|- envs  
 &nbsp;&nbsp;&nbsp;&nbsp;|- errorMessage  
 &nbsp;&nbsp;&nbsp;&nbsp;|- scripts  
+&nbsp;&nbsp;&nbsp;&nbsp;|- snakemakeScripts  
 &nbsp;&nbsp;&nbsp;&nbsp;|- workDirectory  
   
 ### an example of an output folder
@@ -37,7 +38,9 @@ Note: Some of the folders may not exists if you download the repository. The pip
 - dependencies: folder in which the downloaded ShinyCell-master.zip and DoubletFinder-master.zip are to be stored
 - envs: containing the envs.yaml needed to use snakemake with conda-env via "--use-conda" option
 - errorMessage: containing the error messages
-- scripts: contains the R and python scripts the pipeline is made of
+- scripts: contains the R scripts used in the pipeline run
+- snakemakeScripts: contains the scripts used in the Snakefile
+- workDirectory: contains a txt file with instructions on how to run the shinyApp which is copied to the shinyApp/ folder containing the outputs
 
 - clusterLogs: directory containing logs created by using the pipeline in cluster mode
 - csv: contains the pipelines .csv outputs
@@ -90,12 +93,11 @@ On how to use the the pipeline see the last points of the HPC version.
 - After the pipeline is completely done running, use the exit command twice to first exit the snakemake-node and then your screen.
   (Use screen -list on the login-node to see the screens you have if you want to check if you forgot a screen).
 - You can run the pipeline with two different dataset inputs at the same time. Just create two screens with different names and run on the respective screens "bash clusterExecution.sh path/to/config1.yaml" and "path2/two/config2.yaml".
-- **Important**: The pipeline approximates the resources needed to request walltime and RAM from the HPC meaning there are times it won't ask for enough resources. I am working on a way to fix this and for the user to add additional Time and RAM onto the approximated, but for now you can simply increase the numberOfCells in the config.yaml to get more Time and RAM in case the pipeline stops because there was not enough. If there is a line with "PBS: job killed: walltime" at the end of an .errors file, then not enough walltime was requested. If near the end of the .errors file is a line with "/bin/bash: line 1:  ____ Killed" of something similar with "killed" then not enough RAM was requested. If this happens snakemake might lock the project folder. In this case use the resumePipeline.sh instead of the clusterExecution.sh to continue running the pipeline. You should be able to switch back to clusterExecution.sh after using resumePipeline.sh once unless the same error here happens again. resumePipeline.sh is used the same way as clusterExecution.sh.
+- **Important**: The pipeline approximates the resources needed to request walltime and RAM from the HPC meaning there are times it won't ask for enough resources. In the snakemakeScripts/ directory is now a Python script called "PipelineOptions.py" where you can add additional RAM or walltime. You could also simply increase "numberOfCells" in the config.yaml, but if you increase it too drastically (like to 400000 cells) then there will be an HPC error because more resources were requested than existing on the HPC. If the screen with says the job is still running even though the HPC says the job is not running then not enough walltime was requested. **For some reason the HPC no longer throws an error when time runs out before the job is finished.** If near the end of the .errors file is a line with "/bin/bash: line 1:  ____ Killed" or something similar with "killed" then not enough RAM was requested. If this happens snakemake might lock the project folder. In this case use the resumePipeline.sh instead of the clusterExecution.sh to continue running the pipeline. You should be able to switch back to clusterExecution.sh after using resumePipeline.sh once unless the same error here happens again. resumePipeline.sh is used the same way as clusterExecution.sh.
 - **Important**: Sometimes there is an issue with the .sh files when moving from a windows PC to the HPC. In this case use the command "sed -i 's/\r//g' filename.sh" to fix the 'command \r not found' error with bash.
 
 ## To-do list:
-- Check Solo
-- change addTSPandMerge
-- multiple conditions
-- change approximation for multisampled but not multimodeled
-- remove part of code from snakemake for customizability
+- documentation
+- DGE
+- new and improved benchmarking
+- Seurat parallelization with future.
