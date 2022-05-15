@@ -27,7 +27,8 @@ numberOfCells: 460000 #number of all cells in the input
 
 projectName: 354_cellranger_aggr #the name of the project
 
-otherMetaName: [Donor, condition] #condition name, e.g. timepoint
+otherMetaName: [Donor, condition] #names of conditions, e.g. [timepoint]
+                                  #can be multiple, can be a single, MUST BE in in these brackets: []
 
 choosableResolutions: [0.5, 0.8] #list of resolutions for clustering, choose one after checking plots and fill out "chosenResolution"
 
@@ -41,7 +42,10 @@ findNeighborsPCs: 19 #dimensions of reduction to use as input for SNN-Graph cons
 #when more than two samples, copy and paste the second point, unitl you can fill out the information for every sample
 sampleInputs:
   - name: 10X_Sample3 #name of the sample in cellranger, possible pattern: project_number-1, project_number-2, ..., project_number-n
-    otherMetaData: [HC1, Putamen] #name of condition value, for timepoint example, here day1, next sample day1, sample after that day5, ...
+    otherMetaData: [HC1, Putamen] #name of values of conditions, for timepoint example, here day1, next sample day1, sample after that day5, ...
+                                  #must also be in brackets and the order must match the one in "otherMetaName"
+                                  #e.g. HC1 is first and belongs to Donor, Putamen is second and belongs to condition
+                                  #in otherMetaData, Donor is first, then comes condition, etc.
     expectedPercentDoublets: 0.05 #expected percent of doublets, is dependent on the number of cells in a sample
     mtCutoff: 100 #percentage cutoff chosen during pipeline run -> e.g., 10, remove all cells with more than 10% mitochondrial counts,
               #check plots ending with ".mt.before.pdf"

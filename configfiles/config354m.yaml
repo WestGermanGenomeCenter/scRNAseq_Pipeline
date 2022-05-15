@@ -28,6 +28,7 @@ numberOfCells: 46000 #number of all cells in the input
 projectName: 354_cellranger_aggr #the name of the project, if just a number please put it in ""
 
 otherMetaName: [Donor, samplename, condition] #condition name, e.g. timepoint
+                                              #can be multiple, can be a single, MUST BE in in these brackets: []
 
 choosableResolutions: [0.5, 0.8] #list of resolutions for clustering, choose one after checking plots and fill out "chosenResolution"
 
