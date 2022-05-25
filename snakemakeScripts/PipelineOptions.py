@@ -11,14 +11,14 @@ shinyEnv = "envs/shiny-spec.yml"        # "envs/shiny"
 #add additional Time and RAM if approximation was not enough
 #Time in seconds
 addTime = {
-    "meta": 0,          #metaData
+    "meta": 500,          #metaData
     "demux": 0,         #demultiplexing
     "mt1": 0,           #mt_p1
     "mt2": 0,           #mt_p2
     "drElbowPlot": 0,   #doubletRemovalElbowPlot
     "doubletRem": 0,    #doubletRemoval
-    "addTPs": 0,        #addTPsMerge
-    "SCT": 0,           #SCTransformNormalization
+    "addTPs": 2500,        #addTPsMerge
+    "SCT": 300,           #SCTransformNormalization
     "IntegrDimRed": 0,  #IntegrationDimReduction
     "UMAP": 0,          #RunUMAP
     "testClustRes": 0,  #testDiffClusterResolutions
@@ -26,7 +26,7 @@ addTime = {
     "multimodal": 0,    #multimodalAnalysis
     "markerDisc": 0,    #markerDiscovery
     "cellCount": 0,     #cellCounting
-    "DGE": 0,           #DGE
+    "DGE": 2500,           #DGE
     "shinyApp": 0,      #createShinyApp
     "multimodalPlot": 0 #multimodalFeaturePlotting
 }
@@ -36,18 +36,18 @@ addRAM = {
     "demux": 0,         #demultiplexing
     "mt1": 0,           #mt_p1
     "mt2": 0,           #mt_p2
-    "drElbowPlot": 0,   #doubletRemovalElbowPlot
+    "drElbowPlot": 20,   #doubletRemovalElbowPlot
     "doubletRem": 0,    #doubletRemoval
-    "addTPs": 0,        #addTPsMerge
-    "SCT": 0,           #SCTransformNormalization
+    "addTPs": 20,        #addTPsMerge
+    "SCT": 10,           #SCTransformNormalization
     "IntegrDimRed": 0,  #IntegrationDimReduction
     "UMAP": 0,          #RunUMAP
     "testClustRes": 0,  #testDiffClusterResolutions
     "useClusterRes": 0, #useChosenClusterResolutions
     "multimodal": 0,    #multimodalAnalysis
-    "markerDisc": 0,    #markerDiscovery
+    "markerDisc": 20,    #markerDiscovery
     "cellCount": 0,     #cellCounting
-    "DGE": 0,           #DGE
+    "DGE": 20,           #DGE
     "shinyApp": 0,      #createShinyApp
     "multimodalPlot": 0 #multimodalFeaturePlotting
 }

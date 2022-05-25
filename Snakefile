@@ -68,7 +68,7 @@ def get_inputs(wildcards):
                   inputList.append(outputStart + ".clustered.rds")
                   inputList.append(outputStart + ".markerDisc.rds")
                   if config["multiSampled"]:
-                    inputList.append(projectDirectoryPath + "csv/finishedDGE.txt")
+                    inputList += [projectDirectoryPath + "csv/" + x + ".finishedDGE.txt" for x in hf.createCombinations(config["otherMetaName"], combiOnly=False)]
                   if config["multimodal"] or config["HTO"]:
                     inputList.append(projectDirectoryPath + "plots/finishedFeatures.txt")
                   inputList.append(projectDirectoryPath + "shinyApp/" + "server.R")
@@ -523,19 +523,19 @@ rule DGE:
   params:
     projectDirPath = projectDirectoryPath,
     project = config["projectName"],
-    metaCondition = config["otherMetaName"],
-    metaIdent = otherMetaData,
+    metaCondition = "{condition}",
+    metaIdent = 1,
     resolution = config["chosenResolution"],
     time=res.approxWalltime("DGE", sampleType, num_cells, additionalTime=pOpt.addTime["DGE"]),
     mem=res.approxRAM("DGE", sampleType, num_cells, additionalRAM=pOpt.addRAM["DGE"]),
-    error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="DGE"),
-    output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="DGE")
+    error=expand("{projectDirPath}clusterLogs/{rule}.{{condition}}.errors", projectDirPath=projectDirectoryPath, rule="DGE"),
+    output=expand("{projectDirPath}clusterLogs/{rule}.{{condition}}.output", projectDirPath=projectDirectoryPath, rule="DGE")
   conda:
     pOpt.markerEnv
   log:
-    expand("{projectDirPath}logs/{rule}.log", projectDirPath=projectDirectoryPath, rule="DGE")
+    expand("{projectDirPath}logs/{rule}.{{condition}}.log", projectDirPath=projectDirectoryPath, rule="DGE")
   output:
-    expand("{projectDirPath}csv/finishedDGE.txt", projectDirPath=projectDirectoryPath)
+    expand("{projectDirPath}csv/{{condition}}.finishedDGE.txt", projectDirPath=projectDirectoryPath)
   script:
     "scripts/DGE.R"
 #  benchmark:
