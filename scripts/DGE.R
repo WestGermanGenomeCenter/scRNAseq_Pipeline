@@ -50,6 +50,6 @@ for(i in 0:len) {
 }
 
 
-connection <- file(paste(projectDirPath, "csv/", condition, "/", condition, ".finishedDGE.txt", sep=""))
+connection <- file(snakemake@output[[1]])
 writeLines(txtContent, connection)
 close(connection)
