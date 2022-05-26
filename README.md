@@ -6,6 +6,8 @@ General instructions for simply running with snakemake exist, but are very short
 
 Update 15.05.2022: There has been a small change in the config.yaml format. For more information, checkout configfiles/config_example.yaml.
 
+Update 26.05.2022: Fix the issue with the DGE rule that came with the change from the 15.05.2022.
+
 ## Setup directory tree:
 ### the scRNAseq_Pipeline folder containing the pipeline
 |  
