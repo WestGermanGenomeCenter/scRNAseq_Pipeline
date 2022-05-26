@@ -98,6 +98,6 @@ On how to use the the pipeline see the last points of the HPC version.
 
 ## To-do list:
 - documentation
-- DGE
+- DGE (reparation almost done, HTO does not perform DGE, might need to fix that)
 - new and improved benchmarking
 - Seurat parallelization with future.

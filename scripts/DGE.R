@@ -40,7 +40,7 @@ for(i in 0:len) {
         cluster.markers <- FindMarkers(cluster, only.pos=F, min.pct=0.25, logfc.threshold=0.25, ident.1=condition1, ident.2=condition2)
         #plot_in_terminal(plotname=paste("../projects/", projectDirName, "plots/", i, ".cluster.", condition1, ".", condition2, ".dge.pdf", sep=""),
         #                 to_plot=DoHeatmap(cluster, features=cluster.markers))
-        write.csv(cluster.markers, file=paste(projectDirPath, "csv/", project, ".compare.", condition1, ".", condition2, ".cluster", i, ".markers.csv", sep=""))
+        write.csv(cluster.markers, file=paste(projectDirPath, "csv/", condition, "/", project, ".compare.", condition1, ".", condition2, ".cluster", i, ".markers.csv", sep=""))
       }
     }
   } else {
@@ -50,6 +50,6 @@ for(i in 0:len) {
 }
 
 
-connection <- file(paste(projectDirPath, "csv/", condition, ".finishedDGE.txt", sep=""))
+connection <- file(paste(projectDirPath, "csv/", condition, "/", condition, ".finishedDGE.txt", sep=""))
 writeLines(txtContent, connection)
 close(connection)

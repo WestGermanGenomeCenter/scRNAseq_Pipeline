@@ -68,7 +68,8 @@ def get_inputs(wildcards):
                   inputList.append(outputStart + ".clustered.rds")
                   inputList.append(outputStart + ".markerDisc.rds")
                   if config["multiSampled"]:
-                    inputList += [projectDirectoryPath + "csv/" + x + ".finishedDGE.txt" for x in hf.createCombinations(config["otherMetaName"], combiOnly=False)]
+                    for i in hf.createCombinations(config["otherMetaName"], combiOnly=False):
+                      inputList.append(projectDirectoryPath + "csv/" + i + "/" + i + ".finishedDGE.txt")
                   if config["multimodal"] or config["HTO"]:
                     inputList.append(projectDirectoryPath + "plots/finishedFeatures.txt")
                   inputList.append(projectDirectoryPath + "shinyApp/" + "server.R")
@@ -535,7 +536,7 @@ rule DGE:
   log:
     expand("{projectDirPath}logs/{rule}.{{condition}}.log", projectDirPath=projectDirectoryPath, rule="DGE")
   output:
-    expand("{projectDirPath}csv/{{condition}}.finishedDGE.txt", projectDirPath=projectDirectoryPath)
+    expand("{projectDirPath}csv/{{condition}}/{{condition}}.finishedDGE.txt", projectDirPath=projectDirectoryPath)
   script:
     "scripts/DGE.R"
 #  benchmark:
