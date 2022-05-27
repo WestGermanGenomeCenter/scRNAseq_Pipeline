@@ -1,4 +1,5 @@
 library(Seurat)
+#library(future)
 source("scripts/helperFunctions.R")
 setwd(paste(snakemake@params[[1]], "workDirectory/", sep=""))
 

@@ -51,3 +51,25 @@ addRAM = {
     "shinyApp": 0,      #createShinyApp
     "multimodalPlot": 0 #multimodalFeaturePlotting
 }
+#Number of cores for rules
+#Rules marked with X, don't work with future, more than one cores are useless
+numCores = {
+    "meta": 1,          # X, metaData
+    "demux": 1,         # X, demultiplexing
+    "mt1": 1,           # X, mt_p1
+    "mt2": 1,           # X, mt_p2
+    "drElbowPlot": 1,   # X, doubletRemovalElbowPlot
+    "doubletRem": 1,    # X, doubletRemoval
+    "addTPs": 1,        # X, addTPsMerge
+    "SCT": 1,           # X, SCTransformNormalization
+    "IntegrDimRed": 1,  #    IntegrationDimReduction
+    "UMAP": 1,          # X, RunUMAP
+    "testClustRes": 1,  #    testDiffClusterResolutions
+    "useClusterRes": 1, # X, useChosenClusterResolutions
+    "multimodal": 1,    # X, multimodalAnalysis
+    "markerDisc": 2,    #    markerDiscovery
+    "cellCount": 1,     # X, cellCounting
+    "DGE": 2,           #    DGE
+    "shinyApp": 1,      # X, createShinyApp
+    "multimodalPlot": 1 # X, multimodalFeaturePlotting
+}

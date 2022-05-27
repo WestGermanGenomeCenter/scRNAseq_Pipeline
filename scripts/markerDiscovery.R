@@ -10,7 +10,9 @@ print(Idents(GE))
 print(length(GE))
 
 DefaultAssay(GE) <- "RNA"
+#Future
 GE <- NormalizeData(GE, assay="RNA")
+#Future
 GE <- ScaleData(GE, assay="RNA")
 print(GE)
 GE.markers <- FindAllMarkers(GE, only.pos=TRUE, min.pct=0.25, logfc.threshold=0.25)

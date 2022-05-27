@@ -13,6 +13,7 @@ if(length(GE.data) > 1) {
   GE.features <- SelectIntegrationFeatures(GE.data, nfeatures=3000)
   options(future.globals.maxSize=maxRAM)
   GE.data <- PrepSCTIntegration(object.list=GE.data, anchor.features=GE.features, verbose=FALSE)
+  #Future
   GE.anchors <- FindIntegrationAnchors(object.list=GE.data, normalization.method="SCT", anchor.features=GE.features, verbose=FALSE)
   GE.integrated <- IntegrateData(anchorset=GE.anchors, normalization.method="SCT", verbose=FALSE)
   GE.integrated <- RunPCA(GE.integrated, verbose=FALSE)

@@ -11,6 +11,7 @@ GE.integrated <- FindNeighbors(GE.integrated, dims=1:dimens)
 
 for(i in 1:length(resolutions)) {
   resolution <- resolutions[[i]]
+  #Future when multiples are use
   GE.integrated <- FindClusters(GE.integrated, resolution=resolution)
   plot_in_terminal(plotname=paste(projectDirPath, "plots/", project.name, ".res_", resolution, ".clusteredDimPlot.pdf", sep=""),
                   to_plot=DimPlot(GE.integrated))
