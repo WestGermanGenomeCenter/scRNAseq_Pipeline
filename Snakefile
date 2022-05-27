@@ -113,6 +113,7 @@ rule createDoubletEnv:
   conda:
     pOpt.doubletEnv
   params:
+    cores=1,
     mem="2GB",
     time="0:01:59",
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="createDoubletEnv"),
@@ -130,6 +131,7 @@ rule createCountEnv:
   conda:
     pOpt.countEnv
   params:
+    cores=1,
     mem="2GB",
     time="0:01:59",
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="createCountEnv"),
@@ -147,6 +149,7 @@ rule createShinyEnv:
   conda:
     pOpt.shinyEnv
   params:
+    cores=1,
     mem="2GB",
     time="0:01:59",
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="createShinyEnv"),
@@ -169,6 +172,7 @@ rule installMissingPackages:
     shiny = hf.findHash(pOpt.shinyEnv),
     count = hf.findHash(pOpt.countEnv),
     hhuHPC = config["HHU_HPC"],
+    cores=1,
     mem="2GB",
     time="0:30:00",
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="installMissingPackages"),
@@ -191,6 +195,7 @@ rule metaData:
     projectDirPath=projectDirectoryPath,
     names = sampleNames,
     project = config["projectName"],
+    cores=pOpt.numCores["meta"],
     time=res.approxWalltime("meta", sampleType, num_cells, additionalTime=pOpt.addTime["meta"]),
     mem=res.approxRAM("meta", sampleType, num_cells, additionalRAM=pOpt.addRAM["meta"]),
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="metaData"),
@@ -214,6 +219,7 @@ rule demultiplexing:
     project = config["projectName"],
     assayname = assayName,
     names = sampleNames,
+    cores=pOpt.numCores["demux"],
     time=res.approxWalltime("demultiplex", sampleType, num_cells, additionalTime=pOpt.addTime["demux"]),
     mem=res.approxRAM("demultiplex", sampleType, num_cells, additionalRAM=pOpt.addRAM["demux"]),
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="demultiplexing"),
@@ -236,6 +242,7 @@ rule mt_p1:
     projectDirPath = projectDirectoryPath,
     names ="{names}",
     pattern = config["pattern"],
+    cores=pOpt.numCores["mt1"],
     time=res.approxWalltime("mt1", sampleType, num_cells, additionalTime=pOpt.addTime["mt1"]),
     mem=res.approxRAM("mt1", sampleType, num_cells, additionalRAM=pOpt.addRAM["mt1"]),
     error=expand("{projectDirPath}clusterLogs/{rule}.{{names}}.errors", projectDirPath=projectDirectoryPath, rule="mt_p1"),
@@ -258,6 +265,7 @@ rule mt_p2:
     projectDirPath = projectDirectoryPath,
     names ="{names}",
     samples = lambda wcs: sampleInputs[wcs.names]['mtCutoff'],
+    cores=pOpt.numCores["mt2"],
     time=res.approxWalltime("mt2", sampleType, num_cells, additionalTime=pOpt.addTime["mt2"]),
     mem=res.approxRAM("mt2", sampleType, num_cells, additionalRAM=pOpt.addRAM["mt2"]),
     error=expand("{projectDirPath}clusterLogs/{rule}.{{names}}.errors", projectDirPath=projectDirectoryPath, rule="mt_p2"),
@@ -279,6 +287,7 @@ rule doubletRemovalElbowPlot:
   params:
     projectDirPath = projectDirectoryPath,
     names = "{names}",
+    cores=pOpt.numCores["drElbowPlot"],
     time=res.approxWalltime("dbElb", sampleType, num_cells, additionalTime=pOpt.addTime["drElbowPlot"]),
     mem=res.approxRAM("dbElb", sampleType, num_cells, additionalRAM=pOpt.addRAM["drElbowPlot"]),
     error=expand("{projectDirPath}clusterLogs/{rule}.{{names}}.errors", projectDirPath=projectDirectoryPath, rule="doubletRemovalElbowPlot"),
@@ -302,6 +311,7 @@ rule doubletRemoval:
     names = "{names}",
     roundingValues = lambda wcs: sampleInputs[wcs.names]['expectedPercentDoublets'],
     dim_PCs = lambda wcs: sampleInputs[wcs.names]['dbElbowPlot'],
+    cores=pOpt.numCores["doubletRem"],
     time=res.approxWalltime("dbRem", sampleType, num_cells, additionalTime=pOpt.addTime["doubletRem"]),
     mem=res.approxRAM("dbRem", sampleType, num_cells, additionalRAM=pOpt.addRAM["doubletRem"]),
     error=expand("{projectDirPath}clusterLogs/{rule}.{{names}}.errors", projectDirPath=projectDirectoryPath, rule="doubletRemoval"),
@@ -325,6 +335,7 @@ rule addTPsMerge:
     meta = otherMetaData,
     metaName = config["otherMetaName"],
     condCombi = hf.createCombinations(config["otherMetaName"]),
+    cores=pOpt.numCores["addTPs"],
     time=res.approxWalltime("merge", sampleType, num_cells, additionalTime=pOpt.addTime["addTPs"]),
     mem=res.approxRAM("merge", sampleType, num_cells, additionalRAM=pOpt.addRAM["addTPs"]),
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="addTPsMerge"),
@@ -345,6 +356,7 @@ rule SCTransformNormalization:
     expand("{projectDirPath}outputs/{project}.preprocessedO.rds", project=config["projectName"], projectDirPath=projectDirectoryPath)
   params:
     projectDirPath = projectDirectoryPath,
+    cores=pOpt.numCores["SCT"],
     time=res.approxWalltime("sct", sampleType, num_cells, additionalTime=pOpt.addTime["SCT"]),
     mem=res.approxRAM("sct", sampleType, num_cells, additionalRAM=pOpt.addRAM["SCT"]),
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="SCTransformNormalization"),
@@ -367,6 +379,7 @@ rule IntegrationDimReduction:
     projectDirPath = projectDirectoryPath,
     project = config["projectName"],
     maxRAM = config["maxRAM"],
+    cores = pOpt.numCores["IntegrDimRed"],
     time=res.approxWalltime("integration", sampleType, num_cells, additionalTime=pOpt.addTime["IntegrDimRed"]),
     mem=res.approxRAM("integration", sampleType, num_cells, additionalRAM=pOpt.addRAM["IntegrDimRed"]),
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="IntegrationDimReduction"),
@@ -389,6 +402,7 @@ rule RunUMAP:
     projectDirPath = projectDirectoryPath,
     project = config["projectName"],
     integrationPCs = config["integrationPCs"],
+    cores = pOpt.numCores["UMAP"],
     time=res.approxWalltime("UMAP", sampleType, num_cells, additionalTime=pOpt.addTime["UMAP"]),
     mem=res.approxRAM("UMAP", sampleType, num_cells, additionalRAM=pOpt.addRAM["UMAP"]),
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="RunUMAP"),
@@ -412,6 +426,7 @@ rule testDiffClusterResolutions:
     project = config["projectName"],
     findNeighborsPCs = config["findNeighborsPCs"],
     resolutions = config["choosableResolutions"],
+    cores = pOpt.numCores["testClustRes"],
     time=res.approxWalltime("tCluster", sampleType, num_cells, additionalTime=pOpt.addTime["testClustRes"]),
     mem=res.approxRAM("tCluster", sampleType, num_cells, additionalRAM=pOpt.addRAM["testClustRes"]),
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="testDiffClusterResolutions"),
@@ -436,6 +451,7 @@ rule useChosenClusterResolutions:
     findNeighborsPCs = config["findNeighborsPCs"],
     resolution = config["chosenResolution"],
     condition = config["otherMetaName"],
+    cores = pOpt.numCores["useClusterRes"],
     time=res.approxWalltime("cCluster", sampleType, num_cells, additionalTime=pOpt.addTime["useClusterRes"]),
     mem=res.approxRAM("cCluster", sampleType, num_cells, additionalRAM=pOpt.addRAM["useClusterRes"]),
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="useChosenClusterResolutions"),
@@ -458,6 +474,7 @@ rule multimodalAnalysis:
     projectDirPath = projectDirectoryPath,
     project = config["projectName"],
     assayname = assayName,
+    cores = pOpt.numCores["multimodal"],
     time=res.approxWalltime("mmodalAssay", sampleType, num_cells, additionalTime=pOpt.addTime["multimodal"]),
     mem=res.approxRAM("mmodalAssay", sampleType, num_cells, additionalRAM=pOpt.addRAM["multimodal"]),
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="multimodalAnalysis"),
@@ -479,6 +496,7 @@ rule markerDiscovery:
   params:
     projectDirPath = projectDirectoryPath,
     project = config["projectName"],
+    cores = pOpt.numCores["markerDisc"],
     time=res.approxWalltime("marker", sampleType, num_cells, additionalTime=pOpt.addTime["markerDisc"]),
     mem=res.approxRAM("marker", sampleType, num_cells, additionalRAM=pOpt.addRAM["markerDisc"]),
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="markerDiscovery"),
@@ -503,6 +521,7 @@ rule cellCounting:
     resolution = config["chosenResolution"],
     multiSampled = config["multiSampled"],
     project = config["projectName"],
+    cores = pOpt.numCores["cellCount"],
     time=res.approxWalltime("count", sampleType, num_cells, additionalTime=pOpt.addTime["cellCount"]),
     mem=res.approxRAM("count", sampleType, num_cells, additionalRAM=pOpt.addRAM["cellCount"]),
     error=expand("{projectDirPath}clusterLogs/{rule}.{{condition}}.errors", projectDirPath=projectDirectoryPath, rule="cellCounting"),
@@ -525,8 +544,8 @@ rule DGE:
     projectDirPath = projectDirectoryPath,
     project = config["projectName"],
     metaCondition = "{condition}",
-    metaIdent = 1,
     resolution = config["chosenResolution"],
+    cores = pOpt.numCores["DGE"],
     time=res.approxWalltime("DGE", sampleType, num_cells, additionalTime=pOpt.addTime["DGE"]),
     mem=res.approxRAM("DGE", sampleType, num_cells, additionalRAM=pOpt.addRAM["DGE"]),
     error=expand("{projectDirPath}clusterLogs/{rule}.{{condition}}.errors", projectDirPath=projectDirectoryPath, rule="DGE"),
@@ -549,6 +568,7 @@ rule createShinyApp:
     projectDirPath = projectDirectoryPath,
     project = config["projectName"],
     multiSampled = config["multiSampled"],
+    cores = pOpt.numCores["shinyApp"],
     time=res.approxWalltime("shiny", sampleType, num_cells, additionalTime=pOpt.addTime["shinyApp"]),
     mem=res.approxRAM("shiny", sampleType, num_cells, additionalRAM=pOpt.addRAM["shinyApp"]),
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="createShinyApp"),
@@ -572,6 +592,7 @@ rule multimodalFeaturePlotting:
     projectDirPath = projectDirectoryPath,
     project = config["projectName"],
     assayname = assayName,
+    cores = pOpt.numCores["multimodalPlot"],
     time=res.approxWalltime("mmodalplot", sampleType, num_cells, additionalTime=pOpt.addTime["multimodalPlot"]),
     mem=res.approxRAM("mmodalplot", sampleType, num_cells, additionalRAM=pOpt.addRAM["multimodalPlot"]),
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="multimodalFeaturePlotting"),
@@ -589,6 +610,7 @@ rule multimodalFeaturePlotting:
 
 rule copyShinyAppInstructions:
   params:
+    cores=1,
     mem="50MB",
     time="0:01:00",
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="copyInstructions"),
@@ -608,6 +630,7 @@ rule missingMTCutoff:
     expand("{projectDirPath}outputs/{project}.mt_p1.rds", project=config["projectName"], projectDirPath=projectDirectoryPath),
     "errorMessage/mtCutoffMissing.txt"
   params:
+    cores=1,
     mem="50MB",
     time="0:01:00",
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="missingMTCutoff"),
@@ -625,6 +648,7 @@ rule missingDoubletInfos:
     expand("{projectDirPath}outputs/{project}.SCTranDB.rds", project=config["projectName"], projectDirPath=projectDirectoryPath),
     "errorMessage/doubletInfosMissing.txt"
   params:
+    cores=1,
     mem="50MB",
     time="0:01:00",
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="missingDoubletInfos"),
@@ -642,6 +666,7 @@ rule missingConditions:
     expand("{projectDirPath}outputs/{project}.doubR.rds", project=config["projectName"], projectDirPath=projectDirectoryPath),
     "errorMessage/conditionInfosMissing.txt"
   params:
+    cores=1,
     mem="50MB",
     time="0:01:00",
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="missingConditions"),
@@ -659,6 +684,7 @@ rule missingIntPCs:
     expand("{projectDirPath}outputs/{project}.IntDimRed.rds", project=config["projectName"], projectDirPath=projectDirectoryPath),
     "errorMessage/intPCsMissing.txt"
   params:
+    cores=1,
     mem="50MB",
     time="0:01:00",
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="missingIntPCs"),
@@ -676,6 +702,7 @@ rule missingResolutionsNeighPC:
     expand("{projectDirPath}outputs/{project}.umapped.rds", project=config["projectName"], projectDirPath=projectDirectoryPath),
     "errorMessage/resolutionsNeighPCsMissing.txt"
   params:
+    cores=1,
     mem="50MB",
     time="0:01:00",
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="missingResolutionsNeighPC"),
@@ -693,6 +720,7 @@ rule missingChosenResolution:
     hf.createMultiSampleInput(projectDirectoryPath, testClustersName, config["choosableResolutions"], ".clusteredDimPlot.pdf"),
     "errorMessage/chosenResolutionMissing.txt"
   params:
+    cores=1,
     mem="50MB",
     time="0:01:00",
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="missingChosenResolution"),

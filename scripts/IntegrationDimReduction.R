@@ -1,10 +1,12 @@
 library(Seurat)
+#library(future)
 source("scripts/helperFunctions.R")
 setwd(paste(snakemake@params[[1]], "workDirectory/", sep=""))
 
 project.name <- snakemake@params[[2]]
 projectDirPath <- snakemake@params[[1]]
 maxRAM <- snakemake@params[[3]]
+cores <- snakemake@params[[4]]
 
 GE.data <- readRDS(snakemake@input[[1]])
 print(Idents(GE.data[[1]]))
@@ -13,7 +15,7 @@ if(length(GE.data) > 1) {
   GE.features <- SelectIntegrationFeatures(GE.data, nfeatures=3000)
   options(future.globals.maxSize=maxRAM)
   GE.data <- PrepSCTIntegration(object.list=GE.data, anchor.features=GE.features, verbose=FALSE)
-  #Future
+  #plan("multiprocess", workers=cores)
   GE.anchors <- FindIntegrationAnchors(object.list=GE.data, normalization.method="SCT", anchor.features=GE.features, verbose=FALSE)
   GE.integrated <- IntegrateData(anchorset=GE.anchors, normalization.method="SCT", verbose=FALSE)
   GE.integrated <- RunPCA(GE.integrated, verbose=FALSE)
