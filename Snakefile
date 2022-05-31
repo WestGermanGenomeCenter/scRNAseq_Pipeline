@@ -209,7 +209,7 @@ rule metaData:
   script:
     "scripts/MetaData.R"
 #  benchmark:
-#    repeat("benchmarks/benchmark284_215_multimod/1_meta.txt", 3)
+#    repeat(expand("{benchmarks/{project}/00_meta.txt", project=config["projectName"]), 3)
 
 rule demultiplexing:
   input:
@@ -233,7 +233,7 @@ rule demultiplexing:
   script:
     "scripts/demultiplexing.R"
 #  benchmark:
-#    repeat("benchmarks/benchmark284_215_multimod/97_demux_umap.txt", 3)
+#    repeat(expand("{benchmarks/{project}/01_demux.txt", project=config["projectName"]), 3)
 
 rule mt_p1:
   input:
@@ -256,7 +256,7 @@ rule mt_p1:
   script:
     "scripts/mt_p1.R"
 #  benchmark:
-#    repeat("benchmarks/benchmark284_215_multimod/2_mt1.txt", 3)
+#    repeat(expand("{benchmarks/{project}/02_mt1.{{names}}.txt", project=config["projectName"]), 3)
 
 rule mt_p2:
   input: 
@@ -279,7 +279,7 @@ rule mt_p2:
   script:
     "scripts/mt_p2.R"
 #  benchmark:
-#    repeat("benchmarks/benchmark284_215_multimod/3_mt2.txt", 3)
+#    repeat(expand("{benchmarks/{project}/03_mt2.{{names}}.txt", project=config["projectName"]), 3)
 
 rule doubletRemovalElbowPlot:
   input:
@@ -301,7 +301,7 @@ rule doubletRemovalElbowPlot:
   script:
     "scripts/DBElbowPlotter.R"
 #  benchmark:
-#    repeat("benchmarks/benchmark284_215_multimod/4_dbElbow.txt", 3)
+#    repeat(expand("{benchmarks/{project}/04_dbElb.{{names}}.txt", project=config["projectName"]), 3)
 
 rule doubletRemoval:
   input:
@@ -325,7 +325,7 @@ rule doubletRemoval:
   script:
     "scripts/DoubletRemoval.R"
 #  benchmark:
-#    repeat("benchmarks/benchmark284_215_multimod/5_dbRem.txt", 3)
+#    repeat(expand("{benchmarks/{project}/05_dbRem.{{names}}.txt", project=config["projectName"]), 3)
 
 rule addTPsMerge:
   input:
@@ -349,7 +349,7 @@ rule addTPsMerge:
   script:
     "scripts/addMetaAndMerge.R"
 #  benchmark:
-#    repeat("benchmarks/benchmark284_215_multimod/6_merge.txt", 3)
+#    repeat(expand("{benchmarks/{project}/06_merge.txt", project=config["projectName"]), 3)
   
 rule SCTransformNormalization:
   input:
@@ -370,7 +370,7 @@ rule SCTransformNormalization:
   script:
     "scripts/SCTraNormalisation.R"
 #  benchmark:
-#    repeat("benchmarks/benchmark284_215_multimod/7_sctran.txt", 3)
+#    repeat(expand("{benchmarks/{project}/07_SCT.txt", project=config["projectName"]), 3)
 
 rule IntegrationDimReduction:
   input:
@@ -393,7 +393,7 @@ rule IntegrationDimReduction:
   script:
     "scripts/IntegrationDimReduction.R"
 #  benchmark:
-#    repeat("benchmarks/benchmark284_215_multimod/8_integration.txt", 3)
+#    repeat(expand("{benchmarks/{project}/08_integDimRed.txt", project=config["projectName"]), 3)
 
 rule RunUMAP:
   input:
@@ -416,7 +416,7 @@ rule RunUMAP:
   script:
     "scripts/RunUMAP.R"
 #  benchmark:
-#    repeat("benchmarks/benchmark284_215_multimod/9_UMAP.txt", 3)
+#    repeat(expand("{benchmarks/{project}/09_umap.txt", project=config["projectName"]), 3)
 
 rule testDiffClusterResolutions:
   input:
@@ -440,7 +440,7 @@ rule testDiffClusterResolutions:
   script:
     "scripts/testDiffClusterRes.R"
 #  benchmark:
-#    repeat("benchmarks/benchmark284_215_multimod/9_3_testcluster.txt", 3)
+#    repeat(expand("{benchmarks/{project}/10_testRes.txt", project=config["projectName"]), 3)
 
 rule useChosenClusterResolutions:
   input:
@@ -465,7 +465,7 @@ rule useChosenClusterResolutions:
   script:
     "scripts/useChosenClusterRes.R"
 #  benchmark:
-#    repeat("benchmarks/benchmark284_215_multimod/90_chosenCluster.txt", 3)
+#    repeat(expand("{benchmarks/{project}/11_useRes.txt", project=config["projectName"]), 3)
 
 rule multimodalAnalysis:
   input:
@@ -488,7 +488,7 @@ rule multimodalAnalysis:
   script:
     "scripts/addAssayData.R"
 #  benchmark:
-#    repeat("benchmarks/benchmark284_215_multimod/81_addAssay.txt", 3)
+#    repeat(expand("{benchmarks/{project}/12_addAssay.txt", project=config["projectName"]), 3)
 
 rule markerDiscovery:
   input:
@@ -510,7 +510,7 @@ rule markerDiscovery:
   script:
     "scripts/markerDiscovery.R"
 #  benchmark:
-#    repeat("benchmarks/benchmark284_215_multimod/91_marker.txt", 3)
+#    repeat(expand("{benchmarks/{project}/13_markerDisc.txt", project=config["projectName"]), 3)
 
 rule cellCounting:
   input:
@@ -535,7 +535,7 @@ rule cellCounting:
   script:
     "scripts/cellCounting.R"
 #  benchmark:
-#    repeat("benchmarks/benchmark284_215_multimod/92_ncCount.txt", 3)
+#    repeat(expand("{benchmarks/{project}/14_cCount.{{condition}}.txt", project=config["projectName"]), 3)
 
 rule DGE:
   input:
@@ -559,7 +559,7 @@ rule DGE:
   script:
     "scripts/DGE.R"
 #  benchmark:
-#    repeat("benchmarks/benchmark284_215_multimod/94_dge.txt", 3)
+#    repeat(expand("{benchmarks/{project}/15_dge.{{condition}}.txt", project=config["projectName"]), 3)
 
 rule createShinyApp:
   input:
@@ -583,7 +583,7 @@ rule createShinyApp:
   script:
     "scripts/createShinyApp.R"
 #  benchmark:
-#    repeat("benchmarks/benchmark284_215_multimod/95_shiny.txt", 3)
+#    repeat(expand("{benchmarks/{project}/16_shiny.txt", project=config["projectName"]), 3)
 
 rule multimodalFeaturePlotting:
   input:
@@ -606,7 +606,7 @@ rule multimodalFeaturePlotting:
   script:
     "scripts/multimodalFeaturePlotting.R"
 #  benchmark:
-#    repeat("benchmarks/benchmark284_215_multimod/96_multimodalplot.txt", 3)
+#    repeat(expand("{benchmarks/{project}/17_mmPlot.txt", project=config["projectName"]), 3)
 
 rule copyShinyAppInstructions:
   params:

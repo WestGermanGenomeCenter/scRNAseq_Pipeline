@@ -7,11 +7,12 @@ sample.name <- snakemake@params[[2]]
 projectDirPath <- snakemake@params[[1]]
 expectedDoubletPercent <- snakemake@params[[3]]
 dims_PC <- snakemake@params[[4]]
+cores <- snakemake@params[[5]]
 pN <- 0.25
   
 
 GE.data <- RunUMAP(GE.data, dims=1:dims_PC, verbose=FALSE)
-doublet_paramSweep <- paramSweep_v3(GE.data, PCs=1:dims_PC, sct=TRUE)
+doublet_paramSweep <- paramSweep_v3(GE.data, PCs=1:dims_PC, sct=TRUE, num.cores=cores)
 doublet_sweep.stats <- summarizeSweep(doublet_paramSweep, GT=F)
 doublet_BCmvn <- find.pK(doublet_sweep.stats)
 homotypic.prop <- modelHomotypic(GE.data@meta.data$seurat_clusters)
