@@ -4,53 +4,53 @@ maxRAM: 32212254720 #30GB RAM
 
 workDirectory: workDirectory/
 
-rawData: data/284_filtered_feature_bc_matrix/filtered_feature_bc_matrix/
+rawData: data/165_cellranger_aggr/filtered_feature_bc_matrix/
 
-projectName: "284_165"
+projectName: "165mm"
 
-projectDirectoryPath: /scratch_gs/myhuy100/projects_experimental/284_cellranger_2/
+projectDirectoryPath: /scratch_gs/myhuy100/projects_experimental/165mm_cellranger/
 
 pattern: "^mt-"
 
 multimodal: true
 
-multiSampled: false
+multiSampled: true
 
-HTO: true
+HTO: false
 
-numberOfCells: 2625
+numberOfCells: 66040
 
 sampleInputs:
-  - name: 284-1
+  - name: 165-1
     mtCutoff: 25
     expectedPercentDoublets: 0.075
     dbElbowPlot: 17
     otherMetaData: [Ablation]
-  - name: 284-2
+  - name: 165-2
+    mtCutoff: 25
+    expectedPercentDoublets: 0.11
+    dbElbowPlot: 17
+    otherMetaData: [sham]
+  - name: 165-3
+    mtCutoff: 25
+    expectedPercentDoublets: 0.11
+    dbElbowPlot: 17
+    otherMetaData: [Ablation]
+  - name: 165-4
     mtCutoff: 25
     expectedPercentDoublets: 0.075
     dbElbowPlot: 17
     otherMetaData: [Ablation]
-  - name: 284-3
+  - name: 165-5
+    mtCutoff: 25
+    expectedPercentDoublets: 0.05
+    dbElbowPlot: 17
+    otherMetaData: [sham]
+  - name: 165-6
     mtCutoff: 25
     expectedPercentDoublets: 0.075
     dbElbowPlot: 17
-    otherMetaData: [Ablation]
-  - name: 284-4
-    mtCutoff: 25
-    expectedPercentDoublets: 0.075
-    dbElbowPlot: 17
-    otherMetaData: [Ablation]
-  - name: 284-5
-    mtCutoff: 25
-    expectedPercentDoublets: 0.075
-    dbElbowPlot: 17
-    otherMetaData: [Ablation]
-  - name: 284-6
-    mtCutoff: 25
-    expectedPercentDoublets: 0.075
-    dbElbowPlot: 17
-    otherMetaData: [Ablation]
+    otherMetaData: [sham]
 
 otherMetaName: [condition]
 

@@ -6,9 +6,9 @@ workDirectory: workDirectory/
 
 rawData: data/143_filtered_feature_bc_matrix/filtered_feature_bc_matrix/
 
-projectName: "143"
+projectName: "143_165ms"
 
-projectDirectoryPath: /scratch_gs/myhuy100/projects_experimental/143_cellranger_2/
+projectDirectoryPath: /scratch_gs/myhuy100/projects_experimental/143ms_cellranger_2/
 
 pattern: "^mt-"
 

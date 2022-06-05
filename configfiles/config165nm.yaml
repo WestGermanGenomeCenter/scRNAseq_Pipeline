@@ -6,13 +6,13 @@ workDirectory: workDirectory/
 
 rawData: data/165_cellranger_aggr/filtered_feature_bc_matrix/
 
-projectName: "165"
+projectName: "165nm"
 
-projectDirectoryPath: /scratch_gs/myhuy100/projects_experimental/165_cellranger/
+projectDirectoryPath: /scratch_gs/myhuy100/projects_experimental/165nm_cellranger/
 
 pattern: "^mt-"
 
-multimodal: true
+multimodal: false
 
 multiSampled: true
 

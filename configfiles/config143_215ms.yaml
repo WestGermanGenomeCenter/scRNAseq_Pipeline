@@ -4,24 +4,24 @@ maxRAM: 32212254720 #30GB RAM
 
 workDirectory: workDirectory/
 
-rawData: data/305_filtered_feature_bc_matrix/filtered_feature_bc_matrix/
+rawData: data/143_filtered_feature_bc_matrix/filtered_feature_bc_matrix/
 
-projectName: "305_215"
+projectName: "143_215ms"
 
-projectDirectoryPath: /scratch_gs/myhuy100/projects_experimental/305_cellranger/
+projectDirectoryPath: /scratch_gs/myhuy100/projects_experimental/143ms_cellranger
 
 pattern: "^mt-"
 
-multimodal: false
+multimodal: true
 
 multiSampled: false
 
 HTO: false
 
-numberOfCells: 4302
+numberOfCells: 7757
 
 sampleInputs:
-  - name: 305-1
+  - name: 143-1
     mtCutoff: 10
     expectedPercentDoublets: 0.02
     dbElbowPlot: 17

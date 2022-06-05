@@ -6,7 +6,7 @@ workDirectory: workDirectory/
 
 rawData: data/305_filtered_feature_bc_matrix/filtered_feature_bc_matrix/
 
-projectName: "305"
+projectName: "305_165"
 
 projectDirectoryPath: /scratch_gs/myhuy100/projects_experimental/305_cellranger_2/
 

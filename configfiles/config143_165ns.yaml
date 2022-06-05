@@ -6,13 +6,13 @@ workDirectory: workDirectory/
 
 rawData: data/143_filtered_feature_bc_matrix/filtered_feature_bc_matrix/
 
-projectName: "143"
+projectName: "143_165ns"
 
-projectDirectoryPath: /scratch_gs/myhuy100/projects_experimental/143_cellranger
+projectDirectoryPath: /scratch_gs/myhuy100/projects_experimental/143ns_cellranger_2/
 
 pattern: "^mt-"
 
-multimodal: true
+multimodal: false
 
 multiSampled: false
 
@@ -22,17 +22,17 @@ numberOfCells: 7757
 
 sampleInputs:
   - name: 143-1
-    mtCutoff: 10
-    expectedPercentDoublets: 0.02
+    mtCutoff: 25
+    expectedPercentDoublets: 0.075
     dbElbowPlot: 17
-    otherMetaData: [Tag3]
+    otherMetaData: [Ablation]
 
-otherMetaName: [timepoint]
+otherMetaName: [condition]
 
 integrationPCs: 30
 
-findNeighborsPCs: 25
+findNeighborsPCs: 27
 
 choosableResolutions: [0.5, 0.8, 0.7]
 
-chosenResolution: 0.8
+chosenResolution: 0.5

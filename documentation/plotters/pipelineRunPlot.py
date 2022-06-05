@@ -1,0 +1,140 @@
+import networkx as nx
+
+pipelineRun = nx.MultiDiGraph()
+pipelineRun.add_nodes_from([
+    #actual rules
+    ("cellRanger folder", {"fontname": "calibri", "shape": "folder"}),
+    ("metaData", {"fontname": "calibri"}),
+    ("demultiplexing", {"fontname": "calibri"}),
+    ("mt_p1", {"fontname": "calibri"}),
+    ("mt_p2", {"fontname": "calibri"}),
+    ("doubletRemovalElbowPlot", {"fontname": "calibri"}),
+    ("doubletRemoval", {"fontname": "calibri"}),
+    ("addTPsMerge", {"fontname": "calibri"}),
+    ("SCTransformNormalization", {"fontname": "calibri"}),
+    ("IntegrationDimReduction", {"fontname": "calibri"}),
+    ("RunUMAP", {"fontname": "calibri"}),
+    ("testDiffClusterResolutions", {"fontname": "calibri"}),
+    ("useChosenClusterResolutions", {"fontname": "calibri"}),
+    ("markerDiscovery", {"fontname": "calibri"}),
+    ("cellCounting", {"fontname": "calibri"}),
+    ("createShinyApp", {"fontname": "calibri"}),
+    ("DGE", {"fontname": "calibri"}),
+    ("multimodalFeaturePlotting", {"fontname": "calibri"}),
+])
+pipelineRun.add_edges_from([
+    # HTO
+    ("cellRanger folder", "demultiplexing", {"color": "green", "style": "dashed"}),
+    ("demultiplexing", "mt_p1", {"color": "green"}),
+    ("mt_p1", "mt_p2", {"color": "green", "style": "dashed"}),
+    ("mt_p2", "doubletRemovalElbowPlot", {"color": "green", "style": "dashed"}),
+    ("doubletRemovalElbowPlot", "addTPsMerge", {"color": "green", "style": "dashed", "fontname": "calibri",
+                                                "label": "otherMetaName", "fontcolor": "darkgoldenrod"}),
+    ("addTPsMerge", "SCTransformNormalization", {"color": "green"}),
+    ("SCTransformNormalization", "IntegrationDimReduction", {"color": "green"}),
+    ("IntegrationDimReduction", "RunUMAP", {"color": "green", "style": "dashed"}),
+    ("RunUMAP", "testDiffClusterResolutions", {"color": "green", "style": "dashed"}),
+    ("RunUMAP", "useChosenClusterResolutions", {"color": "green", "style": "dashed"}),
+    ("useChosenClusterResolutions", "markerDiscovery", {"color": "green"}),
+    ("markerDiscovery", "cellCounting", {"color": "green"}),
+    ("markerDiscovery", "createShinyApp", {"color": "green"}),
+    ("markerDiscovery", "DGE", {"color": "green"}),
+    # not multimodal
+    ("cellRanger folder", "metaData", {"color": "blue", "style": "dashed"}),
+    ("metaData", "mt_p1", {"color": "blue"}),
+    ("mt_p1", "mt_p2", {"color": "blue", "style": "dashed"}),
+    ("mt_p2", "doubletRemovalElbowPlot", {"color": "blue", "style": "dashed"}),
+    ("doubletRemovalElbowPlot", "doubletRemoval", {"color": "blue", "style": "dashed", "fontname": "calibri",
+                                                   "label": "sampleInputs.expectedPercentDoublets", "fontcolor": "darkgoldenrod"}),
+    ("doubletRemoval", "addTPsMerge", {"color": "blue", "style": "dashed"}),
+    ("addTPsMerge", "SCTransformNormalization", {"color": "blue"}),
+    ("SCTransformNormalization", "IntegrationDimReduction", {"color": "blue"}),
+    ("IntegrationDimReduction", "RunUMAP", {"color": "blue", "style": "dashed"}),
+    ("RunUMAP", "testDiffClusterResolutions", {"color": "blue", "style": "dashed"}),
+    ("RunUMAP", "useChosenClusterResolutions", {"color": "blue", "style": "dashed"}),
+    ("useChosenClusterResolutions", "markerDiscovery", {"color": "blue"}),
+    ("markerDiscovery", "cellCounting", {"color": "blue"}),
+    ("markerDiscovery", "createShinyApp", {"color": "blue"}),
+    ("markerDiscovery", "DGE", {"color": "navy"}),
+    # multimodal
+    ("cellRanger folder", "metaData", {"color": "red", "style": "dashed", "fontname": "calibri",
+                                        "label": "min necessary input", "fontcolor": "darkgoldenrod"}),
+    ("metaData", "mt_p1", {"color": "red"}),
+    ("metaData", "multimodalAnalysis", {"color": "red"}),
+    ("mt_p1", "mt_p2", {"color": "red", "style": "dashed"}),
+    ("mt_p2", "doubletRemovalElbowPlot", {"color": "red", "style": "dashed"}),
+    ("doubletRemovalElbowPlot", "doubletRemoval", {"color": "red", "style": "dashed", "label": ""}),
+    ("doubletRemoval", "addTPsMerge", {"color": "red", "style": "dashed",
+                                       "label": "otherMetaName", "fontcolor": "darkgoldenrod"}),
+    ("addTPsMerge", "SCTransformNormalization", {"color": "red"}),
+    ("SCTransformNormalization", "IntegrationDimReduction", {"color": "red"}),
+    ("IntegrationDimReduction", "RunUMAP", {"color": "red", "style": "dashed"}),
+    ("RunUMAP", "testDiffClusterResolutions", {"color": "red", "style": "dashed"}),
+    ("RunUMAP", "useChosenClusterResolutions", {"color": "red", "style": "dashed"}),
+    ("useChosenClusterResolutions", "multimodalAnalysis", {"color": "red"}),
+    ("multimodalAnalysis", "markerDiscovery", {"color": "red"}),
+    ("markerDiscovery", "multimodalFeaturePlotting", {"color": "red"}),
+    ("markerDiscovery", "cellCounting", {"color": "red"}),
+    ("markerDiscovery", "createShinyApp", {"color": "red"}),
+    ("markerDiscovery", "DGE", {"color": "darkred"}),
+])
+# labels
+pipelineRun.add_edges_from([
+    ("mt_p1", "mt_p2", {"color": "white", "style": "dashed", "fontname": "calibri",
+                        "label": "sampleInputs.mtCutoff", "fontcolor": "darkgoldenrod"}),
+    ("mt_p2", "doubletRemovalElbowPlot", {"color": "white", "style": "dashed", "fontname": "calibri",
+                                          "label": "sampleInputs.dbElbowPlot", "fontcolor": "darkgoldenrod"}),
+    ("IntegrationDimReduction", "RunUMAP", {"color": "white", "style": "dashed", "label": "integrationPCs",
+                                            "fontcolor": "darkgoldenrod"}),
+    ("RunUMAP", "testDiffClusterResolutions", {"color": "white", "style": "dashed", "fontname": "calibri",
+                                               "label": "choosableResolutions", "fontcolor": "darkgoldenrod"}),
+    ("RunUMAP", "useChosenClusterResolutions", {"color": "white", "style": "dashed", "fontname": "calibri",
+                                                "label": "chosenResolution", "fontcolor": "darkgoldenrod"}),
+])
+pipelineRun.add_nodes_from([
+    ("l1", {"color": "white", "fontcolor": "white"}),
+    ("l2", {"color": "white", "fontcolor": "white"}),
+    ("ns1", {"color": "white", "fontcolor": "white"}),
+    ("ns2", {"color": "white", "fontcolor": "white"}),
+    ("nm1", {"color": "white", "fontcolor": "white"}),
+    ("nm2", {"color": "white", "fontcolor": "white"}),
+    ("ms1", {"color": "white", "fontcolor": "white"}),
+    ("ms2", {"color": "white", "fontcolor": "white"}),
+    ("mm1", {"color": "white", "fontcolor": "white"}),
+    ("mm2", {"color": "white", "fontcolor": "white"}),
+    ("hto1", {"color": "white", "fontcolor": "white"}),
+    ("hto2", {"color": "white", "fontcolor": "white"}),
+    ("i1", {"color": "white", "fontcolor": "white"}),
+    ("i2", {"color": "white", "fontcolor": "white"}),
+])
+pipelineRun.add_edges_from([
+    # Legend as Subgraph
+    ("l1", "l2", {"color": "white", "label": "Legend:", "fontname": "calibri"}),
+    ("ns1", "ns2", {"color": "blue", "label": "all\nnon-multimodal", "fontname": "calibri"}),
+    ("ns2", "nm1", {"color": "white"}),
+    ("nm1", "nm2", {"color": "navy", "label": "multi-sampled\nnon-multimodal", "fontname": "calibri"}),
+    ("ms1", "ms2", {"color": "red", "label": "all\nmultimodal", "fontname": "calibri"}),
+    ("ms2", "mm1", {"color": "white"}),
+    ("mm1", "mm2", {"color": "darkred", "label": "multi-sampled\nmultimodal", "fontname": "calibri"}),
+    ("hto1", "hto2", {"color": "green", "label": "HTO", "fontname": "calibri"}),
+    ("hto2", "i1", {"color": "white"}),
+    ("i1", "i2", {"color": "black", "style": "dashed",
+                  "label": "config\ninput\nneeded", "fontname": "calibri", "fontcolor": "darkgoldenrod"}),    #stoppers
+])
+#pipelineRun.add_nodes_from([
+#    #stopper rules
+#    ("missingMTCutoff", {"fontname": "calibri", "shape": "doubleoctagon"}),
+#    ("missingDoubletInfos", {"fontname": "calibri", "shape": "doubleoctagon"}),
+#    ("missingConditions", {"fontname": "calibri", "shape": "doubleoctagon"}),
+#    ("missingIntPCs", {"fontname": "calibri", "shape": "doubleoctagon"}),
+#    ("missingChosenResolution", {"fontname": "calibri", "shape": "doubleoctagon"}),
+#])
+#pipelineRun.add_edges_from([
+#    ("mt_p1", "missingMTCutoff", {"fontname": "calibri", "shape": "doubleoctagon"}),
+#    ("doubletRemovalElbowPlot", "missingDoubletInfos", {"fontname": "calibri", "shape": "doubleoctagon"}),
+#    ("doubletRemoval", "missingConditions", {"fontname": "calibri", "shape": "doubleoctagon"}),
+#    ("IntegrationDimReduction", "missingIntPCs", {"fontname": "calibri", "shape": "doubleoctagon"}),
+#    ("RunUMAP", "missingChosenResolution", {"fontname": "calibri", "shape": "doubleoctagon"}),
+#])
+pipelineRun.graph["graph"] = {"size": "8.00,11.00"}
+
