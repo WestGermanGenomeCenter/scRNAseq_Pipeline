@@ -25,7 +25,7 @@ HTO: false #whether this should be HTO demultiplex
 
 numberOfCells: 46000 #number of all cells in the input
 
-projectName: 354 #the name of the project, if just a number please put it in ""
+projectName: "354" #the name of the project, if just a number please put it in ""
 
 otherMetaName: [Donor] #condition name, e.g. timepoint
                        #can be multiple, can be a single, MUST BE in in these brackets: []
