@@ -4,14 +4,110 @@ import os
 import matplotlib.pyplot as plt
 
 
-def createNsavePlot(rule, func, typ, xvalues, yvalues, ylabel, leg, rulenumber):
+rules = ["meta", "demux", "mt1", "mt2", "dbElbow", "dbr", "merge", 
+         "sct", "integration", "UMAP", "testCluster", "chosenCluster", "mmAssay", 
+         "marker", "count", "DGE", "shiny", "mmPlot"]
+
+rules = ["meta", "demultiplex", "mt1", "mt2", "dbElb", "dbRem", "merge",
+        "sct", "integration", "UMAP", "tCluster", "cCluster", "mmodalAssay",
+        "marker", "count", "DGE", "shiny", "mmodalplot"]
+
+times = {
+    "ns": {
+        "143_165ns": {
+            "RAM":      [1.1, -1, 0.85, 1.6, 5.1,  9.2, 1.1, 5.8, 1.5, 1.4, -1, 1.4, -1, 5.3, 1.5, -1, 1.5, -1],
+            "walltime": [ 75, -1,   60,  60, 240, 1500,  80, 230,  75, 110, -1,  80, -1, 550,  30, -1,  50, -1],
+            "cells": 7757
+        },
+        "143_215ns": {
+            "RAM":      [1.1, -1, 0.9, 1.5, 3.5,  7.3, 1.2, 4.1, 1.5, 1.3, -1, 1.3, -1, 4.4, 1.1, -1, 0.9, -1],
+            "walltime": [ 75, -1,  50,  50, 230, 1500,  75, 230,  80, 100, -1,  80, -1, 550,  40, -1,  60, -1],
+            "cells": 7757
+        },
+        "305_165": {
+            "RAM":      [1.4, -1, 0.8, 0.9,   6,    8, 1.2,   5, 1.5, 1.3, -1, 1.3, -1,   4, 1.5, -1, 2.4, -1],
+            "walltime": [ 70, -1,  50,  50, 230, 1450,  90, 230,  90, 100, -1,  80, -1, 350,  50, -1,  70, -1],
+            "cells": 4302
+        },
+        "305_215": {
+            "RAM":      [1.4, -1, 0.8, 0.8,   6,    8, 1.3,   5, 1.6, 1.3, -1, 1.4, -1,   4, 1.5, -1, 1.4, -1],
+            "walltime": [ 70, -1,  50,  50, 230, 1400, 100, 230,  90, 120, -1,  90, -1, 400,  40, -1,  50, -1],
+            "cells": 4302
+        }
+    },
+    "nm" : {
+        "165nm": {
+            "RAM":      [ 13, -1, 1.6, 2.7, 11.1,   19,  30,   40,   80,   14, -1,  14, -1,    45,  45,  32,  27, -1],
+            "walltime": [800, -1, 110,  95,  410, 1900, 900, 1800, 6200, 1000, -1, 900, -1, 10800, 250, 500, 260, -1],
+            "cells": 66040
+        },
+        "215": {
+            "RAM":      [ 2, -1,  1,  1, 2.1,   3, 5.1, 6.7,  22, 2.7, -1, 2.8, -1,   8,  2, 6.5, 4.1, -1],
+            "walltime": [90, -1, 30, 30, 115, 720, 160, 500, 700, 200, -1, 200, -1, 900, 60, 200,  60, -1],
+            "cells": 13228
+        },
+        "244_165": {
+            "RAM":      [ 11, -1,   2,   2,  16,   25,  27,   38,   80,   14, -1,  13, -1,    41,  46,  35,  27, -1],
+            "walltime": [580, -1, 130, 130, 400, 2100, 800, 1780, 6500, 1000, -1, 900, -1, 14000, 300, 570, 300, -1],
+            "cells": 66723
+        },
+        "244_215": {
+            "RAM":      [ 11, -1,   2,   2,  16,   26,  27,   44,   83,   16, -1, 14.2, -1,    51,  47,  35,  29, -1],
+            "walltime": [560, -1, 130, 130, 400, 2200, 950, 1900, 6900, 1100, -1, 1000, -1, 13800, 300, 600, 300, -1],
+            "cells": 66723
+        },
+        "354": {
+            "RAM":      [ 13, -1, 2.3, 2.1,  23,   35,  32,   40,   52,  13, -1,  12, -1,   46,  39,  40,  25, -1],
+            "walltime": [600, -1, 150, 150, 600, 2450, 800, 1600, 2800, 880, -1, 800, -1, 4300, 250, 900, 250, -1],
+            "cells": 46000
+        },
+        "354m": {
+            "RAM":      [ 13, -1, 2.3, 4.1,  22,   33,  28,   47,   50,  13, -1,  13, -1,   47,  48,   44,  27, -1],
+            "walltime": [550, -1, 150, 150, 600, 2450, 800, 1750, 2650, 900, -1, 850, -1, 5400, 300, 2350, 250, -1],
+            "cells": 46000
+        }
+    },
+    "ms": {
+        "143_165ms": {
+            "RAM":      [1.1, -1, 0.85, 1.6, 5.1,  9.2, 1.2, 5.8, 1.6, 1.4, -1, 1.4, 1.5, 4.7, 1.6, -1, 1.5, 1.5],
+            "walltime": [ 75, -1,   60,  60, 240, 1500,  80, 240,  80, 110, -1,  80,  75, 550,  40, -1,  60,  60],
+            "cells": 7757
+        },
+        "143_215ms": {
+            "RAM":      [1.1, -1, 0.9, 1.5, 3.6,    8, 1.2, 4.1, 1.5, 1.3, -1, 1.3, 1.5, 4.2, 1.6, -1, 1.5, 1.5],
+            "walltime": [ 80, -1,  60,  60, 230, 1500,  80, 230,  80, 100, -1,  80,  80, 550,  40, -1,  60,  60],
+            "cells": 7757
+        },
+    },
+    "mm": {
+        "165mm": {
+            "RAM":      [ 13, -1, 1.6, 3.2, 10.2,   18,  34,   38,   80,   15, -1,  14,  16,    46,  45,  33,  27,  23],
+            "walltime": [750, -1,  90,  95,  400, 2200, 950, 1900, 6600, 1000, -1, 950, 900, 10500, 265, 550, 250, 220],
+            "cells": 66040
+        }
+    }, 
+    "HTO": {
+        "284": {
+            "RAM":      [-1, 2.5, 0.6, 0.6, 0.6, -1, 1.8, 2.2, 5.5,  1, -1,  1, -1,   3, 1.5, 0, 1.5, 1.5],
+            "walltime": [-1, 200,  30,  30,  50, -1,  60, 130, 200, 80, -1, 70, -1, 250,  40, 0,  50,  40],
+            "cells": 2625
+        },
+        "284_165": {
+            "RAM":      [-1,   2, 0.5, 0.6, 0.5, -1,  2, 2.2,   4,  1, -1,  1, -1,   3, 1.5, 2.5, 1.5, 1.5],
+            "walltime": [-1, 150,  30,  30,  60, -1, 60, 140, 190, 70, -1, 60, -1, 230,  35,  80,  60,  30],
+            "cells": 2625
+        },
+        "284_215": {
+            "RAM":      [-1, 2.5, 0.5, 0.6, 0.5, -1,  2, 2.2,   6,  1, -1,  1, -1, 3.2, 1.5, 2.1, 1.5, 1.5],
+            "walltime": [-1, 150,  40,  40,  40, -1, 60, 140, 200, 70, -1, 60, -1, 300,  40,  80,  60,  40],
+            "cells": 2625
+        }
+    }
+}
+
+def createNsavePlot(rule, func, typ, xvalues, yvalues, ylabel, leg, rulenumber, plotfolder):
     plt.figure()
     plot, = plt.plot(xvalues, yvalues, "o", label=typ)
-    #plotfolder = "/plots/ns/"
-    #plotfolder = "/plots/ms/"
-    #plotfolder = "/plots/nm/"
-    #plotfolder = "/plots/mm/"
-    plotfolder = "/plots/HTO/"
     plt.title(rule + ": " + func)
     plt.xlabel("Cells per samples (average)")
     plt.ylabel(ylabel)
@@ -20,155 +116,27 @@ def createNsavePlot(rule, func, typ, xvalues, yvalues, ylabel, leg, rulenumber):
                 ".png", bbox_extra_artists=(legend,), bbox_inches="tight")
     plt.close()
 
+w_time = {"ns":{}, "nm":{}, "ms":{}, "mm":{}, "HTO":{}}
+memory = {"ns":{}, "nm":{}, "ms":{}, "mm":{}, "HTO":{}}
 
-rules = ["meta", "mt1", "mt2", "dbElbow", "dbr", "merge", "sct", "integration", "UMAP", "testCluster", "chosenCluster",
-         "marker", "count", "DGE", "shiny", "mmAssay", "mmPlot", "demux"]
+for i in range(len(rules)):             #for every rule
+    for j in times.keys():              #for every pipeline way
+        gigaByte = []
+        wSeconds = []
+        numCells = []
+        for k in times[j].keys():       #for every sample benchmarked
+            gigaByte.append(times[j][k]["RAM"][i])
+            wSeconds.append(times[j][k]["walltime"][i])
+            numCells.append(times[j][k]["cells"])
+        maxRAMGradient = 0
+        maxSecGradient = 0
+        for k in range(len(numCells)):
+            w = math.ceil(1.5*float(wSeconds[k]))/float(numCells[k])
+            if w > maxSecGradient:
+                maxSecGradient = w
+            g = math.ceil(1.3*float(gigaByte[k]))/float(numCells[k])
+            if g > maxRAMGradient:
+                maxRAMGradient = g
+        w_time[j][rules[i]] = round(maxSecGradient, 5)
+        memory[j][rules[i]] = round(maxRAMGradient, 5)
 
-times = {
-    "165": {
-        "RAM": [12, 4.8, 7.3, 20, 30, 27, 35, 72, 14, 13, 13, 45, 40, 29, 24, 0, 0, 0],
-        "walltime": [397, 272, 285, 1366, 6932, 572, 1211, 8962, 979, 245, 866, 9148, 184, 230, 182, 0, 0, 0],
-        "multi-sample": True,
-        "multi-modal": False,
-        "HTO": False,
-        "cells": 66040
-    },
-    "215": {
-        "RAM": [1.66, 0.9, 1.4, 3, 5, 5, 6.3, 17.6, 2.5, 1.6, 2.5, 7.6, 2.5, 5.5, 3.1, 0, 0, 0],
-        "walltime": [60, 42, 42, 300, 2038, 100, 285, 460, 135, 45, 119, 1347, 70, 287, 65, 0, 0, 0],
-        "multi-sample": True,
-        "multi-modal": False,
-        "HTO": False,
-        "cells": 13228
-    },
-    "143_165": {
-        "RAM": [1, 0.78, 1.5, 5, 8.6, 1.1, 4.6, 1.7, 1.2, 1.3, 1.2, 4.5, 2.1, 0, 1.3, 0, 0, 0],
-        "walltime": [60, 40, 41, 233, 1436, 67, 221, 70, 95, 42, 70, 557, 20, 0, 41, 0, 0, 0],
-        "multi-sample": False,
-        "multi-modal": False,
-        "HTO": False,
-        "cells": 7757
-    },
-    "143_215": {
-        "RAM": [1, 0.79, 1.4, 3.4, 8.2, 1, 4, 1.6, 1, 1.1, 1, 4, 2, 0, 1.2, 0, 0, 0],
-        "walltime": [57, 40, 40, 212, 1290, 70, 211, 67, 88, 22, 68, 571, 30, 0, 40, 0, 0, 0],
-        "multi-sample": False,
-        "multi-modal": False,
-        "HTO": False,
-        "cells": 7757
-    },
-    "244_165": {
-        "RAM": [10, 5, 5, 23, 35, 26, 42, 78, 14, 13, 13, 41, 51, 35, 30, 0, 0, 0],
-        "walltime": [520, 353, 353, 1817, 10394, 714, 1698, 5918, 941, 180, 833, 11323, 205, 380, 300, 0, 0, 0],
-        "multi-sample": True,
-        "multi-modal": False,
-        "HTO": False,
-        "cells": 66723
-    },
-    "244_215": {
-        "RAM": [13, 5, 5, 23, 35, 26, 44, 78, 15, 14, 14, 45, 55, 33, 32, 0, 0, 0],
-        "walltime": [372, 263, 264, 1293, 6836, 582, 1272, 4408, 776, 270, 694, 10668, 310, 245, 232, 0, 0, 0],
-        "multi-sample": True,
-        "multi-modal": False,
-        "HTO": False,
-        "cells": 66723
-    },
-    "305_165": {
-        "RAM": [1.2, 0.73, 0.72, 4.5, 7.8, 1.1, 5.3, 1.38, 1.2, 1.1, 1.2, 3.76, 2, 0, 1.3, 0, 0, 0],
-        "walltime": [49, 37, 37, 205, 1291, 70, 190, 67, 82, 30, 70, 298, 16, 0, 40, 0, 0, 0],
-        "multi-sample": False,
-        "multi-modal": False,
-        "HTO": False,
-        "cells": 4302
-    },
-    "305_215": {
-        "RAM": [1.2, 0.73, 0.73, 4.6, 7.8, 1.2, 4.8, 1.5, 1.3, 1.2, 1.2, 3.9, 2.1, 0, 1.5, 0, 0, 0],
-        "walltime": [50, 38, 37, 206, 1302, 70, 201, 72, 87, 22, 71, 346, 120, 16, 60, 0, 0, 0],
-        "multi-sample": False,
-        "multi-modal": False,
-        "HTO": False,
-        "cells": 4302
-    },
-    "165_mm": {
-        "RAM": [13, 5, 8, 20, 30, 27, 39, 76, 14, 13.2, 13, 45, 44, 31, 26, 14, 23, 0],
-        "walltime": [942, 374, 397, 2192, 10549, 789, 1759, 8092, 950, 161, 859, 10783, 220, 346, 243, 814, 143, 0],
-        "multi-sample": True,
-        "multi-modal": True,
-        "HTO": False,
-        "cells": 66040
-    },
-    "143_165_mm": {
-        "RAM": [1.5, 0.8, 1.3, 5.2, 9, 1.2, 5, 1.7, 1.3, 1.2, 1.1, 4.6, 2.1, 0, 1.4, 1.3, 1.1, 0],
-        "walltime": [117, 49, 52, 310, 1916, 78, 277, 86, 113, 16, 93, 836, 16, 0, 45, 80, 24, 0],
-        "multi-sample": False,
-        "multi-modal": True,
-        "HTO": False,
-        "cells": 7757
-    },
-    "143_215_mm": {
-        "RAM": [1.5, 0.8, 1.3, 3.5, 9, 1.1, 3.3, 1.7, 1.2, 1.2, 1.2, 4.4, 1.9, 0, 2.5, 1.3, 1.2, 0],
-        "walltime": [102, 57, 47, 285, 1635, 66, 264, 97, 104, 15, 83, 875, 16, 0, 58, 88, 23, 0],
-        "multi-sample": False,
-        "multi-modal": True,
-        "HTO": False,
-        "cells": 7757
-    },
-    "284": {
-        "RAM": [0, 0.9, 1.1, 1.5, 0, 2,2.2, 3, 1, 1, 1, 3.2, 3, 0, 1.5, 0, 1.5, 2.2],
-        "walltime": [0, 55, 50, 130, 0, 55, 125, 177, 66, 55, 120, 230, 20, 0, 35, 0, 30, 133],
-        "multi-sample": False,
-        "multi-modal": True,
-        "HTO": True,
-        "cells": 2625
-    },
-    "284_165": {
-        "RAM": [0, 0.9, 1, 1.5, 0, 2, 2.4, 5, 1, 1, 2, 3, 1.5, 0, 1.4, 0, 1.6, 2.2],
-        "walltime": [0, 50, 55, 136, 0, 55, 135, 200, 62, 55, 120, 250, 30, 0, 40, 0, 25, 130],
-        "multi-sample": False,
-        "multi-modal": True,
-        "HTO": True,
-        "cells": 2625
-    },
-    "284_215": {
-        "RAM": [0, 0.9, 1, 1.5, 0, 1.9, 2.3, 3.1, 1, 1, 2, 3.3, 1.5, 0, 1.5, 0, 1.5, 2.2],
-        "walltime": [0, 50, 55, 135, 0, 55, 130, 180, 60, 55, 120, 250, 20, 0, 35, 0, 25, 140],
-        "multi-sample": False,
-        "multi-modal": True,
-        "HTO": True,
-        "cells": 2625
-    }
-}
-
-for i in range(len(rules)):
-    #print(rules[i])
-    xaxis = []
-    walltime = []
-    ram = []
-    rlegend = ""
-    wlegend = ""
-    max_wGradient = 0
-    max_rGradient = 0
-    for j in times.keys():
-        #if not times[j]["multi-sample"] and not times[j]["multi-modal"]: #ns
-        #if not times[j]["multi-sample"] and times[j]["multi-modal"]: #ms
-        #if times[j]["multi-sample"] and not times[j]["multi-modal"]: #nm
-        #if times[j]["multi-sample"] and times[j]["multi-modal"]: #mm
-        if times[j]["HTO"]:
-            rlegend += j + " -> "
-            wlegend += j + " -> "
-            wlegend += "Walltime: " + time.strftime("%H:%M:%S", time.gmtime(math.ceil(1.5 * times[j]["walltime"][i]))) +"\n"
-            rlegend += "RAM: " + str(math.ceil(1.3 * times[j]["RAM"][i])) + "\n"
-            newWalltime = math.ceil(1.5 * times[j]["walltime"][i])
-            newRam = math.ceil(1.3 * times[j]["RAM"][i])
-            walltime.append(newWalltime)
-            ram.append(newRam)
-            xaxis.append(times[j]["cells"])
-            if newWalltime/float(times[j]["cells"]) > max_wGradient:
-                #print(j)
-                max_wGradient = newWalltime/float(times[j]["cells"])
-            if newRam/float(times[j]["cells"]) > max_rGradient:
-                #print(j)
-                max_rGradient = newRam/float(times[j]["cells"])
-    createNsavePlot(rules[i], ("f(x)="+"{:.5f}".format(max_rGradient)+"x"), "ram", xaxis, ram, "RAM in GB", rlegend, str(i))
-    createNsavePlot(rules[i], ("f(x)="+"{:.5f}".format(max_wGradient)+"x"), "walltime", xaxis, walltime, "RAM in GB", wlegend, str(i))
-    #print()

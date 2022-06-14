@@ -106,6 +106,7 @@ rule all:
   input:
     get_inputs
 
+
 rule createDoubletEnv:
   input:
     pOpt.doubletEnv
@@ -123,6 +124,7 @@ rule createDoubletEnv:
     temp("workDirectory/createDoubletEnv.txt")
   shell:
     "touch {output}"
+
 
 rule createCountEnv:
   input:
@@ -142,6 +144,7 @@ rule createCountEnv:
   shell:
     "touch {output}"
 
+
 rule createShinyEnv:
   input:
     pOpt.shinyEnv
@@ -159,6 +162,7 @@ rule createShinyEnv:
     temp("workDirectory/createShinyEnv.txt")
   shell:
     "touch {output}"
+
 
 rule installMissingPackages:
   input:
@@ -187,6 +191,7 @@ rule installMissingPackages:
   script:
     "scripts/installGithubPacks.R"
 
+
 rule metaData:
   input:
     expand("{rawData}", rawData=config["rawData"])
@@ -205,10 +210,11 @@ rule metaData:
     expand("{projectDirPath}logs/{rule}.log", projectDirPath=projectDirectoryPath, rule="metaData")
   output:
     hf.createMultiSampleInput(projectDirectoryPath, "outputs/", sampleNames, ".meta.rds", project=config["projectName"]) if config["multimodal"] else hf.createMultiSampleInput(projectDirectoryPath, "outputs/", sampleNames, ".meta.rds")
-  benchmark:
-    repeat("benchmarks/" + config["projectName"] + "/00_meta.txt", 3)
+#  benchmark:
+#    repeat("benchmarks/" + config["projectName"] + "/00_meta.txt", 3)
   script:
     "scripts/MetaData.R"
+
 
 rule demultiplexing:
   input:
@@ -229,10 +235,11 @@ rule demultiplexing:
     expand("{projectDirPath}logs/{rule}.log", projectDirPath=projectDirectoryPath, rule="demultiplexing")
   output:
     hf.createMultiSampleInput(projectDirectoryPath, "outputs/", sampleNames, ".demux.rds")
-  benchmark:
-    repeat("benchmarks/" + config["projectName"] + "/01_demux.txt", 3)
+#  benchmark:
+#    repeat("benchmarks/" + config["projectName"] + "/01_demux.txt", 3)
   script:
     "scripts/demultiplexing.R"
+
 
 rule mt_p1:
   input:
@@ -252,10 +259,11 @@ rule mt_p1:
     expand("{projectDirPath}logs/{rule}.{{names}}.log", projectDirPath=projectDirectoryPath, rule="mt_p1")
   output:
     expand("{projectDirPath}outputs/{{names}}.mt_p1.rds", projectDirPath=projectDirectoryPath)
-  benchmark:
-    repeat("benchmarks/" + config["projectName"] + "/02_mt1.{{names}}.txt", 3)
+#  benchmark:
+#    repeat("benchmarks/" + config["projectName"] + "/02_mt1.{{names}}.txt", 3)
   script:
     "scripts/mt_p1.R"
+
 
 rule mt_p2:
   input: 
@@ -275,10 +283,11 @@ rule mt_p2:
     expand("{projectDirPath}logs/{rule}.{{names}}.log", projectDirPath=projectDirectoryPath, rule="mt_p2")
   output:
     expand("{projectDirPath}outputs/{{names}}.mt_p2.rds", projectDirPath=projectDirectoryPath)
-  benchmark:
-    repeat("benchmarks/" + config["projectName"] + "/03_mt2.{{names}}.txt", 3)
+#  benchmark:
+#    repeat("benchmarks/" + config["projectName"] + "/03_mt2.{{names}}.txt", 3)
   script:
     "scripts/mt_p2.R"
+
 
 rule doubletRemovalElbowPlot:
   input:
@@ -297,10 +306,11 @@ rule doubletRemovalElbowPlot:
     expand("{projectDirPath}logs/{rule}.{{names}}.log", projectDirPath=projectDirectoryPath, rule="doubletRemovalElbowPlot")
   output:
     expand("{projectDirPath}outputs/{{names}}.SCTranDB.rds", projectDirPath=projectDirectoryPath)
-  benchmark:
-    repeat("benchmarks/" + config["projectName"] + "/04_dbElb.{{names}}.txt", 3)
+#  benchmark:
+#    repeat("benchmarks/" + config["projectName"] + "/04_dbElb.{{names}}.txt", 3)
   script:
     "scripts/DBElbowPlotter.R"
+
 
 rule doubletRemoval:
   input:
@@ -321,10 +331,11 @@ rule doubletRemoval:
     expand("{projectDirPath}logs/{rule}.{{names}}.log", projectDirPath=projectDirectoryPath, rule="doubletRemoval")
   output:
     expand("{projectDirPath}outputs/{{names}}.doubR.rds", projectDirPath=projectDirectoryPath)
-  benchmark:
-    repeat("benchmarks/" + config["projectName"] + "/05_dbRem.{{names}}.txt", 3)
+#  benchmark:
+#    repeat("benchmarks/" + config["projectName"] + "/05_dbRem.{{names}}.txt", 3)
   script:
     "scripts/DoubletRemoval.R"
+
 
 rule addTPsMerge:
   input:
@@ -345,11 +356,12 @@ rule addTPsMerge:
     expand("{projectDirPath}logs/{rule}.log", projectDirPath=projectDirectoryPath, rule="addTPsMerge")
   output:
     expand("{projectDirPath}outputs/{project}.preprocessedO.rds", project=config["projectName"], projectDirPath=projectDirectoryPath)
-  benchmark:
-    repeat("benchmarks/" + config["projectName"] + "/06_merge.txt", 3)
+#  benchmark:
+#    repeat("benchmarks/" + config["projectName"] + "/06_merge.txt", 3)
   script:
     "scripts/addMetaAndMerge.R"
   
+
 rule SCTransformNormalization:
   input:
     expand("{projectDirPath}outputs/{project}.preprocessedO.rds", project=config["projectName"], projectDirPath=projectDirectoryPath)
@@ -366,10 +378,11 @@ rule SCTransformNormalization:
     expand("{projectDirPath}logs/{rule}.log", projectDirPath=projectDirectoryPath, rule="SCTransformNormalization")
   output:
     expand("{projectDirPath}outputs/{project}.normalized.rds", project=config["projectName"], projectDirPath=projectDirectoryPath)
-  benchmark:
-    repeat("benchmarks/" + config["projectName"] + "/07_SCT.txt", 3)
+#  benchmark:
+#    repeat("benchmarks/" + config["projectName"] + "/07_SCT.txt", 3)
   script:
     "scripts/SCTraNormalisation.R"
+
 
 rule IntegrationDimReduction:
   input:
@@ -389,10 +402,11 @@ rule IntegrationDimReduction:
     expand("{projectDirPath}logs/{rule}.log", projectDirPath=projectDirectoryPath, rule="IntegrationDimReduction")
   output:
     expand("{projectDirPath}outputs/{project}.IntDimRed.rds", project=config["projectName"], projectDirPath=projectDirectoryPath)
-  benchmark:
-    repeat("benchmarks/" + config["projectName"] + "/08_integDimRed.txt", 3)
+#  benchmark:
+#    repeat("benchmarks/" + config["projectName"] + "/08_integDimRed.txt", 3)
   script:
     "scripts/IntegrationDimReduction.R"
+
 
 rule RunUMAP:
   input:
@@ -412,10 +426,11 @@ rule RunUMAP:
     expand("{projectDirPath}logs/{rule}.log", projectDirPath=projectDirectoryPath, rule="RunUMAP")
   output:
     expand("{projectDirPath}outputs/{project}.umapped.rds", project=config["projectName"], projectDirPath=projectDirectoryPath)
-  benchmark:
-    repeat("benchmarks/" + config["projectName"] + "/09_umap.txt", 3)
+#  benchmark:
+#    repeat("benchmarks/" + config["projectName"] + "/09_umap.txt", 3)
   script:
     "scripts/RunUMAP.R"
+
 
 rule testDiffClusterResolutions:
   input:
@@ -436,10 +451,11 @@ rule testDiffClusterResolutions:
     expand("{projectDirPath}logs/{rule}.log", projectDirPath=projectDirectoryPath, rule="testDiffClusterResolutions")
   output:
     hf.createMultiSampleInput(projectDirectoryPath, testClustersName, config["choosableResolutions"], ".clusteredDimPlot.pdf")
-  benchmark:
-    repeat("benchmarks/" + config["projectName"] + "/10_testRes.txt", 3)
+#  benchmark:
+#    repeat("benchmarks/" + config["projectName"] + "/10_testRes.txt", 3)
   script:
     "scripts/testDiffClusterRes.R"
+
 
 rule useChosenClusterResolutions:
   input:
@@ -461,10 +477,11 @@ rule useChosenClusterResolutions:
     expand("{projectDirPath}logs/{rule}.log", projectDirPath=projectDirectoryPath, rule="useChosenClusterResolutions")
   output:
     expand("{projectDirPath}outputs/{project}.clustered.rds", project=config["projectName"], projectDirPath=projectDirectoryPath)
-  benchmark:
-    repeat("benchmarks/" + config["projectName"] + "/11_useRes.txt", 3)
+#  benchmark:
+#    repeat("benchmarks/" + config["projectName"] + "/11_useRes.txt", 3)
   script:
     "scripts/useChosenClusterRes.R"
+
 
 rule multimodalAnalysis:
   input:
@@ -484,10 +501,11 @@ rule multimodalAnalysis:
     expand("{projectDirPath}logs/{rule}.log", projectDirPath=projectDirectoryPath, rule="multimodalAnalysis")
   output:
     expand("{projectDirPath}outputs/{project}.multimodal.rds", project=config["projectName"], projectDirPath=projectDirectoryPath)
-  benchmark:
-    repeat("benchmarks/" + config["projectName"] + "/12_addAssay.txt", 3)
+#  benchmark:
+#    repeat("benchmarks/" + config["projectName"] + "/12_addAssay.txt", 3)
   script:
     "scripts/addAssayData.R"
+
 
 rule markerDiscovery:
   input:
@@ -506,10 +524,11 @@ rule markerDiscovery:
     expand("{projectDirPath}logs/{rule}.log", projectDirPath=projectDirectoryPath, rule="markerDiscovery")
   output:
     expand("{projectDirPath}outputs/{project}.markerDisc.rds", project=config["projectName"], projectDirPath=projectDirectoryPath)
-  benchmark:
-    repeat("benchmarks/" + config["projectName"] + "/13_markerDisc.txt", 3)
+#  benchmark:
+#    repeat("benchmarks/" + config["projectName"] + "/13_markerDisc.txt", 3)
   script:
     "scripts/markerDiscovery.R"
+
 
 rule cellCounting:
   input:
@@ -531,10 +550,11 @@ rule cellCounting:
     expand("{projectDirPath}logs/{rule}.{{condition}}.log", projectDirPath=projectDirectoryPath, rule="cellCounting")
   output:
     expand("{projectDirPath}plots/{project}.{{condition}}.barplot.pdf", project=config["projectName"], projectDirPath=projectDirectoryPath, condition=config["otherMetaName"])
-  benchmark:
-    repeat("benchmarks/" + config["projectName"] + "/14_cCount.{{condition}}.txt", 3)
+#  benchmark:
+#    repeat("benchmarks/" + config["projectName"] + "/14_cCount.{{condition}}.txt", 3)
   script:
     "scripts/cellCounting.R"
+
 
 rule DGE:
   input:
@@ -555,10 +575,11 @@ rule DGE:
     expand("{projectDirPath}logs/{rule}.{{condition}}.log", projectDirPath=projectDirectoryPath, rule="DGE")
   output:
     expand("{projectDirPath}csv/{{condition}}/{{condition}}.finishedDGE.txt", projectDirPath=projectDirectoryPath)
-  benchmark:
-    repeat("benchmarks/" + config["projectName"] + "/15_dge.{{condition}}.txt", 3)
+#  benchmark:
+#    repeat("benchmarks/" + config["projectName"] + "/15_dge.{{condition}}.txt", 3)
   script:
     "scripts/DGE.R"
+
 
 rule createShinyApp:
   input:
@@ -579,10 +600,11 @@ rule createShinyApp:
   output:
     expand("{projectDirPath}shinyApp/server.R", project=config["projectName"], projectDirPath=projectDirectoryPath),
     expand("{projectDirPath}shinyApp/ui.R", project=config["projectName"], projectDirPath=projectDirectoryPath)
-  benchmark:
-    repeat("benchmarks/" + config["projectName"] + "/16_shiny.txt", 3)
+#  benchmark:
+#    repeat("benchmarks/" + config["projectName"] + "/16_shiny.txt", 3)
   script:
     "scripts/createShinyApp.R"
+
 
 rule multimodalFeaturePlotting:
   input:
@@ -602,10 +624,11 @@ rule multimodalFeaturePlotting:
     expand("{projectDirPath}logs/{rule}.log", projectDirPath=projectDirectoryPath, rule="multimodalFeaturePlotting")
   output:
     expand("{projectDirPath}plots/finishedFeatures.txt", project=config["projectName"], projectDirPath=projectDirectoryPath)
-  benchmark:
-    repeat("benchmarks/" + config["projectName"] + "/17_mmPlot.txt", 3)
+#  benchmark:
+#    repeat("benchmarks/" + config["projectName"] + "/17_mmPlot.txt", 3)
   script:
     "scripts/multimodalFeaturePlotting.R"
+
 
 rule copyShinyAppInstructions:
   params:
@@ -621,8 +644,8 @@ rule copyShinyAppInstructions:
   run:
     shutil.copyfile("workDirectory/howToRunShinyAppOnYourOwnPC.txt", projectDirectoryPath + "shinyApp/howToRunShinyAppOnYourOwnPC.txt")
 
-####################################  missing paramter rules  ###############################################
 
+####################################  missing paramter rules  ###############################################
 
 rule missingMTCutoff:
   input:
