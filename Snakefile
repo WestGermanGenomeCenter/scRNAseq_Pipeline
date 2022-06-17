@@ -3,7 +3,7 @@
 import os
 import shutil
 import hashlib
-import cluster.approximateResources as res
+import snakemakeScripts.cluster.approximateResources as res
 import snakemakeScripts.SnakefileHelperFuncs as hf
 import snakemakeScripts.PipelineOptions as pOpt
 
@@ -441,6 +441,7 @@ rule testDiffClusterResolutions:
     findNeighborsPCs = config["findNeighborsPCs"],
     resolutions = config["choosableResolutions"],
     cores = pOpt.numCores["testClustRes"],
+    isMultiSampled = config["multiSampled"],
     time=res.approxWalltime("tCluster", sampleType, num_cells, additionalTime=pOpt.addTime["testClustRes"]),
     mem=res.approxRAM("tCluster", sampleType, num_cells, additionalRAM=pOpt.addRAM["testClustRes"]),
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="testDiffClusterResolutions"),

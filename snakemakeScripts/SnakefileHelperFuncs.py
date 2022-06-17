@@ -1,7 +1,6 @@
 import os
 import hashlib
 import itertools
-from pickle import FALSE
 from collections import OrderedDict
 
 
