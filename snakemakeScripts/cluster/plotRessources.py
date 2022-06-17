@@ -167,4 +167,4 @@ def createResourceYAML(createPlots=False):
     with open("memoryGradient.yaml", "w") as out:
         yaml.dump(memory, out, default_flow_style=False)
 
-createResourceYAML(True)
+#createResourceYAML(False)
