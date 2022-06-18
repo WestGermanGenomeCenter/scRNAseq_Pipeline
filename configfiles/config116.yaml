@@ -27,7 +27,7 @@ numberOfCells: 31000 #number of all cells in the input
 
 projectName: "116" #the name of the project, if just a number please put it in ""
 
-otherMetaName: Donor #condition name, e.g. timepoint
+otherMetaName: [Donor] #condition name, e.g. timepoint
 
 countIdents: [Donor, orig.ident] #the count criterias, e.g. [timepoint, orig.ident] 
                                  #where orig.ident means the original sample and timepoint is the metadata you added

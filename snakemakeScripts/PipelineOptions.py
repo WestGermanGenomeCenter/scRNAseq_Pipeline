@@ -67,9 +67,9 @@ numCores = {
     "testClustRes": 1,  #    testDiffClusterResolutions
     "useClusterRes": 1, # X, useChosenClusterResolutions
     "multimodal": 1,    # X, multimodalAnalysis
-    "markerDisc": 2,    #    markerDiscovery
+    "markerDisc": 1,    #    markerDiscovery
     "cellCount": 1,     # X, cellCounting
-    "DGE": 2,           #    DGE
+    "DGE": 1,           #    DGE
     "shinyApp": 1,      # X, createShinyApp
     "multimodalPlot": 1 # X, multimodalFeaturePlotting
 }
