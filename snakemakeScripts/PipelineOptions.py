@@ -59,7 +59,7 @@ numCores = {
     "mt1": 1,           # X, mt_p1
     "mt2": 1,           # X, mt_p2
     "drElbowPlot": 1,   # X, doubletRemovalElbowPlot
-    "doubletRem": 1,    # X, doubletRemoval
+    "doubletRem": 1,    #    doubletRemoval
     "addTPs": 1,        # X, addTPsMerge
     "SCT": 1,           # X, SCTransformNormalization
     "IntegrDimRed": 1,  #    IntegrationDimReduction
