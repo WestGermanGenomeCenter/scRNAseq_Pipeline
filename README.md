@@ -8,6 +8,8 @@ Update 15.05.2022: There has been a small change in the config.yaml format. For 
 
 Update 26.05.2022: Fix the issue with the DGE rule that came with the change from the 15.05.2022.
 
+Update 27.06.2022: Added parallelization function. For *Parallelization*, change the number of cores in the snakemakeScripts/PipelineOptions.py for a rule without an X in the comments. 
+
 ## Setup directory tree:
 ### the scRNAseq_Pipeline folder containing the pipeline
 |  
