@@ -21,3 +21,5 @@ cluster/plots/
 dependencies/
 __pycache__
 snakemakeScripts/cluster/plots/
+benchmarks/
+documentation/figures/
