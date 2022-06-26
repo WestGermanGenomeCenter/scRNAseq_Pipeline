@@ -7,11 +7,15 @@ GE <- readRDS(snakemake@input[[1]])
 project.name <- snakemake@params[[2]]
 cores <- snakemake@params[[3]]
 projectDirPath <- snakemake@params[[1]]
-
+maxMem <- snakemake@params[[5]]
+print(maxMem)
+maxMem <- strtoi(substr(maxMem, 1, nchar(maxMem)-2))*1024^3
+print(maxMem)
 print(Idents(GE))
 print(length(GE))
 
 DefaultAssay(GE) <- "RNA"
+options(future.globals.maxSize=maxMem)
 plan("multiprocess", workers=cores)
 GE <- NormalizeData(GE, assay="RNA")
 plan("multiprocess", workers=cores)
