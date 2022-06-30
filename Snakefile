@@ -13,6 +13,7 @@ if projectDirectoryPath[-1] != "/":
     projectDirectoryPath += "/"
 hf.createDirectoriesIfNotExists(projectDirectoryPath)
 sampleInputs, otherMetaData = hf.transform_sampleInputs(config["sampleInputs"])
+pOpt.setCondaEnv(config["HHU_HPC"])
 sampleNames = list(sampleInputs.keys())
 num_cells = config["numberOfCells"]
 sampleType, assayName = hf.determineSampleTypeAndAssayName(config)
@@ -232,7 +233,7 @@ rule mt_p1:
   params:
     projectDirPath = projectDirectoryPath,
     names ="{names}",
-    pattern = config["mPattern"],
+    pattern = config["mtPattern"],
     cores=pOpt.numCores["mt1"],
     time=res.approxWalltime("mt1", sampleType, num_cells, additionalTime=pOpt.addTime["mt1"], benchmarking=pOpt.execTimes),
     mem=res.approxRAM("mt1", sampleType, num_cells, additionalRAM=pOpt.addRAM["mt1"]),

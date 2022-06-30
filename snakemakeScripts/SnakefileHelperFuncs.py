@@ -52,7 +52,7 @@ def transform_sampleInputs(sampleInputs):
   return samples, otherMetaData
 
 
-def determineSampleType(config):
+def determineSampleTypeAndAssayName(config):
   sampleType = "ns"
   assayName = "ADT"
   if config["multiSampled"] and config["multimodal"]:
@@ -64,7 +64,7 @@ def determineSampleType(config):
   if(config["HTO"]):
     assayName = "HTO"
     sampleType = "HTO"
-  return sampleType
+  return sampleType, assayName
 
 def checkMinimalInputs(config):
   #general parameters
@@ -98,9 +98,9 @@ def checkMinimalInputs(config):
   for i in config["sampleInputs"]:
     if i["name"] == None:
       return False
-    if i["otherMetaData"]:
+    if not i["otherMetaData"]:
       return False
-    if i["expectedPercentDoublets"]:
+    if not i["expectedPercentDoublets"]:
       return False
   return True
 

@@ -3,7 +3,11 @@
 execTimes = 1
 
 #conda environment
-if config["HHU_HPC"]:
+isHHU_HPC = True
+def setCondaEnv(onHHU_HPC): #can't access config otherwise here
+    global isHHU_HPC 
+    isHHU_HPC = onHHU_HPC
+if isHHU_HPC:
     countEnv = "envs/HHU_HPC/counting-spec.yml"
     devtoolsEnv = "envs/HHU_HPC/devtools-spec.yml"
     doubletEnv = "envs/HHU_HPC/doublet-spec.yml"
@@ -18,6 +22,7 @@ else:
     usualEnv = "envs/netAccess/env.yml"
     markerEnv = "envs/netAccess/marker.yml"
     shinyEnv = "envs/netAccess/shiny.yml"
+
 
 
 #add additional Time and RAM if approximation was not enough
