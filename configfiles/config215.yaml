@@ -10,7 +10,7 @@ projectName: "215"
 
 projectDirectoryPath: /scratch_gs/myhuy100/projects_experimental/215_cellranger/
 
-pattern: "^mt-"
+mtPattern: "^mt-"
 
 multimodal: false
 

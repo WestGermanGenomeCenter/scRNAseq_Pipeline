@@ -18,7 +18,7 @@ bioconductorSeuratHelper = "\
 
 for filename in files:
     textlines = []
-    with open("envs/" + filename) as f:
+    with open("envs/netAccess/" + filename) as f:
         textlines = f.readlines()
     index = 0
     while("dependencies:" not in textlines[index]):
@@ -34,5 +34,5 @@ for filename in files:
         textlines[i] = textlines[i][0:j] + "\n"
     if "prefix" in textlines[-1]:
         textlines[-1] = ""
-    with open("envs/" + filename, "w") as f:
+    with open("envs/HHU_HPC/" + filename, "w") as f:
         f.write("".join(textlines))

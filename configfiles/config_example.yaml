@@ -15,7 +15,7 @@ projectDirectoryPath: /scratch_gs/myhuy100/projects_experimental/projectDirName 
 
 rawData: #directory containing the cellranger outputs which serves as this pipelines input
 
-pattern: "^mt-" #the mt-pattern for mitochondiral filtering
+mtPattern: "^mt-" #the mt-pattern for mitochondiral filtering
 
 multimodal: false #whether input contains protein data or not
 

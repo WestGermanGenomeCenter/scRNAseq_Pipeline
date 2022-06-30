@@ -1,12 +1,24 @@
 #Here you can change certain parameters without fighting through the Snakefile
 
+execTimes = 1
+
 #conda environment
-countEnv = "envs/counting-spec.yml"     # "envs/counting"
-devtoolsEnv = "envs/devtools-spec.yml"  # "envs/devtools"
-doubletEnv = "envs/doublet-spec.yml"    # "envs/doublet"
-usualEnv = "envs/env-spec.yml"          # "envs/env"
-markerEnv = "envs/marker-spec.yml"      # "envs/marker"
-shinyEnv = "envs/shiny-spec.yml"        # "envs/shiny"
+if config["HHU_HPC"]:
+    countEnv = "envs/HHU_HPC/counting-spec.yml"
+    devtoolsEnv = "envs/HHU_HPC/devtools-spec.yml"
+    doubletEnv = "envs/HHU_HPC/doublet-spec.yml"
+    usualEnv = "envs/HHU_HPC/env-spec.yml"
+    markerEnv = "envs/HHU_HPC/marker-spec.yml"
+    shinyEnv = "envs/HHU_HPC/shiny-spec.yml"
+else:
+    #you can insert your customized environments here
+    countEnv = "envs/netAccess/counting.yml"
+    devtoolsEnv = "envs/netAccess/devtools.yml"
+    doubletEnv = "envs/netAccess/doublet.yml"
+    usualEnv = "envs/netAccess/env.yml"
+    markerEnv = "envs/netAccess/marker.yml"
+    shinyEnv = "envs/netAccess/shiny.yml"
+
 
 #add additional Time and RAM if approximation was not enough
 #Time in seconds

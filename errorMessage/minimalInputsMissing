@@ -1,0 +1,25 @@
+Some of the inputs that you can do at the very beginning are missing.
+These inputs include:
+- HHU_HPC
+- maxRAM (if you don't know, just use the value in the config_example.yaml)
+- mtPattern
+- mullimodal
+- multiSampled
+- HTO
+- numberOfCells
+- otherMetaName (has to be a list meaning in [])
+
+- for each sampleInputs one of these values:
+    - name
+    - expectedPercentDoublets
+    - otherMetaData (in the same order as otherMetaName above)
+
+If your dataset has only 1 sample or all samples have the same condition, you still have to enter something in otherMetaName and otherMetaData, e.g.:
+otherMetaName [condition]
+sampleInputs:
+  - name: onlySample
+    otherMetaData: [A]
+  - name: in_case_all_samples_have_same_condition
+    otherMetaData: [A]
+
+For more information please take a look at the config_example.yaml or read the documentation.

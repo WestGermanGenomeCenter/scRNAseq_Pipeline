@@ -15,17 +15,7 @@ hf.createDirectoriesIfNotExists(projectDirectoryPath)
 sampleInputs, otherMetaData = hf.transform_sampleInputs(config["sampleInputs"])
 sampleNames = list(sampleInputs.keys())
 num_cells = config["numberOfCells"]
-sampleType = "ns"
-if config["multiSampled"] and config["multimodal"]:
-  sampleType = "mm"
-elif config["multiSampled"] and not config["multimodal"]:
-  sampleType = "nm"
-elif not config["multiSampled"] and config["multimodal"]:
-  sampleType = "ms"
-assayName = "ADT"
-if(config["HTO"]):
-  assayName = "HTO"
-  sampleType = "HTO"
+sampleType, assayName = hf.determineSampleTypeAndAssayName(config)
 testClustersName = "plots/" + config["projectName"] + ".res_"
 
 
@@ -36,10 +26,8 @@ def get_inputs(wildcards):
     for i in config["sampleInputs"]:
       if not i["mtCutoff"]:
         cutoff = False
-      if not i["dbElbowPlot"] or not i["expectedPercentDoublets"]:
+      if not i["dbElbowPlot"]:
         doublets = False
-      if not i["otherMetaData"]:
-        conditions = False
     if os.path.isdir(hf.findHash(pOpt.doubletEnv) + "/lib/R/library/DoubletFinder") and os.path.isdir(hf.findHash(pOpt.shinyEnv) + "/lib/R/library/ShinyCell") and os.path.isdir(hf.findHash(pOpt.countEnv) + "/lib/R/library/seurathelpeR"):
       outputStart = projectDirectoryPath + "outputs/" + config["projectName"]
       if config["HTO"]:
@@ -56,34 +44,31 @@ def get_inputs(wildcards):
         if doublets:
           if not config["HTO"]:
             inputList = inputList + hf.createMultiSampleInput(projectDirectoryPath, "outputs/", sampleNames, ".doubR.rds")
-          if conditions and config["otherMetaName"]:
-            inputList.append(outputStart + ".preprocessedO.rds")
-            inputList.append(outputStart + ".normalized.rds")
-            inputList.append(outputStart + ".IntDimRed.rds")
-            if config["integrationPCs"]:
-              inputList.append(outputStart + ".umapped.rds")
-              if config["findNeighborsPCs"] and config["choosableResolutions"]:
-                if config["chosenResolution"]:
-                  inputList.append(outputStart + ".clustered.rds")
-                  inputList.append(outputStart + ".markerDisc.rds")
-                  if config["multiSampled"]:
-                    for i in hf.createCombinations(config["otherMetaName"], combiOnly=False):
-                      inputList.append(projectDirectoryPath + "csv/" + i + "/" + i + ".finishedDGE.txt")
-                  if config["multimodal"] or config["HTO"]:
-                    inputList.append(projectDirectoryPath + "plots/finishedFeatures.txt")
-                  inputList.append(projectDirectoryPath + "shinyApp/" + "server.R")
-                  inputList.append(projectDirectoryPath + "shinyApp/" + "ui.R")
-                  inputList.append(projectDirectoryPath + "shinyApp/howToRunShinyAppOnYourOwnPC.txt")
-                  inputList += hf.createMultiMetaCountInput(projectDirectoryPath, "plots/" + config["projectName"] + ".", config["otherMetaName"], ".barplot.pdf")
-                else:
-                  inputList + hf.createMultiSampleInput(projectDirectoryPath, testClustersName, config["choosableResolutions"], ".clusteredDimPlot.pdf")
-                  inputList.append(projectDirectoryPath + "workDirectory/chosenResolutionMissing.txt")
+          inputList.append(outputStart + ".preprocessedO.rds")
+          inputList.append(outputStart + ".normalized.rds")
+          inputList.append(outputStart + ".IntDimRed.rds")
+          if config["integrationPCs"]:
+            inputList.append(outputStart + ".umapped.rds")
+            if config["findNeighborsPCs"] and config["choosableResolutions"]:
+              if config["chosenResolution"]:
+                inputList.append(outputStart + ".clustered.rds")
+                inputList.append(outputStart + ".markerDisc.rds")
+                if config["multiSampled"]:
+                  for i in hf.createCombinations(config["otherMetaName"], combiOnly=False):
+                    inputList.append(projectDirectoryPath + "csv/" + i + "/" + i + ".finishedDGE.txt")
+                if config["multimodal"] or config["HTO"]:
+                  inputList.append(projectDirectoryPath + "plots/finishedFeatures.txt")
+                inputList.append(projectDirectoryPath + "shinyApp/" + "server.R")
+                inputList.append(projectDirectoryPath + "shinyApp/" + "ui.R")
+                inputList.append(projectDirectoryPath + "shinyApp/howToRunShinyAppOnYourOwnPC.txt")
+                inputList += hf.createMultiMetaCountInput(projectDirectoryPath, "plots/" + config["projectName"] + ".", config["otherMetaName"], ".barplot.pdf")
               else:
-                inputList.append(projectDirectoryPath + "workDirectory/resolutionsNeighPCsMissing.txt")
+                inputList + hf.createMultiSampleInput(projectDirectoryPath, testClustersName, config["choosableResolutions"], ".clusteredDimPlot.pdf")
+                inputList.append(projectDirectoryPath + "workDirectory/chosenResolutionMissing.txt")
             else:
-              inputList.append(projectDirectoryPath + "workDirectory/intPCsMissing.txt")
+              inputList.append(projectDirectoryPath + "workDirectory/resolutionsNeighPCsMissing.txt")
           else:
-            inputList.append(projectDirectoryPath + "workDirectory/conditionInfosMissing.txt")
+            inputList.append(projectDirectoryPath + "workDirectory/intPCsMissing.txt")
         else:
           inputList.append(projectDirectoryPath + "workDirectory/doubletInfosMissing.txt")
       else:
@@ -200,7 +185,7 @@ rule metaData:
     names = sampleNames,
     project = config["projectName"],
     cores=pOpt.numCores["meta"],
-    time=res.approxWalltime("meta", sampleType, num_cells, additionalTime=pOpt.addTime["meta"]),
+    time=res.approxWalltime("meta", sampleType, num_cells, additionalTime=pOpt.addTime["meta"], benchmarking=pOpt.execTimes),
     mem=res.approxRAM("meta", sampleType, num_cells, additionalRAM=pOpt.addRAM["meta"]),
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="metaData"),
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="metaData")
@@ -211,7 +196,7 @@ rule metaData:
   output:
     hf.createMultiSampleInput(projectDirectoryPath, "outputs/", sampleNames, ".meta.rds", project=config["projectName"]) if config["multimodal"] else hf.createMultiSampleInput(projectDirectoryPath, "outputs/", sampleNames, ".meta.rds")
 #  benchmark:
-#    repeat("benchmarks/" + config["projectName"] + "/00_meta.txt", 3)
+#    repeat("benchmarks/" + config["projectName"] + "/00_meta.txt", pOpt.execTimes)
   script:
     "scripts/MetaData.R"
 
@@ -225,7 +210,7 @@ rule demultiplexing:
     assayname = assayName,
     names = sampleNames,
     cores=pOpt.numCores["demux"],
-    time=res.approxWalltime("demultiplex", sampleType, num_cells, additionalTime=pOpt.addTime["demux"]),
+    time=res.approxWalltime("demultiplex", sampleType, num_cells, additionalTime=pOpt.addTime["demux"], benchmarking=pOpt.execTimes),
     mem=res.approxRAM("demultiplex", sampleType, num_cells, additionalRAM=pOpt.addRAM["demux"]),
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="demultiplexing"),
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="demultiplexing")
@@ -236,7 +221,7 @@ rule demultiplexing:
   output:
     hf.createMultiSampleInput(projectDirectoryPath, "outputs/", sampleNames, ".demux.rds")
 #  benchmark:
-#    repeat("benchmarks/" + config["projectName"] + "/01_demux.txt", 3)
+#    repeat("benchmarks/" + config["projectName"] + "/01_demux.txt", pOpt.execTimes)
   script:
     "scripts/demultiplexing.R"
 
@@ -247,9 +232,9 @@ rule mt_p1:
   params:
     projectDirPath = projectDirectoryPath,
     names ="{names}",
-    pattern = config["pattern"],
+    pattern = config["mPattern"],
     cores=pOpt.numCores["mt1"],
-    time=res.approxWalltime("mt1", sampleType, num_cells, additionalTime=pOpt.addTime["mt1"]),
+    time=res.approxWalltime("mt1", sampleType, num_cells, additionalTime=pOpt.addTime["mt1"], benchmarking=pOpt.execTimes),
     mem=res.approxRAM("mt1", sampleType, num_cells, additionalRAM=pOpt.addRAM["mt1"]),
     error=expand("{projectDirPath}clusterLogs/{rule}.{{names}}.errors", projectDirPath=projectDirectoryPath, rule="mt_p1"),
     output=expand("{projectDirPath}clusterLogs/{rule}.{{names}}.output", projectDirPath=projectDirectoryPath, rule="mt_p1")
@@ -260,7 +245,7 @@ rule mt_p1:
   output:
     expand("{projectDirPath}outputs/{{names}}.mt_p1.rds", projectDirPath=projectDirectoryPath)
 #  benchmark:
-#    repeat("benchmarks/" + config["projectName"] + "/02_mt1.{{names}}.txt", 3)
+#    repeat("benchmarks/" + config["projectName"] + "/02_mt1.{{names}}.txt", pOpt.execTimes)
   script:
     "scripts/mt_p1.R"
 
@@ -273,7 +258,7 @@ rule mt_p2:
     names ="{names}",
     samples = lambda wcs: sampleInputs[wcs.names]['mtCutoff'],
     cores=pOpt.numCores["mt2"],
-    time=res.approxWalltime("mt2", sampleType, num_cells, additionalTime=pOpt.addTime["mt2"]),
+    time=res.approxWalltime("mt2", sampleType, num_cells, additionalTime=pOpt.addTime["mt2"], benchmarking=pOpt.execTimes),
     mem=res.approxRAM("mt2", sampleType, num_cells, additionalRAM=pOpt.addRAM["mt2"]),
     error=expand("{projectDirPath}clusterLogs/{rule}.{{names}}.errors", projectDirPath=projectDirectoryPath, rule="mt_p2"),
     output=expand("{projectDirPath}clusterLogs/{rule}.{{names}}.output", projectDirPath=projectDirectoryPath, rule="mt_p2")
@@ -284,7 +269,7 @@ rule mt_p2:
   output:
     expand("{projectDirPath}outputs/{{names}}.mt_p2.rds", projectDirPath=projectDirectoryPath)
 #  benchmark:
-#    repeat("benchmarks/" + config["projectName"] + "/03_mt2.{{names}}.txt", 3)
+#    repeat("benchmarks/" + config["projectName"] + "/03_mt2.{{names}}.txt", pOpt.execTimes)
   script:
     "scripts/mt_p2.R"
 
@@ -296,7 +281,7 @@ rule doubletRemovalElbowPlot:
     projectDirPath = projectDirectoryPath,
     names = "{names}",
     cores=pOpt.numCores["drElbowPlot"],
-    time=res.approxWalltime("dbElb", sampleType, num_cells, additionalTime=pOpt.addTime["drElbowPlot"]),
+    time=res.approxWalltime("dbElb", sampleType, num_cells, additionalTime=pOpt.addTime["drElbowPlot"], benchmarking=pOpt.execTimes),
     mem=res.approxRAM("dbElb", sampleType, num_cells, additionalRAM=pOpt.addRAM["drElbowPlot"]),
     error=expand("{projectDirPath}clusterLogs/{rule}.{{names}}.errors", projectDirPath=projectDirectoryPath, rule="doubletRemovalElbowPlot"),
     output=expand("{projectDirPath}clusterLogs/{rule}.{{names}}.output", projectDirPath=projectDirectoryPath, rule="doubletRemovalElbowPlot")
@@ -307,7 +292,7 @@ rule doubletRemovalElbowPlot:
   output:
     expand("{projectDirPath}outputs/{{names}}.SCTranDB.rds", projectDirPath=projectDirectoryPath)
 #  benchmark:
-#    repeat("benchmarks/" + config["projectName"] + "/04_dbElb.{{names}}.txt", 3)
+#    repeat("benchmarks/" + config["projectName"] + "/04_dbElb.{{names}}.txt", pOpt.execTimes)
   script:
     "scripts/DBElbowPlotter.R"
 
@@ -321,7 +306,7 @@ rule doubletRemoval:
     roundingValues = lambda wcs: sampleInputs[wcs.names]['expectedPercentDoublets'],
     dim_PCs = lambda wcs: sampleInputs[wcs.names]['dbElbowPlot'],
     cores=pOpt.numCores["doubletRem"],
-    time=res.approxWalltime("dbRem", sampleType, num_cells, additionalTime=pOpt.addTime["doubletRem"]),
+    time=res.approxWalltime("dbRem", sampleType, num_cells, additionalTime=pOpt.addTime["doubletRem"], benchmarking=pOpt.execTimes),
     mem=res.approxRAM("dbRem", sampleType, num_cells, additionalRAM=pOpt.addRAM["doubletRem"]),
     error=expand("{projectDirPath}clusterLogs/{rule}.{{names}}.errors", projectDirPath=projectDirectoryPath, rule="doubletRemoval"),
     output=expand("{projectDirPath}clusterLogs/{rule}.{{names}}.output", projectDirPath=projectDirectoryPath, rule="doubletRemoval")
@@ -332,7 +317,7 @@ rule doubletRemoval:
   output:
     expand("{projectDirPath}outputs/{{names}}.doubR.rds", projectDirPath=projectDirectoryPath)
 #  benchmark:
-#    repeat("benchmarks/" + config["projectName"] + "/05_dbRem.{{names}}.txt", 3)
+#    repeat("benchmarks/" + config["projectName"] + "/05_dbRem.{{names}}.txt", pOpt.execTimes)
   script:
     "scripts/DoubletRemoval.R"
 
@@ -346,7 +331,7 @@ rule addTPsMerge:
     metaName = config["otherMetaName"],
     condCombi = hf.createCombinations(config["otherMetaName"]),
     cores=pOpt.numCores["addTPs"],
-    time=res.approxWalltime("merge", sampleType, num_cells, additionalTime=pOpt.addTime["addTPs"]),
+    time=res.approxWalltime("merge", sampleType, num_cells, additionalTime=pOpt.addTime["addTPs"], benchmarking=pOpt.execTimes),
     mem=res.approxRAM("merge", sampleType, num_cells, additionalRAM=pOpt.addRAM["addTPs"]),
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="addTPsMerge"),
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="addTPsMerge")
@@ -357,7 +342,7 @@ rule addTPsMerge:
   output:
     expand("{projectDirPath}outputs/{project}.preprocessedO.rds", project=config["projectName"], projectDirPath=projectDirectoryPath)
 #  benchmark:
-#    repeat("benchmarks/" + config["projectName"] + "/06_merge.txt", 3)
+#    repeat("benchmarks/" + config["projectName"] + "/06_merge.txt", pOpt.execTimes)
   script:
     "scripts/addMetaAndMerge.R"
   
@@ -368,7 +353,7 @@ rule SCTransformNormalization:
   params:
     projectDirPath = projectDirectoryPath,
     cores=pOpt.numCores["SCT"],
-    time=res.approxWalltime("sct", sampleType, num_cells, additionalTime=pOpt.addTime["SCT"]),
+    time=res.approxWalltime("sct", sampleType, num_cells, additionalTime=pOpt.addTime["SCT"], benchmarking=pOpt.execTimes),
     mem=res.approxRAM("sct", sampleType, num_cells, additionalRAM=pOpt.addRAM["SCT"]),
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="SCTransformNormalization"),
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="SCTransformNormalization")
@@ -379,7 +364,7 @@ rule SCTransformNormalization:
   output:
     expand("{projectDirPath}outputs/{project}.normalized.rds", project=config["projectName"], projectDirPath=projectDirectoryPath)
 #  benchmark:
-#    repeat("benchmarks/" + config["projectName"] + "/07_SCT.txt", 3)
+#    repeat("benchmarks/" + config["projectName"] + "/07_SCT.txt", pOpt.execTimes)
   script:
     "scripts/SCTraNormalisation.R"
 
@@ -392,7 +377,7 @@ rule IntegrationDimReduction:
     project = config["projectName"],
     maxRAM = config["maxRAM"],
     cores = pOpt.numCores["IntegrDimRed"],
-    time=res.approxWalltime("integration", sampleType, num_cells, additionalTime=pOpt.addTime["IntegrDimRed"]),
+    time=res.approxWalltime("integration", sampleType, num_cells, additionalTime=pOpt.addTime["IntegrDimRed"], benchmarking=pOpt.execTimes),
     mem=res.approxRAM("integration", sampleType, num_cells, additionalRAM=pOpt.addRAM["IntegrDimRed"]),
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="IntegrationDimReduction"),
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="IntegrationDimReduction")
@@ -403,7 +388,7 @@ rule IntegrationDimReduction:
   output:
     expand("{projectDirPath}outputs/{project}.IntDimRed.rds", project=config["projectName"], projectDirPath=projectDirectoryPath)
 #  benchmark:
-#    repeat("benchmarks/" + config["projectName"] + "/08_integDimRed.txt", 3)
+#    repeat("benchmarks/" + config["projectName"] + "/08_integDimRed.txt", pOpt.execTimes)
   script:
     "scripts/IntegrationDimReduction.R"
 
@@ -416,7 +401,7 @@ rule RunUMAP:
     project = config["projectName"],
     integrationPCs = config["integrationPCs"],
     cores = pOpt.numCores["UMAP"],
-    time=res.approxWalltime("UMAP", sampleType, num_cells, additionalTime=pOpt.addTime["UMAP"]),
+    time=res.approxWalltime("UMAP", sampleType, num_cells, additionalTime=pOpt.addTime["UMAP"], benchmarking=pOpt.execTimes),
     mem=res.approxRAM("UMAP", sampleType, num_cells, additionalRAM=pOpt.addRAM["UMAP"]),
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="RunUMAP"),
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="RunUMAP")
@@ -427,7 +412,7 @@ rule RunUMAP:
   output:
     expand("{projectDirPath}outputs/{project}.umapped.rds", project=config["projectName"], projectDirPath=projectDirectoryPath)
 #  benchmark:
-#    repeat("benchmarks/" + config["projectName"] + "/09_umap.txt", 3)
+#    repeat("benchmarks/" + config["projectName"] + "/09_umap.txt", pOpt.execTimes)
   script:
     "scripts/RunUMAP.R"
 
@@ -442,7 +427,7 @@ rule testDiffClusterResolutions:
     resolutions = config["choosableResolutions"],
     cores = pOpt.numCores["testClustRes"],
     isMultiSampled = config["multiSampled"] or config["HTO"],
-    time=res.approxWalltime("tCluster", sampleType, num_cells, additionalTime=pOpt.addTime["testClustRes"]),
+    time=res.approxWalltime("tCluster", sampleType, num_cells, additionalTime=pOpt.addTime["testClustRes"], benchmarking=pOpt.execTimes),
     mem=res.approxRAM("tCluster", sampleType, num_cells, additionalRAM=pOpt.addRAM["testClustRes"]),
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="testDiffClusterResolutions"),
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="testDiffClusterResolutions")
@@ -453,7 +438,7 @@ rule testDiffClusterResolutions:
   output:
     hf.createMultiSampleInput(projectDirectoryPath, testClustersName, config["choosableResolutions"], ".clusteredDimPlot.pdf")
 #  benchmark:
-#    repeat("benchmarks/" + config["projectName"] + "/10_testRes.txt", 3)
+#    repeat("benchmarks/" + config["projectName"] + "/10_testRes.txt", pOpt.execTimes)
   script:
     "scripts/testDiffClusterRes.R"
 
@@ -468,7 +453,7 @@ rule useChosenClusterResolutions:
     resolution = config["chosenResolution"],
     condition = config["otherMetaName"],
     cores = pOpt.numCores["useClusterRes"],
-    time=res.approxWalltime("cCluster", sampleType, num_cells, additionalTime=pOpt.addTime["useClusterRes"]),
+    time=res.approxWalltime("cCluster", sampleType, num_cells, additionalTime=pOpt.addTime["useClusterRes"], benchmarking=pOpt.execTimes),
     mem=res.approxRAM("cCluster", sampleType, num_cells, additionalRAM=pOpt.addRAM["useClusterRes"]),
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="useChosenClusterResolutions"),
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="useChosenClusterResolutions")
@@ -479,7 +464,7 @@ rule useChosenClusterResolutions:
   output:
     expand("{projectDirPath}outputs/{project}.clustered.rds", project=config["projectName"], projectDirPath=projectDirectoryPath)
 #  benchmark:
-#    repeat("benchmarks/" + config["projectName"] + "/11_useRes.txt", 3)
+#    repeat("benchmarks/" + config["projectName"] + "/11_useRes.txt", pOpt.execTimes)
   script:
     "scripts/useChosenClusterRes.R"
 
@@ -492,7 +477,7 @@ rule multimodalAnalysis:
     project = config["projectName"],
     assayname = assayName,
     cores = pOpt.numCores["multimodal"],
-    time=res.approxWalltime("mmodalAssay", sampleType, num_cells, additionalTime=pOpt.addTime["multimodal"]),
+    time=res.approxWalltime("mmodalAssay", sampleType, num_cells, additionalTime=pOpt.addTime["multimodal"], benchmarking=pOpt.execTimes),
     mem=res.approxRAM("mmodalAssay", sampleType, num_cells, additionalRAM=pOpt.addRAM["multimodal"]),
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="multimodalAnalysis"),
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="multimodalAnalysis")
@@ -503,7 +488,7 @@ rule multimodalAnalysis:
   output:
     expand("{projectDirPath}outputs/{project}.multimodal.rds", project=config["projectName"], projectDirPath=projectDirectoryPath)
 #  benchmark:
-#    repeat("benchmarks/" + config["projectName"] + "/12_addAssay.txt", 3)
+#    repeat("benchmarks/" + config["projectName"] + "/12_addAssay.txt", pOpt.execTimes)
   script:
     "scripts/addAssayData.R"
 
@@ -515,7 +500,7 @@ rule markerDiscovery:
     projectDirPath = projectDirectoryPath,
     project = config["projectName"],
     cores = pOpt.numCores["markerDisc"],
-    time=res.approxWalltime("marker", sampleType, num_cells, additionalTime=pOpt.addTime["markerDisc"]),
+    time=res.approxWalltime("marker", sampleType, num_cells, additionalTime=pOpt.addTime["markerDisc"], benchmarking=pOpt.execTimes),
     mem=res.approxRAM("marker", sampleType, num_cells, additionalRAM=pOpt.addRAM["markerDisc"]),
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="markerDiscovery"),
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="markerDiscovery")
@@ -526,7 +511,7 @@ rule markerDiscovery:
   output:
     expand("{projectDirPath}outputs/{project}.markerDisc.rds", project=config["projectName"], projectDirPath=projectDirectoryPath)
 #  benchmark:
-#    repeat("benchmarks/" + config["projectName"] + "/13_markerDisc.txt", 3)
+#    repeat("benchmarks/" + config["projectName"] + "/13_markerDisc.txt", pOpt.execTimes)
   script:
     "scripts/markerDiscovery.R"
 
@@ -541,7 +526,7 @@ rule cellCounting:
     multiSampled = config["multiSampled"],
     project = config["projectName"],
     cores = pOpt.numCores["cellCount"],
-    time=res.approxWalltime("count", sampleType, num_cells, additionalTime=pOpt.addTime["cellCount"]),
+    time=res.approxWalltime("count", sampleType, num_cells, additionalTime=pOpt.addTime["cellCount"], benchmarking=pOpt.execTimes),
     mem=res.approxRAM("count", sampleType, num_cells, additionalRAM=pOpt.addRAM["cellCount"]),
     error=expand("{projectDirPath}clusterLogs/{rule}.{{condition}}.errors", projectDirPath=projectDirectoryPath, rule="cellCounting"),
     output=expand("{projectDirPath}clusterLogs/{rule}.{{condition}}.output", projectDirPath=projectDirectoryPath, rule="cellCounting")
@@ -552,7 +537,7 @@ rule cellCounting:
   output:
     expand("{projectDirPath}plots/{project}.{{condition}}.barplot.pdf", project=config["projectName"], projectDirPath=projectDirectoryPath, condition=config["otherMetaName"])
 #  benchmark:
-#    repeat("benchmarks/" + config["projectName"] + "/14_cCount.{{condition}}.txt", 3)
+#    repeat("benchmarks/" + config["projectName"] + "/14_cCount.{{condition}}.txt", pOpt.execTimes)
   script:
     "scripts/cellCounting.R"
 
@@ -566,7 +551,7 @@ rule DGE:
     metaCondition = "{condition}",
     resolution = config["chosenResolution"],
     cores = pOpt.numCores["DGE"],
-    time=res.approxWalltime("DGE", sampleType, num_cells, additionalTime=pOpt.addTime["DGE"]),
+    time=res.approxWalltime("DGE", sampleType, num_cells, additionalTime=pOpt.addTime["DGE"], benchmarking=pOpt.execTimes),
     mem=res.approxRAM("DGE", sampleType, num_cells, additionalRAM=pOpt.addRAM["DGE"]),
     error=expand("{projectDirPath}clusterLogs/{rule}.{{condition}}.errors", projectDirPath=projectDirectoryPath, rule="DGE"),
     output=expand("{projectDirPath}clusterLogs/{rule}.{{condition}}.output", projectDirPath=projectDirectoryPath, rule="DGE")
@@ -577,7 +562,7 @@ rule DGE:
   output:
     expand("{projectDirPath}csv/{{condition}}/{{condition}}.finishedDGE.txt", projectDirPath=projectDirectoryPath)
 #  benchmark:
-#    repeat("benchmarks/" + config["projectName"] + "/15_dge.{{condition}}.txt", 3)
+#    repeat("benchmarks/" + config["projectName"] + "/15_dge.{{condition}}.txt", pOpt.execTimes)
   script:
     "scripts/DGE.R"
 
@@ -590,7 +575,7 @@ rule createShinyApp:
     project = config["projectName"],
     multiSampled = config["multiSampled"],
     cores = pOpt.numCores["shinyApp"],
-    time=res.approxWalltime("shiny", sampleType, num_cells, additionalTime=pOpt.addTime["shinyApp"]),
+    time=res.approxWalltime("shiny", sampleType, num_cells, additionalTime=pOpt.addTime["shinyApp"], benchmarking=pOpt.execTimes),
     mem=res.approxRAM("shiny", sampleType, num_cells, additionalRAM=pOpt.addRAM["shinyApp"]),
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="createShinyApp"),
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="createShinyApp")
@@ -602,7 +587,7 @@ rule createShinyApp:
     expand("{projectDirPath}shinyApp/server.R", project=config["projectName"], projectDirPath=projectDirectoryPath),
     expand("{projectDirPath}shinyApp/ui.R", project=config["projectName"], projectDirPath=projectDirectoryPath)
 #  benchmark:
-#    repeat("benchmarks/" + config["projectName"] + "/16_shiny.txt", 3)
+#    repeat("benchmarks/" + config["projectName"] + "/16_shiny.txt", pOpt.execTimes)
   script:
     "scripts/createShinyApp.R"
 
@@ -615,7 +600,7 @@ rule multimodalFeaturePlotting:
     project = config["projectName"],
     assayname = assayName,
     cores = pOpt.numCores["multimodalPlot"],
-    time=res.approxWalltime("mmodalplot", sampleType, num_cells, additionalTime=pOpt.addTime["multimodalPlot"]),
+    time=res.approxWalltime("mmodalplot", sampleType, num_cells, additionalTime=pOpt.addTime["multimodalPlot"], benchmarking=pOpt.execTimes),
     mem=res.approxRAM("mmodalplot", sampleType, num_cells, additionalRAM=pOpt.addRAM["multimodalPlot"]),
     error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="multimodalFeaturePlotting"),
     output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="multimodalFeaturePlotting")
@@ -626,7 +611,7 @@ rule multimodalFeaturePlotting:
   output:
     expand("{projectDirPath}plots/finishedFeatures.txt", project=config["projectName"], projectDirPath=projectDirectoryPath)
 #  benchmark:
-#    repeat("benchmarks/" + config["projectName"] + "/17_mmPlot.txt", 3)
+#    repeat("benchmarks/" + config["projectName"] + "/17_mmPlot.txt", pOpt.execTimes)
   script:
     "scripts/multimodalFeaturePlotting.R"
 
@@ -647,6 +632,23 @@ rule copyShinyAppInstructions:
 
 
 ####################################  missing paramter rules  ###############################################
+
+rule missingMinimalInputs:
+  input:
+    "errorMessage/minimalInputsMissing.txt"
+  params:
+    cores=1,
+    mem="50MB",
+    time="0:01:00",
+    error=expand("{projectDirPath}clusterLogs/{rule}.errors", projectDirPath=projectDirectoryPath, rule="minimalInputsMissing"),
+    output=expand("{projectDirPath}clusterLogs/{rule}.output", projectDirPath=projectDirectoryPath, rule="minimalInputsMissing")
+  log:
+    expand("{projectDirPath}logs/{rule}.log", projectDirPath=projectDirectoryPath, rule="minimalInputsMissing")
+  output:
+    temp(expand("{projectDirPath}workDirectory/minimalInputsMissing.txt", projectDirPath=projectDirectoryPath))
+  run:
+    hf.raiseInputMissingException("errorMessage/minimalInputsMissing.txt")
+    shell("touch {output}")
 
 rule missingMTCutoff:
   input:

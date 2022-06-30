@@ -21,7 +21,7 @@ def approxRAM(rule, typ, num_cells, additionalRAM=0):
         approxMem = 1
     return str(approxMem) + "GB"
 
-def approxWalltime(rule, typ, num_cells, additionalTime=0):
+def approxWalltime(rule, typ, num_cells, additionalTime=0, benchmarking):
     #print(rule + " used: "+ time.strftime("%H:%M:%S", time.gmtime(math.ceil(w_time[typ][rule]*num_cells))), end=", ")
     apprTime = math.ceil(w_time[typ][rule]*num_cells)+additionalTime
     if apprTime < 300:

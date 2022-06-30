@@ -1,2 +1,0 @@
-The condition name or the condition for at least one sample is missing.
-Please enter it in your configfile.

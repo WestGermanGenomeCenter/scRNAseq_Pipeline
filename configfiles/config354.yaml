@@ -15,7 +15,7 @@ projectDirectoryPath: /scratch_gs/myhuy100/projects_experimental/354_cellranger/
 
 rawData: data/354_filtered_feature_bc_matrix/filtered_feature_bc_matrix/ #directory containing the cellranger outputs which serves as this pipelines input
 
-pattern: "^MT-" #the mt-pattern for mitochondiral filtering
+mtPattern: "^MT-" #the mt-pattern for mitochondiral filtering
 
 multimodal: false #whether input contains protein data or not
 

@@ -51,24 +51,56 @@ def transform_sampleInputs(sampleInputs):
     otherMetaData.append(i["otherMetaData"])
   return samples, otherMetaData
 
-  
+
+def determineSampleType(config):
+  sampleType = "ns"
+  assayName = "ADT"
+  if config["multiSampled"] and config["multimodal"]:
+    sampleType = "mm"
+  elif config["multiSampled"] and not config["multimodal"]:
+    sampleType = "nm"
+  elif not config["multiSampled"] and config["multimodal"]:
+    sampleType = "ms"
+  if(config["HTO"]):
+    assayName = "HTO"
+    sampleType = "HTO"
+  return sampleType
+
 def checkMinimalInputs(config):
+  #general parameters
+  if config["HHU_HPC"] is None:
+    return False
+  if not config["maxRAM"]:
+    return False
+  #sample type
+  if config["multiSampled"] is None:
+    return False
+  if config["multimodal"] is None:
+    return False
+  if config["HTO"] is None:
+    return False
+  #directories and inputs
   if not config["workDirectory"]:
     return False
   if not config["rawData"]:
     return False
-  if not config["projectName"]:
-    return False
   if not config["projectDirectoryPath"]:
     return False
-  if not config["maxRAM"]:
-    return False
-  if config["multiSampled"] is None:
+  #sample information
+  if not config["projectName"]:
     return False
   if not config["numberOfCells"]:
     return False
+  if not config["mtPattern"]:
+    return False
+  if not config["otherMetaName"] or not type(config["otherMetaName"]) is list:
+    return False
   for i in config["sampleInputs"]:
     if i["name"] == None:
+      return False
+    if i["otherMetaData"]:
+      return False
+    if i["expectedPercentDoublets"]:
       return False
   return True
 

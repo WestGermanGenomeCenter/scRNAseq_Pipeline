@@ -10,7 +10,7 @@ projectName: "165nm"
 
 projectDirectoryPath: /scratch_gs/myhuy100/projects_experimental/165nm_cellranger/
 
-pattern: "^mt-"
+mtPattern: "^mt-"
 
 multimodal: false
 

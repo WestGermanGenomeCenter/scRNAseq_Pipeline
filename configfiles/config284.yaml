@@ -10,7 +10,7 @@ projectName: "284"
 
 projectDirectoryPath: /scratch_gs/myhuy100/projects_experimental/284_true/
 
-pattern: "^mt-"
+mtPattern: "^mt-"
 
 multimodal: true
 
