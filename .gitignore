@@ -23,3 +23,11 @@ __pycache__
 snakemakeScripts/cluster/plots/
 benchmarks/
 documentation/figures/
+documentation/*.aux
+documentation/*.bcf
+documentation/*.log
+documentation/*.out
+documentation/*.toc
+documentation/*.bbl
+documentation/*.blg
+documentation/*.run.xml
