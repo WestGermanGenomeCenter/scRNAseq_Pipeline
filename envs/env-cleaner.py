@@ -1,7 +1,4 @@
 
-from cgitb import text
-
-
 files = ["addmeta-spec.yml", "counting-spec.yml", "devtools-spec.yml", "doublet-spec.yml", "env-spec.yml", "marker-spec.yml", "shiny-spec.yml"]
 
 bioconductorSeuratHelper = "\

@@ -1,0 +1,40 @@
+In this section we discuss some common errors. How to fix them and places at which the pipeline can be improved.
+
+\subsection{Common Errors and their Fixes}
+As mentioned in previous sections there are a few intended and a few common errors that can occur in the pipeline. The table contains these errors and their fixes. These are mostly errors occurring in the HHU HPC
+
+\begin{tabular}{p{3.5cm} | p{10cm}}
+	Error & Fix\\
+	\hline
+	MissingInputError & Intentional error for interruption. Take a look at the error message on the terminal/in the logs and fill in the entry that is missing in the config.ymal.\\
+	Not enough RAM & A HHU HPC error where not enough RAM was approximated. If you see in the logs that the error message contains "/bin/bash: line 1: \_\_\_\_ Killed" or something similar with "killed" then it is most likely this error. Add some additional GB RAM to the snakemakeScripts/PipelineOptions.py step that threw that error and restart the pipeline.\\
+	Not enough walltime & A HHU HPC error where not enough Walltime was approximated. \textbf{The HPC does not throw an error message here}. If your terminal screen says that the job is still running, but myJAM says the job is not running anymore then the walltime ran out without finishing. Cancel the pipeline in the terminal, add some additional seconds to the walltime in snakemakeScripts/PipelineOptions.py to the step that threw the error and restart the pipeline.\\
+	KeyError & If the pipeline throws a KeyError along with a name for an config.yaml entry. You might have wrote the name down incorrectly in your config.yaml\\
+	Integer \& String errors & Be mindful of using the correct datatype in the config.yaml. E.g., if you want to name your project after a number, e.g. 215, then the number must be in "" otherwise the pipeline will read it as a number and not a word.
+\end{tabular}
+
+\subsection{Conda and Package Issues}
+Currently, a script is used to install the packages belonging to the dependencies folder. This is due to the package not being on conda. A fix for this would be if the packages would be added to bioconda which you can do yourself. However, to do so the packages need a tagged GitHub version release which only the creator of the used package can do.
+
+Additionally, seuratHelper and DoubletFinder have Seurat version 3 compatibilities and are still working with Seurat version 4. This might change with version 5 though so it might be good to look for alternatives.
+
+On the HHU HPC the conda module has issues with two of the Bioconductor packages in the dependencies folder. The other 3 are dependent on them, which is why the five have to be installed via the script on the HHU HPC. If the conda version where to be updated to a version above 4.6 then it might be possible to add these packages with these versions to the conda environments YAMLs and there would be no need to install them via the script anymore.
+
+\subsection{Improvements for the Pipeline}
+Currently, the pipeline only accepts "Antibody Capture" as additional assay for multimodal analysis. This could be more generalized to allow a greater variety of assays to be added.
+
+Multicore parallelization with DoubletFinder is possible, but throws an error which states that 1 core did not deliver its processed data 50\% of the time. This could be correct.
+
+The pipeline runs on Snakemake version 5.10.0. It should be adapted to higher versions of Snakemake for the future.
+
+The naming of functions and variables in every script could be imrpoved.
+
+The way the walltime and RAM are approximated could be improved by taking into account the size of the files and the number of cells per sample.
+
+One could add different types of inputs instead of just the 10X Cellranger output folder.
+
+The step addTPsMerge could be removed by adding the meta data in this step at the beginning and possibly skipping merge since SCTransformNormalization splits the dataset again.
+
+\underline{Automatized cell annotation} could be added to the pipeline. To do so a script needs to be created and added to the Snakefile as a rule. If it should be between two certain steps, the output of the step that happens before needs to be the input of the annotation while the output of the annotation should become the input of the step that should follow in the Snakefile. An attempt for this had been made in the past, but it did not work out.
+
+There might be some other improvements that could be done which have not been found yet.

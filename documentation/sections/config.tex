@@ -1,0 +1,37 @@
+In this section, we describe how to fill out a config.yaml. A config.yaml gives the pipeline information on what kind of dataset it is processing and how it should be processed. Information on how to fill out a config.yaml is also in the configfiles/config\_example.yaml. In the table~\ref{tab:config} you can see each input with an explanation of what should be entered. If there is an X in the \textit{S} column then the input has to be filled out in the very beginning or the pipeline won't start.
+
+\begin{tabular}{p{3.5cm} | p{9.5cm} | p{0.1cm}}
+	\label{tab:config}
+	Input & Description & S\\
+	\hline
+	HHU\_HPC & Is the pipeline run on the HHU HPC? Depending on whether the input is \textbf{true} or \textbf{false} the HHU\_HPC environments or the netAccess environments will be used. & X\\
+	maxRAM & The maximal global RAM the pipeline is allowed to use. If unsure, just copy the value from config\_example.yaml. Even if that value is greater than the physical RAM, the 32 GB in config\_example.yaml should not be reached unless there are a few million cells in the dataset. & X\\
+	workDirectory & the R work directory during the pipeline run. & X\\
+	rawData & The directory containing the cellranger outputs which serves as this pipelines input. & X\\
+	mtPattern & The pattern of mitochondrial reads in the dataset, e.g. "mt\^~". & X\\
+	multimodal & Is this a multimodal dataset meaning does it contain protein data? \textbf{true} or \textbf{false}. & X\\
+	multiSampled & Does this dataset contain more than one sample? \textbf{true} or \textbf{false}. & X\\
+	HTO & Does this dataset use HTOs? \textbf{true} or \textbf{false}. & X\\
+	numberOfCells & How many cells does this dataset contain? & X\\
+	projectName & The name of the project. & X\\
+	otherMetaName & Condition names for the meta data. E.g., [timepoint, donor, condition] & X\\
+	choosableResolutions & A list of resolution the user wants to look at before choosing one for clustering. In []. &  \\
+	chosenResolution & The resolution chosen after taking a look at the "chosenResolutions" & \\
+	integrationPCs & The PCs for UMAP. For choosing the PCs check the plot ending with ".integratedElbowPlot.pdf" & \\
+	findNeighborsPCs & PCs used for the SNN-Graph construction. For choosing PCs check the plot ending with ".umappedElbowPlot.pdf" & \\
+	sampleInputs: & A collection of information about each sample. & X\\
+\end{tabular}
+
+\newpage
+
+The values below have to be added to "sampleInputs" and has to be created for every sample. See configfiles/config\_example.yaml for an example.
+
+\begin{tabular}{p{4cm} | p{9.5cm} | p{0.1cm}}
+	Input & Description & S\\
+	\hline
+	name & The name of the sample. & X\\
+	otherMetaData & The meta data type for condition name. Has to be in [] and in the same order as the names in "otherMetaData" in the table above. E.g., [day1, donorA, cancer] & X\\
+	expectedPercentDoublets & Expected percent doublets. & X\\
+	mtCutoff & Percentage cutoff chosen during the pipeline run. E.g. enter 10 if you want to remove all cells with more than 10\% mitochondrial counts. Check plots ending with "mt.before.pdf". & \\
+	dbElbowPlot & PCs chosen from plots for doublet removal. Check plots ending with ".ElbowPlot.pdf" & \\
+\end{tabular}

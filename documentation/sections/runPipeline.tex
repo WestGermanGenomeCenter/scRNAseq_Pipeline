@@ -1,0 +1,54 @@
+Here different ways of running the pipeline are described. Important to note is that the pipeline will throw a \textbf{\textit{MissingInputError}} when an input value is missing in the config. Usually you need to take a look at plots created during the pipeline run to choose these input values correctly which is why the custom error exists. To interrupt the pipeline so the user can input a the value. However, the values can also be entered at the beginning of the run allowing for a single uninterrupted run.
+
+If you have finished running the pipeline and wish to rerun the pipeline from a certain point onward, delete/rename the output from the step you want to rerun in the outputs folder and restart the pipeline.
+
+First, move your 10X Cellranger Output folder into the data/ folder a config.yaml for you dataset, see section~\ref{section:config} for more.
+
+\subsection{Simple Snakemake Command}
+Install Anaconda or Miniconda and create a Snakemake environment. The Pipeline should work best with Snakemake 5.10.0 and might not work as well with higher versions of Snakemake. There are three packages not on conda that would be installed manually via a script through the install run, see~\ref{fig:installRun}. Download the following packages and move them into the dependencies/ folder.
+\begin{itemize}
+	\item https://github.com/chris-mcginnis-ucsf/DoubletFinder (as .zip)
+	\item https://github.com/SGDDNB/ShinyCell (as .zip)
+	\item https://github.com/genomics-kl/seurathelpeR (as .zip)
+\end{itemize}
+Next, switch to the scRAseq\_Pipeline/ folder in the terminal if you have not already. Change the HPC\_HHU input in the config.yaml to \textbf{false}. For the install run use the command:
+\begin{center}
+	snakemake -p --cores 1 --use-conda
+\end{center}
+After all packages are installed and use the following command for an actual run. 
+\begin{center}
+	snakemake -p --cores \underline{X} --use-conda
+\end{center}
+\textit{X} marks the number of cores you want to use. Cores can be used to perform multiple jobs at ones, e.g., if you have 6 samples you can choose 6 cores and the pipeline will process the 6 samples simultaneously until the samples are merged back into one dataset. In case of a Snakemake error during a run, Snakemake will lock the directory and you cannot run the pipeline again unless you run the following command to unlock the directory.
+\begin{center}
+	snakemake -p --cores 1 --use-conda --unlock
+\end{center}
+The conda environments used here are in the netAccess folder. If you want to customize these environments more either change the envs in the netAccess folder or create a new folder and change the paths in the pipeline options, see section~\ref{section:pipeOptions}.
+
+
+\subsection{Run on the HHU HPC}
+First download the pipeline and put it into your scratch\_gs or project\_gs folder since a single run can create over 50 GB in outputs. Next, move you 10X Cellranger Output folder into the data/ folder. Now, download the following packages and move them into the dependencies folder:
+\begin{itemize}
+	\item https://github.com/chris-mcginnis-ucsf/DoubletFinder (as .zip)
+	\item https://github.com/SGDDNB/ShinyCell (as .zip)
+	\item https://github.com/genomics-kl/seurathelpeR (as .zip)
+	\item https://bioconductor.org/packages/release/bioc/html/GenomeInfoDb.html (ver.1.30.0 as tar.gz)
+	\item https://bioconductor.org/packages/release/data/annotation/html/GenomeInfoDbData.html (ver.1.2.7 as tar.gz)
+	\item https://bioconductor.org/packages/release/bioc/html/GenomicRanges.html (ver.1.46.1 as tar.gz)
+	\item https://bioconductor.org/packages/release/bioc/html/SummarizedExperiment.html (ver.1.24.0 as tar.gz)
+	\item https://bioconductor.org/packages/release/bioc/html/SingleCellExperiment.html (ver.1.16.0 as tar.gz)
+\end{itemize}
+The versions are important for compatibility with the environment for the HPC. \textbf{Important} if you copy from the config\_example.yaml make sure to change the path of "projectDirectoryPath" to a path you have access to and change the HPC account an project in the snakemakeScripts/cluster/cluster.json to ones belonging to you.
+
+Now log into the HPC via your terminal and create a screen with the command "screen -S screen\_name". This way you will not lose any progress if you were to lose your Internet connection for a moment and can reconnect to your screen via "screen -r screen\_name". If you want to process multiple datasets at once you can do that by creating multiple screens, e.g. "screen -S screen\_name1", "screen -S screen\_name2", etc. and follow the following instructions for each screen:
+\begin{itemize}
+	\item Connect to the snakemake-node via "ssh snakemake-node". \textbf{Do not start the pipeline in the login-node}
+	\item "cd" to the folder containing the pipeline repository.
+	\item Use the command "bash clusterExecution.sh /path/to/config.yaml" to start the pipeline.
+	\item If the folder is locked ,use the command "bash resumePipeline.sh /path/to/config.yaml" to unlock the pipeline.
+	\item The pipeline will process your dataset until a \textbf{\textit{MissingInputError}} error comes at interruption. Then it will throw the error until the necessary input is entered into the config.yaml unless you chose to fill out everything before starting the pipeline.
+	\item Repeat the above step until the pipeline finished processing your dataset.
+\end{itemize}
+\textbf{IMPORTANT! There are a few common errors}. Mostly due to how the HPC works. For using the HPC you need to know \textit{in advance} how much RAM, walltime, nodes and cores you want to use. The pipeline will do this for you by approximating the RAM and walltime based on benchmarks made using certain dataset. However, there are times the pipeline will not approximate enough walltime and RAM for your dataset. In this case you can add additional walltime or RAM to the step that failed in the pipeline options, see section~\ref{section:pipeOptions}. 
+
+To know if a pipeline error is caused by not using enough walltime or RAM see section~\ref{section:errorsAndImprovs}. If the error is neither a \textbf{\textit{MissingInputError}} error nor a walltime or RAM error there might be an issue with the pipeline. 

@@ -1,0 +1,68 @@
+This is the documentation for our Seurat based scRNA-seq pipeline with Snakemake.
+The goal of this project was to automatize as many steps as possible.
+There are a few points in the pipeline run where the pipeline will stop and throw an error, so you can take a look at a plot and choose a value for a function, e.g. given at the rule \textit{mt\_p1} an error will be thrown which tells you to look at a plot to choose at what percentage you want to filter the mitochondrial reads. However, it is possible to completely skip these error throws by filling in every value at the beginning. More on this in the workflow section. \textbf{The pipeline currently only accepts 10X Cellranger output folders as input.}
+
+\subsection{Used R Packages}
+The pipeline uses the R packages Seurat, DoubletFinder, seuratHelper and ShinyCell as main analysis packages.
+
+\subsection{Pipeline Directory Structures}
+\begin{minipage}{0.35\textwidth}
+	\dirtree{%
+		.1 path/to/scRNAseq\_Pipeline.
+		.2 configfiles.
+		.2 data.
+		.2 dependencies.
+		.2 documentation.
+		.2 envs.
+		.3 HHU\_HPC.
+		.3 netAccess.
+		.2 errorMessage.
+		.2 scripts.
+		.2 snakemakeScripts.
+		.3 cluster.
+		.2 workDirectory.
+	}
+\end{minipage}\hfill
+\begin{minipage}{0.55\textwidth}
+	\dirtree{%
+	.1 \textbf{Folder applications}.
+	.1 contains configfiles for analysis.
+	.1 contains datasets.
+	.1 packages for manual installation.
+	.1 documentation.
+	.1 conda envs.
+	.1 for HHU HPC.
+	.1 for internet access \& no restrictions.
+	.1 contains \textbf{MissingInputError} texts .
+	.1 contains R scripts.
+	.1 contains scripts for pipeline config.
+	.1 contains configs for on HHU HPC cluster.
+	.1 contains an instruction .txt.
+}
+\end{minipage}
+
+\subsection{Project Directory Structures}
+\begin{minipage}{0.45\textwidth}
+	\dirtree{%
+		.1 path2/two/pipeline\_project\_output.
+		.2 clusterLogs.
+		.2 csv.
+		.2 logs.
+		.2 plot.
+		.2 outputs.
+		.2 shinyApp.
+		.2 workDirectory.
+	}
+\end{minipage}\hfill
+\begin{minipage}{0.45\textwidth}
+	\dirtree{%
+		.1 \textbf{Folder applications}.
+		.1 logs created by cluster.
+		.1 csv outputs.
+		.1 snakemake logs.
+		.1 plot outputs.
+		.1 pipeline output .rds files.
+		.1 shiny app.
+		.1 contains temp files by R.
+	}
+\end{minipage}

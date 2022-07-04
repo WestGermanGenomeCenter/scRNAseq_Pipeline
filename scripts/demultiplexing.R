@@ -27,7 +27,9 @@ GE <- HTODemux(GE, assay=assayname, positive.quantile=0.99)
 table(GE$HTO_classification.global)
 Idents(GE) <- "HTO_maxID"
 rows <- levels(Idents(GE))
-FeatureScatter(GE, feature1=paste("hto", rows[[1]], sep="_"), feature2=paste("hto", rows[[2]], sep="_"))
+#FeatureScatter(GE, feature1=paste("hto", rows[[1]], sep="_"), feature2=paste("hto", rows[[2]], sep="_"))
+plot_in_terminal(plotname=paste(projectDirPath, "plots/", project, ".HTOscatter.pdf", sep=""),
+                 to_plot=FeatureScatter(GE, feature1=paste("hto", rows[[1]], sep="_"), feature2=paste("hto", rows[[2]], sep="_")))
 
 Idents(GE) <- "HTO_classification.global"
 GE <- subset(GE, idents="Doublet", invert=TRUE)

@@ -22,7 +22,6 @@ dependencies/
 __pycache__
 snakemakeScripts/cluster/plots/
 benchmarks/
-documentation/figures/
 documentation/*.aux
 documentation/*.bcf
 documentation/*.log
@@ -31,3 +30,6 @@ documentation/*.toc
 documentation/*.bbl
 documentation/*.blg
 documentation/*.run.xml
+!documentation/Documentation.pdf
+!documentation/figures/*.pdf
+!documentation/figures/*.png

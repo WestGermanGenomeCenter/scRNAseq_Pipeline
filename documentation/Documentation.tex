@@ -1,0 +1,156 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage{dirtree}
+
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsthm}
+
+%Arbritary font sizes
+\usepackage{lmodern}% http://ctan.org/pkg/lm
+
+\usepackage{tikz}
+%Some Graphics / Flowcharts etc.
+\tikzset{rounded/.style={rounded corners}}
+
+\usepackage{listings}
+\lstset{basicstyle=\footnotesize\ttfamily,breaklines=true}
+
+%Margin setup
+\usepackage[top=2cm, bottom=3cm, left=3cm, right=3cm]{geometry}
+
+%Line spread
+\linespread{1.3}
+
+%FloatBarriers avoid usage 
+\usepackage{placeins}
+
+%show margin for development
+%\usepackage{showframe}
+%\overfullrule=2cm
+
+%Fonts
+\usepackage{xltxtra,fontspec,xunicode}
+
+%for math
+%\usepackage{cmbright}
+%\usepackage{XCharter}
+%\usepackage[T1]{fontenc}
+
+\usepackage[bitstream-charter]{mathdesign}
+\usepackage[T1]{fontenc}
+\DeclareTextCommand{\nobreakspace}{T1}{\leavevmode\nobreak\ }
+\usepackage[scaled]{berasans}
+\usepackage{beramono}
+%\setkomafont{disposition}{\normalcolor\bfseries} % get rid of sans section headings
+
+%\usepackage{todonotes}
+\usepackage{booktabs}
+
+\usepackage{float}
+
+%sidecaptions
+\usepackage{sidecap}
+
+%used for formatting currency
+\usepackage{siunitx}
+\usepackage{eurosym}
+
+\usepackage{graphicx}
+\graphicspath{{graphics/}}
+
+%% comment out if you like svg
+\usepackage{svg}
+
+%\svgpath{{graphics/}{graphics/inkscape/}}
+
+%Used to create space after custom commands only if suitable
+\usepackage{xspace}
+
+%Control of captions and subcaptions
+\usepackage[format=plain]{caption}
+\usepackage[font=footnotesize]{subcaption}
+
+\captionsetup[figure]{font=footnotesize,justification=raggedright}
+\captionsetup[table]{font=footnotesize,justification=raggedright}
+
+%Bibliography
+\usepackage[sorting=none,citestyle=numeric,backend=biber]{biblatex}
+\bibliography{Bibliography}
+
+%Center verbatim environments for config file etc. presentation
+\usepackage{fancyvrb}
+
+% from : https://www.rhizobia.co.nz/latex/thesis
+\hfuzz2pt % Don't bother to report over-full boxes if over-edge is < 2pt   
+
+%Spacing between page and footnotes
+\addtolength{\skip\footins}{2pc plus 5pt}
+\setlength{\footnotesep}{1pc}
+
+%Set footnotes in italics to distinguish from figure captions
+\usepackage[flushmargin]{footmisc}
+\renewcommand*{\footnotelayout}{\itshape}
+
+%Consistent Indentation between TOC and LOF/LOT
+\usepackage[titles]{tocloft}
+\cftsetindents{figure}{0em}{3.5em}
+\cftsetindents{table}{0em}{3.5em}
+
+
+%hyperlinks (for citations)
+\usepackage[hidelinks]{hyperref}
+%use same font for urls
+\urlstyle{same}
+
+%Pseudocode listings
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+
+%Time
+\usepackage[nodayofweek,level]{datetime}
+
+\author{My Ky Huynh}
+\title{Seurat scRNA-seq Snakemake Pipeline Documentation}
+
+\newtheorem{hypothesis}{Hypothesis}
+
+\begin{document}
+	
+	\pagenumbering{roman}
+	
+	\input{Title}
+	
+	\setcounter{page}{2}
+	
+%	\input{sections/ack}
+	
+%	\newpage
+%	\input{Abstract}
+	
+	\newpage
+	\tableofcontents
+	
+	\newpage
+	
+	\pagenumbering{arabic}
+	
+	\input{Structure}
+	
+	%	\newpage
+	%	\addcontentsline{toc}{section}{List of Tables}
+	%	\listoftables %optional
+	%	
+	%	\newpage
+	%	\addcontentsline{toc}{section}{List of Figures}
+	%	\listoffigures %optional
+	%	
+	%	\newpage
+	%	\addcontentsline{toc}{section}{List of Abbreviations}
+	%	\input{Abbrevs} %optional
+\end{document}
