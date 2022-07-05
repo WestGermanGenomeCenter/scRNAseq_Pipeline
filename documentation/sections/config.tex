@@ -15,10 +15,10 @@ In this section, we describe how to fill out a config.yaml. A config.yaml gives 
 	numberOfCells & How many cells does this dataset contain? & X\\
 	projectName & The name of the project. & X\\
 	otherMetaName & Condition names for the meta data. E.g., [timepoint, donor, condition] & X\\
-	choosableResolutions & A list of resolution the user wants to look at before choosing one for clustering. In []. &  \\
-	chosenResolution & The resolution chosen after taking a look at the "chosenResolutions" & \\
-	integrationPCs & The PCs for UMAP. For choosing the PCs check the plot ending with ".integratedElbowPlot.pdf" & \\
-	findNeighborsPCs & PCs used for the SNN-Graph construction. For choosing PCs check the plot ending with ".umappedElbowPlot.pdf" & \\
+	choosableResolutions & List of resolution the user looks at before choosing one for clustering. In []. Resolution for Seurat's \textit{FindClusters}. & \\
+	chosenResolution & The resolution chosen after taking a look at the "chosenResolutions". Resolution for Seurat's \textit{FindClusters}. & \\
+	integrationPCs & The PCs for \textit{RunUMAP}. For choosing the PCs check the plot ending with ".integratedElbowPlot.pdf". & \\
+	findNeighborsPCs & PCs used for the SNN-Graph in \textit{FindNeighbors}. For choosing PCs check the plot ending with ".umappedElbowPlot.pdf" & \\
 	sampleInputs: & A collection of information about each sample. & X\\
 \end{tabular}
 
@@ -33,5 +33,5 @@ The values below have to be added to "sampleInputs" and has to be created for ev
 	otherMetaData & The meta data type for condition name. Has to be in [] and in the same order as the names in "otherMetaData" in the table above. E.g., [day1, donorA, cancer] & X\\
 	expectedPercentDoublets & Expected percent doublets. & X\\
 	mtCutoff & Percentage cutoff chosen during the pipeline run. E.g. enter 10 if you want to remove all cells with more than 10\% mitochondrial counts. Check plots ending with "mt.before.pdf". & \\
-	dbElbowPlot & PCs chosen from plots for doublet removal. Check plots ending with ".ElbowPlot.pdf" & \\
+	dbElbowPlot & PCs chosen from plots for \textit{RunUMAP} and \textit{doubletFinder\_v3} in DoubletRemoval. Check plots ending with ".ElbowPlot.pdf" & \\
 \end{tabular}

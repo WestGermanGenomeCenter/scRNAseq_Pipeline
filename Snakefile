@@ -82,9 +82,7 @@ def get_inputs(wildcards):
       inputList.append(hf.findHash(pOpt.shinyEnv) + "/lib/R/library/ShinyCell")
       inputList.append(hf.findHash(pOpt.countEnv) + "/lib/R/library/seurathelpeR")
   else:
-    print("""Please fill in the minimal amount of inputs needed in the config.yaml:
-    'workDirectory', 'rawData', 'projectName', 'projectDirectoryPath', 'multiSampled', 'numberOfCells', 'maxRAM', 'HHU_HPC', 'name' for all samples in 'sampleInputs'
-    If you don't know how to fill them in, please check out the 'config_example.yaml'.""")
+    print("""Please fill in the minimal amount of inputs needed in the config.yaml. These are described in documentation/Documentation.pdf. If you don't know how to fill them in, please check out the 'config_example.yaml'.""")
     inputList.append(projectDirectoryPath + "workDirectory/minimalInputsMissing.txt")
   return inputList
 

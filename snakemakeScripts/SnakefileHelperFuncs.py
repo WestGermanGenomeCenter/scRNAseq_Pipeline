@@ -128,5 +128,5 @@ def createMultiMetaCountInput(path, folder, conditions, ending):
   ioputs = createCombinations(conditions, combiOnly=False)
   for i in range(0, len(ioputs)):
     ioputs[i] = path + folder + ioputs[i] + ending
-  print(ioputs)
+  #print(ioputs)
   return ioputs

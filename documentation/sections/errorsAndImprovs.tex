@@ -10,7 +10,8 @@ As mentioned in previous sections there are a few intended and a few common erro
 	Not enough RAM & A HHU HPC error where not enough RAM was approximated. If you see in the logs that the error message contains "/bin/bash: line 1: \_\_\_\_ Killed" or something similar with "killed" then it is most likely this error. Add some additional GB RAM to the snakemakeScripts/PipelineOptions.py step that threw that error and restart the pipeline.\\
 	Not enough walltime & A HHU HPC error where not enough Walltime was approximated. \textbf{The HPC does not throw an error message here}. If your terminal screen says that the job is still running, but myJAM says the job is not running anymore then the walltime ran out without finishing. Cancel the pipeline in the terminal, add some additional seconds to the walltime in snakemakeScripts/PipelineOptions.py to the step that threw the error and restart the pipeline.\\
 	KeyError & If the pipeline throws a KeyError along with a name for an config.yaml entry. You might have wrote the name down incorrectly in your config.yaml\\
-	Integer \& String errors & Be mindful of using the correct datatype in the config.yaml. E.g., if you want to name your project after a number, e.g. 215, then the number must be in "" otherwise the pipeline will read it as a number and not a word.
+	Integer \& String errors & Be mindful of using the correct datatype in the config.yaml. E.g., if you want to name your project after a number, e.g. 215, then the number must be in "" otherwise the pipeline will read it as a number and not a word.\\
+	command $\backslash$r not found & There might be an issue with the bash scripts since some of them were written on Windows or moved from Windows to Linux. To correct this issue use the command 'sed -i 's/$\backslash$r//g' filename.sh' where the filename is the bash script with the issue. 
 \end{tabular}
 
 \subsection{Conda and Package Issues}
