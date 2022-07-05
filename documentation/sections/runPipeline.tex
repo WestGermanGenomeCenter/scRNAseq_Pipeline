@@ -13,15 +13,15 @@ Install Anaconda or Miniconda and create a Snakemake environment. The Pipeline s
 \end{itemize}
 Next, switch to the scRAseq\_Pipeline/ folder in the terminal if you have not already. Change the HPC\_HHU input in the config.yaml to \textbf{false}. For the install run use the command:
 \begin{center}
-	snakemake -p --cores 1 --use-conda
+	snakemake -p --cores 1 --use-conda --configfile path/to/config.yaml
 \end{center}
 After all packages are installed and use the following command for an actual run. 
 \begin{center}
-	snakemake -p --cores \underline{X} --use-conda
+	snakemake -p --cores \underline{X} --use-conda --configfile path/to/config.yaml
 \end{center}
 \textit{X} marks the number of cores you want to use. Cores can be used to perform multiple jobs at ones, e.g., if you have 6 samples you can choose 6 cores and the pipeline will process the 6 samples simultaneously until the samples are merged back into one dataset. In case of a Snakemake error during a run, Snakemake will lock the directory and you cannot run the pipeline again unless you run the following command to unlock the directory.
 \begin{center}
-	snakemake -p --cores 1 --use-conda --unlock
+	snakemake -p --cores 1 --use-conda --configfile path/to/config.yaml --unlock
 \end{center}
 The conda environments used here are in the netAccess folder. If you want to customize these environments more either change the envs in the netAccess folder or create a new folder and change the paths in the pipeline options, see section~\ref{section:pipeOptions}.
 
